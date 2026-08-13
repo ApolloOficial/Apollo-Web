@@ -1,12 +1,7 @@
 # Apollo Web
 
 Aplicação web desenvolvida como Projeto Interdisciplinar da disciplina de
-Desenvolvimento de Aplicações Dinâmicas — 2º ano, 2026.
-
-> **A completar:** descrever em 2 ou 3 frases o que a aplicação faz, para quem
-> ela é e qual problema resolve.
-
-**Deploy:** _(link da Vercel entra aqui assim que a aplicação for publicada)_
+Desenvolvimento de Aplicações Dinâmicas - 2º ano, 2026.
 
 ---
 
