@@ -18,7 +18,7 @@ Desenvolvimento de Aplicações Dinâmicas - 2º ano, 2026.
 
 ---
 
-## Começando
+## Configurando a máquina
 
 ### Pré-requisitos
 
