@@ -1,60 +1,95 @@
-# Apollo Web
+<div align="center">
 
-Aplicação web desenvolvida como Projeto Interdisciplinar da disciplina de
-Desenvolvimento de Aplicações Dinâmicas - 2º ano, 2026.
+# 🖥️ Apollo Web
+
+### Interface web da plataforma Apollo
+
+Painel de gestão do ciclo de vida de placas solares — lotes, placas, ordens
+de serviço, realocações e funcionários — consumindo a **Apollo API**.
+
+[![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-6-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vite.dev/)
+[![React Router](https://img.shields.io/badge/React_Router-7-CA4245?style=for-the-badge&logo=reactrouter&logoColor=white)](https://reactrouter.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
+
+</div>
 
 ---
+
+## Sobre o projeto
+
+O **Apollo Web** é a interface de uso da plataforma Apollo — um serviço de
+gestão de ativos fotovoltaicos licenciado a empresas industriais que possuem
+e operam suas próprias placas solares. Cada empresa cliente contrata o
+Apollo e passa a acessar o sistema com sua própria conta, isolada das
+demais.
+
+A aplicação atende três perfis por filial:
+
+- **Gerente de Filial** — perfil de maior alçada no Web. Analisa
+  alertas e ordens de serviço, aprova ou rejeita realocações entre filiais,
+  edita os dados da própria unidade e cadastra, edita e desativa os
+  funcionários da filial.
+- **Operador** — opera o dia a dia da filial: pré-cadastra lotes de placas
+  por upload de planilha, abre ordens de serviço a partir de alertas, e
+  sugere realocações.
+
+Toda a comunicação acontece com a Apollo API por HTTP.
+
+## Arquitetura
+
+```mermaid
+flowchart LR
+    U[Usuário da empresa cliente] --> P[Página]
+    P --> H[Hook customizado]
+    H --> S[Service]
+    S --> API[Apollo API]
+    P <--> C[Context de autenticação]
+    P <--> T[Types]
+    P --> V[Validação — utils]
+    R[React Router] -. controla .-> P
+```
+
+```text
+src/
+├── components/   # design system — um componente por pasta, com index.tsx
+├── pages/        # um módulo por pasta, com index.tsx
+├── services/     # comunicação com a Apollo API — único lugar com fetch
+├── types/        # interfaces de props e entidades, por domínio
+├── utils/        # validação e sanitização de formulário
+├── hooks/        # hooks customizados com retorno tipado
+├── auth/         # Context de autenticação e sessão
+└── routes/       # configuração do React Router e rotas privadas
+```
 
 ## Tecnologias
 
-| Ferramenta | Versão | Papel |
+| Tecnologia | Versão | Uso no projeto |
 |---|---|---|
-| Node.js | 20.19+ ou 22.12+ | Ambiente de execução |
 | React | 19 | Biblioteca de interface |
-| TypeScript | 5 | Tipagem estática |
+| TypeScript | 6 | Tipagem estática, `strict` ativo |
 | Vite | 8 | Build e servidor de desenvolvimento |
-| React Router | 7 | Roteamento |
-| ESLint | 9 | Análise estática e acessibilidade |
+| React Router | 7 | Roteamento e rotas privadas |
+| ESLint + jsx-a11y | 9 | Análise estática e acessibilidade |
 
----
-
-## Configurando a máquina
+## Como executar
 
 ### Pré-requisitos
 
-Confira as versões instaladas na sua máquina:
+- Node.js 20.19+ ou 22.12+
+- A **Apollo API** em execução (veja o README do back-end)
 
 ```bash
-node -v    # precisa ser 20.19+ ou 22.12+
-npm -v     # precisa ser 10+
-git --version
+node -v
+npm -v
 ```
 
-Se o Node estiver desatualizado ou ausente, instale a versão LTS:
+> Não use `&`, acentos, nem pastas do OneDrive/Google Drive/Dropbox no
+> caminho do projeto — quebram o `cmd.exe`, ferramentas sem suporte a UTF-8,
+> e o `node_modules`, respectivamente. Prefira `C:\dev` ou `~/dev`.
 
-```bash
-# Windows
-winget install OpenJS.NodeJS.LTS
-
-# macOS
-brew install node
-```
-
-Feche e reabra o terminal depois de instalar — o terminal já aberto mantém o
-PATH antigo em memória e continuará mostrando a versão anterior.
-
-### Onde clonar
-
-O caminho da pasta **não pode conter** `&`, acentos, nem estar dentro de
-OneDrive, Google Drive ou Dropbox.
-
-- `&` quebra o `cmd.exe` e nenhum script npm roda
-- Acentos quebram ferramentas que não tratam UTF-8
-- Serviços de sincronização travam e corrompem o `node_modules`
-
-Use algo como `C:\dev` no Windows ou `~/dev` no macOS e Linux.
-
-### Instalação
+### 1. Clone o repositório
 
 ```bash
 git clone https://github.com/ApolloOficial/Apollo-Web.git
@@ -62,22 +97,14 @@ cd Apollo-Web
 npm install
 ```
 
-React e TypeScript não são instalados na máquina — são dependências do projeto
-e ficam dentro de `node_modules`.
-
-### Variáveis de ambiente
+### 2. Configure as variáveis de ambiente
 
 ```bash
 cp .env.example .env      # macOS e Linux
 copy .env.example .env    # Windows
 ```
 
-Preencha os valores no `.env`. Toda variável precisa do prefixo `VITE_` para o
-Vite expor ao código, e é lida com `import.meta.env.VITE_NOME`.
-
-O `.env` está no `.gitignore` e **nunca** deve ser versionado.
-
-### Rodando
+### 3. Execute a aplicação
 
 ```bash
 npm run dev       # servidor de desenvolvimento em http://localhost:5173
@@ -86,43 +113,50 @@ npm run preview   # testa localmente a build de produção
 npm run lint      # verifica as regras de ESLint
 ```
 
-Rode `npm run build` e `npm run lint` antes de abrir Pull Request. Erro de tipo
-não aparece no `dev`, só na build.
+Rode `npm run build` e `npm run lint` antes de abrir Pull Request — erro de
+tipo não aparece no `dev`, só na build.
 
-### Extensões recomendadas do VS Code
+## Variáveis de ambiente
 
-```bash
-code --install-extension dbaeumer.vscode-eslint
-code --install-extension esbenp.prettier-vscode
-code --install-extension deque-systems.vscode-axe-linter
-```
+| Variável | Padrão local | Descrição |
+|---|---|---|
+| `VITE_API_URL` | `http://localhost:8080/api/v1` | Base da Apollo API |
 
-Ative **Format on Save** para evitar diffs de formatação nos Pull Requests.
+Toda variável usada no código precisa do prefixo `VITE_` para o Vite expor ao
+front, e é lida com `import.meta.env.VITE_NOME`. O `.env` está no
+`.gitignore` e **nunca** deve ser versionado.
 
----
+## Módulos
 
-## Estrutura do projeto
+| Rota | Módulo | Descrição |
+|---|---|---|
+| `/login` | Login | Autenticação dos funcionários da filial |
+| `/` | Início | Visão geral da filial |
+| `/alertas` | Alertas | Central de alertas — Gerente e Operador decidem se abrem uma OS |
+| `/ordens-de-servico` | OS | Abertura, aprovação e acompanhamento de ordens de serviço |
+| `/realocacoes` | Realocações | Solicitação e aprovação de realocação de placas entre filiais |
+| `/filiais` | Filiais | Dados da própria filial e dos lotes cadastrados |
+| `/funcionarios` | Funcionários | Cadastro, edição e desativação de funcionários — exclusivo do Gerente |
+| `/mapa` | Mapa | Visualização geográfica das filiais |
+| `/metricas` | Métricas | Indicadores e dashboards da filial |
 
-```
-src/
-├── components/   # um componente por pasta, com index.tsx
-├── pages/        # uma página por pasta, com index.tsx
-├── services/     # comunicação com API — único lugar onde fetch é permitido
-├── types/        # interfaces de props e entidades, por domínio
-├── utils/        # validação e sanitização
-├── hooks/        # hooks customizados com retorno tipado
-├── contexts/     # Context API com Provider dedicado
-└── routes/       # configuração do React Router
-```
+## Regras do projeto
 
----
+- Nenhum arquivo `.js` ou `.jsx` dentro de `src/` — apenas `.ts` e `.tsx`
+- Proibido `any` — `strict` ativo no `tsconfig`
+- Proibido `fetch` em componentes ou páginas — sempre via `src/services/`
+- Proibido `key={index}` em listas com adição, remoção ou reordenação
+- Proibido `window.location.href` — navegação via `<Link>` ou `useNavigate`
+- Proibido `<div onClick>` — toda ação usa `<button>`
+- Proibido `alert()` ou `console.log` como único feedback de operação assíncrona
+- Todo `<input>` precisa de `<label>` associado via `htmlFor`
+- Toda imagem precisa de `alt` descritivo, ou `alt=""` quando decorativa
 
 ## Convenções
 
 ### Commits
 
-Seguimos o padrão [Conventional Commits](https://www.conventionalcommits.org/),
-**em inglês**.
+[Conventional Commits](https://www.conventionalcommits.org/), em inglês:
 
 ```
 <tipo>: <descrição no imperativo>
@@ -137,96 +171,37 @@ Seguimos o padrão [Conventional Commits](https://www.conventionalcommits.org/),
 | `style` | Formatação, sem mudança de lógica |
 | `chore` | Configuração, dependências, tarefas de manutenção |
 
-Exemplos:
-
-```
-feat: add product listing page
-fix: handle undefined route param in useParams
-refactor: extract fetch logic into custom hook
-docs: add deploy link to README
-chore: configure ESLint accessibility rules
-```
-
-Regras:
-
-- **Imperativo, não passado** — `add product listing`, não `added product listing`
-- **Minúscula** depois dos dois-pontos, **sem ponto final**
-- Escopo opcional quando ajuda a localizar: `feat(auth): add private route guard`
-- Nada de mensagens genéricas como `update`, `changes` ou `fix bug`
+Imperativo, não passado; minúscula depois dos dois-pontos; sem ponto final;
+nada de mensagens genéricas como `update` ou `fix bug`.
 
 ### Branches
-
-Ninguém commita direto na `main`.
 
 ```
 <tipo>/<descrição-curta-com-hifens>
 ```
 
-| Prefixo | Uso |
-|---|---|
-| `feat/` | Nova funcionalidade |
-| `fix/` | Correção de bug |
-| `refactor/` | Refatoração |
-| `docs/` | Documentação |
-
-Exemplos:
-
-```
-feat/product-listing
-fix/undefined-route-param
-refactor/api-service-layer
-docs/setup-instructions
-```
-
-### Fluxo de trabalho
-
-```bash
-git checkout main
-git pull                              # sempre antes de criar a branch
-git checkout -b feat/product-listing
-
-# ... desenvolvimento, com commits pequenos e frequentes ...
-
-npm run lint
-npm run build                         # os dois precisam passar
-
-git push -u origin feat/product-listing
-```
-
-Abra o Pull Request no GitHub, peça revisão de pelo menos um colega e só faça
-merge depois da aprovação. Apague a branch após o merge.
-
----
-
-## Regras do projeto
-
-Estas restrições vêm dos critérios de avaliação da disciplina e **não são
-negociáveis**:
-
-- Nenhum arquivo `.js` ou `.jsx` dentro de `src/` — apenas `.ts` e `.tsx`
-- Proibido `any` — a tipagem `strict` está ativa no `tsconfig`
-- Proibido `fetch` em componentes ou páginas — sempre via `src/services/`
-- Proibido `key={index}` em listas com adição, remoção ou reordenação
-- Proibido `window.location.href` — navegação via `<Link>` ou `useNavigate`
-- Proibido `<div onClick>` — use `<button>` para toda ação
-- Proibido `alert()` ou `console.log` como único feedback de operação assíncrona
-- Todo `<input>` precisa de `<label>` associado via `htmlFor`
-- Toda imagem precisa de `alt` descritivo, ou `alt=""` quando decorativa
-- Não atualize o ESLint para a versão 10 — os plugins de React e de
-  acessibilidade ainda não a suportam e o `npm install` quebra
-
----
+Ninguém commita direto na `main`. Abra Pull Request, peça revisão de pelo
+menos um colega, e só faça merge depois da aprovação.
 
 ## Problemas comuns
 
 | Sintoma | Solução |
 |---|---|
-| `node -v` mostra a versão antiga | Feche todos os terminais e o VS Code, e abra novamente |
-| `npm ERR! engine Unsupported` | Node desatualizado — instale a versão LTS |
 | `Cannot find module ... vite.js` | Caminho do projeto contém `&` ou acento — mova para `C:\dev` |
 | Porta 5173 em uso | `npm run dev -- --port 3000` |
 | Erro após trocar de branch | `npm install` — o `package.json` pode ter mudado |
 | Variável de ambiente indefinida | Confirme o prefixo `VITE_` e reinicie o servidor |
-| `ERESOLVE` ao instalar plugin do ESLint | Confirme que `eslint` e `@eslint/js` estão ambos na versão 9 |
+| Requisição para a API sempre falha | Confirme se `VITE_API_URL` termina em `/api/v1`, não só `/api` |
+
+## Licença
+
+Distribuído sob a licença MIT. Consulte o arquivo [LICENSE](LICENSE) para mais
+informações.
 
 ---
+
+<div align="center">
+
+Desenvolvido pela equipe **Apollo** para o Projeto Interdisciplinar 2026. 🚀
+
+</div>
