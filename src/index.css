@@ -1,0 +1,123 @@
+:root {
+  --color-primary: #FCD83A;
+  --color-primary-light: #FEF7C3;
+  --color-primary-dark: #F9C516;
+
+  --color-secondary: #FF672C;
+  --color-secondary-light: #FFC8A8;
+  --color-secondary-dark: #FE4A11;
+
+  --color-success: #10B981;
+  --color-success-light: #6EE7B7;
+  --color-success-dark: #059669;
+
+  --color-alert: #F59E0B;
+  --color-alert-light: #FCD34D;
+  --color-alert-dark: #D97706;
+
+  --color-error: #DC2626;
+  --color-error-light: #F87171;
+  --color-error-dark: #B91C1C;
+
+  --color-info: #0EA5E9;
+  --color-info-light: #7DD3FC;
+  --color-info-dark: #0284C7;
+
+  --color-text: #1C1C1C;
+  --color-text-muted: #716764;
+  --color-background: #FFFFFF;
+  --color-on-brand: #FFFEFC;
+  --color-disabled: #D1CEC1;
+  --color-disabled-soft: color-mix(in srgb, var(--color-disabled) 70%, transparent);
+  --color-disabled-text: color-mix(in srgb, var(--color-text-muted) 50%, transparent);
+  --color-focus: var(--color-info-dark);
+
+  --gradient-brand: linear-gradient(90deg, var(--color-secondary), var(--color-primary));
+
+  --font-heading: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-body: 'Manrope', system-ui, sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-bold: 700;
+
+  --text-display-1: 3.5rem;
+  --text-h1: 3rem;
+  --text-h2: 2.25rem;
+  --text-h3: 2rem;
+  --text-h4: 1.75rem;
+  --text-h5: 1.5rem;
+  --text-h6: 1.25rem;
+  --text-body-1: 1.125rem;
+  --text-body-2: 1rem;
+  --text-body-3: 0.875rem;
+  --text-body-4: 0.75rem;
+  --text-label-1: 1rem;
+  --text-label-2: 0.75rem;
+  --text-label-3: 0.625rem;
+  --text-label-4: 0.5rem;
+  --text-caption: 0.5rem;
+}
+
+html {
+  font-size: clamp(0.75rem, min(0.5rem + 0.5556vw, 0.5rem + 0.78125vh), 1rem);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-body-2);
+  font-weight: var(--font-weight-regular);
+  line-height: normal;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+  line-height: normal;
+}
+
+h1 { font-size: var(--text-h1); }
+h2 { font-size: var(--text-h2); }
+h3 { font-size: var(--text-h3); }
+h4 { font-size: var(--text-h4); }
+h5 { font-size: var(--text-h5); }
+h6 { font-size: var(--text-h6); }
+
+p {
+  margin: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
