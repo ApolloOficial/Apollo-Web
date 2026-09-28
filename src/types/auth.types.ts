@@ -3,3 +3,12 @@ export interface LoginFormValues {
   password: string
   remember: boolean
 }
+
+export interface ForgotPasswordFormValues {
+  email: string
+}
+
+export interface ResetPasswordFormValues {
+  newPassword: string
+  confirmPassword: string
+}

@@ -1,0 +1,14 @@
+.status-message {
+  font-size: var(--text-body-3);
+  font-weight: var(--font-weight-bold);
+  line-height: normal;
+  text-align: center;
+}
+
+.status-message--success {
+  color: var(--color-success-darker);
+}
+
+.status-message--alert {
+  color: var(--color-alert-light);
+}

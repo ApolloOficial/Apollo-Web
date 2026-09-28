@@ -1,8 +1,11 @@
 import type { ReactNode } from 'react'
 
+export type ButtonVariant = 'primary' | 'secondary'
+
 export interface ButtonProps {
   children: ReactNode
   type?: 'button' | 'submit'
+  variant?: ButtonVariant
   disabled?: boolean
   fullWidth?: boolean
   onClick?: () => void
@@ -11,6 +14,7 @@ export interface ButtonProps {
 export interface ButtonLinkProps {
   children: ReactNode
   to: string
+  variant?: ButtonVariant
   fullWidth?: boolean
 }
 
@@ -31,7 +35,7 @@ export interface SimpleInputProps {
   error?: string
 }
 
-export type PasswordInputProps = Omit<SimpleInputProps, 'type' | 'icon' | 'endAdornment'>
+export type PasswordInputProps = Omit<SimpleInputProps, 'type' | 'endAdornment'>
 
 export interface CheckboxProps {
   id: string
@@ -43,4 +47,20 @@ export interface CheckboxProps {
 export interface TextLinkProps {
   to: string
   children: ReactNode
+}
+
+export type StatusTone = 'success' | 'alert'
+
+export interface StatusMessageProps {
+  tone: StatusTone
+  children: ReactNode
+}
+
+export interface AuthPageProps {
+  title: ReactNode
+  subtitle?: ReactNode
+  illustration?: ReactNode
+  align?: 'start' | 'center'
+  focusTitle?: boolean
+  children?: ReactNode
 }
