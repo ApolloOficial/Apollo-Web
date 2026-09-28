@@ -55,8 +55,8 @@ flowchart LR
 
 ```text
 src/
-├── components/   # design system — um componente por pasta, com index.tsx
-├── pages/        # um módulo por pasta, com index.tsx
+├── components/   # design system — um componente por pasta: Nome.tsx, Nome.css e index.ts
+├── pages/        # um módulo por pasta: Nome.tsx, Nome.css e index.ts
 ├── services/     # comunicação com a Apollo API — único lugar com fetch
 ├── types/        # interfaces de props e entidades, por domínio
 ├── utils/        # validação e sanitização de formulário
