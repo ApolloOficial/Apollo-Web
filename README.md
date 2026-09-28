@@ -27,13 +27,15 @@ demais.
 
 A aplicação atende três perfis por filial:
 
-- **Gerente de Filial** — perfil de maior alçada no Web. Analisa
+- **Gerente de Filial** — perfil de maior alçada no Web. Decide sobre
   alertas e ordens de serviço, aprova ou rejeita realocações entre filiais,
   edita os dados da própria unidade e cadastra, edita e desativa os
   funcionários da filial.
 - **Operador** — opera o dia a dia da filial: pré-cadastra lotes de placas
   por upload de planilha, abre ordens de serviço a partir de alertas, e
   sugere realocações.
+- **Analista** — acesso somente leitura, com visão completa dos dados da
+  filial para acompanhamento e métricas.
 
 Toda a comunicação acontece com a Apollo API por HTTP.
 
@@ -130,15 +132,20 @@ front, e é lida com `import.meta.env.VITE_NOME`. O `.env` está no
 
 | Rota | Módulo | Descrição |
 |---|---|---|
+| `/welcome` | Boas-vindas | Tela de entrada, antes do login |
 | `/login` | Login | Autenticação dos funcionários da filial |
 | `/` | Início | Visão geral da filial |
-| `/alertas` | Alertas | Central de alertas — Gerente e Operador decidem se abrem uma OS |
-| `/ordens-de-servico` | OS | Abertura, aprovação e acompanhamento de ordens de serviço |
-| `/realocacoes` | Realocações | Solicitação e aprovação de realocação de placas entre filiais |
-| `/filiais` | Filiais | Dados da própria filial e dos lotes cadastrados |
-| `/funcionarios` | Funcionários | Cadastro, edição e desativação de funcionários — exclusivo do Gerente |
-| `/mapa` | Mapa | Visualização geográfica das filiais |
-| `/metricas` | Métricas | Indicadores e dashboards da filial |
+| `/alerts` | Alertas | Central de alertas — Gerente e Operador decidem se abrem uma OS |
+| `/service-orders` | OS | Abertura, aprovação e acompanhamento de ordens de serviço |
+| `/relocations` | Realocações | Solicitação e aprovação de realocação de placas entre filiais |
+| `/branches` | Filiais | Dados da própria filial e dos lotes cadastrados |
+| `/employees` | Funcionários | Cadastro, edição e desativação de funcionários — exclusivo do Gerente |
+| `/map` | Mapa | Visualização geográfica das filiais |
+| `/metrics` | Métricas | Indicadores e dashboards da filial |
+
+O Analista tem acesso somente leitura a todas as telas acima, exceto
+Funcionários. Todas as rotas exceto `/welcome` e `/login` exigem sessão ativa
+(`PrivateRoute`).
 
 ## Regras do projeto
 
