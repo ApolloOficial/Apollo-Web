@@ -3,12 +3,12 @@ export const paths = {
   login: '/login',
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
+  updatePassword: '/first-access',
   home: '/',
   alerts: '/alerts',
   serviceOrders: '/service-orders',
   relocations: '/relocations',
   branches: '/branches',
-  map: '/map',
   employees: '/employees',
   metrics: '/metrics',
 } as const
