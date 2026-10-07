@@ -33,6 +33,7 @@ export interface SimpleInputProps {
   icon?: ReactNode
   endAdornment?: ReactNode
   error?: string
+  invalid?: boolean
 }
 
 export type PasswordInputProps = Omit<SimpleInputProps, 'type' | 'endAdornment'>
