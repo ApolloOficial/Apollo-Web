@@ -1,3 +1,5 @@
+import { getSession } from '../utils/session'
+
 const BASE_URL = import.meta.env.VITE_API_URL
 
 interface RequestOptions {
@@ -7,10 +9,13 @@ interface RequestOptions {
 }
 
 export async function request<TResponse>(path: string, options: RequestOptions = {}): Promise<TResponse> {
+  const session = getSession()
+
   const response = await fetch(`${BASE_URL}${path}`, {
     method: options.method ?? 'GET',
     headers: {
       'Content-Type': 'application/json',
+      ...(session ? { Authorization: `${session.tokenType} ${session.token}` } : {}),
       ...options.headers,
     },
     body: options.body ? JSON.stringify(options.body) : undefined,
