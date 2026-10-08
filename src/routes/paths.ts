@@ -10,5 +10,6 @@ export const paths = {
   relocations: '/relocations',
   branches: '/branches',
   employees: '/employees',
+  employeeCreate: '/employees/new',
   metrics: '/metrics',
 } as const
