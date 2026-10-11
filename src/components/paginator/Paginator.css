@@ -1,0 +1,46 @@
+.paginator {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.paginator__size {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.paginator__size select {
+  min-height: 2.25rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--color-disabled);
+  border-radius: 999px;
+  background: var(--color-background);
+}
+
+.paginator__button {
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #FF672C;
+  cursor: pointer;
+}
+
+.paginator__button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* O mesmo ícone é girado para representar a página anterior. */
+.paginator__button--previous svg {
+  transform: rotate(180deg);
+}
+
+.paginator__button:disabled {
+  color: rgb(209 206 193 / 70%);
+  cursor: default;
+}

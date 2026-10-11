@@ -1,0 +1,37 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.25rem;
+  padding: 0 2rem;
+  border: 0;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  font-size: var(--text-label-1);
+  font-weight: var(--font-weight-bold);
+  line-height: normal;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button--primary {
+  background: var(--color-secondary-dark);
+  color: var(--color-on-brand);
+}
+
+.button--secondary {
+  height: 3.375rem;
+  border: 1px solid var(--color-secondary-dark);
+  background: var(--color-on-brand);
+  color: var(--color-text);
+}
+
+.button--full {
+  width: 100%;
+}
+
+.button--primary:disabled {
+  background: var(--color-disabled-soft);
+  color: var(--color-disabled-text);
+  cursor: not-allowed;
+}
