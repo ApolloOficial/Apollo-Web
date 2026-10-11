@@ -1,0 +1,6 @@
+.email-sent__content {
+  display: flex;
+  flex-direction: column;
+  gap: 3.375rem;
+  margin-top: 5rem;
+}
