@@ -15,11 +15,9 @@ export function DeactivateEmployeeModal({ employeeName, submitting, onClose, onC
   }, [onClose, submitting])
 
   return (
-    <div className="deactivate-modal__overlay" onMouseDown={(event) => {
-      if (event.target === event.currentTarget && !submitting) onClose()
-    }}>
+    <div className="deactivate-modal__overlay">
       <section className="deactivate-modal" role="dialog" aria-modal="true" aria-labelledby="deactivate-title">
-        <img src={illustration} alt="Pessoa descartando um documento" />
+        <img className="deactivate-modal__illustration" src={illustration} alt="" />
         <h2 id="deactivate-title">Tem certeza que quer<br />desligar funcionário?</h2>
         <p><span className="sr-only">Funcionário: {employeeName}. </span>
           Ele fica sem acesso até você decidir reativar. Os dados dele continuam salvos.</p>

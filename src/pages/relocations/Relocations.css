@@ -1,0 +1,268 @@
+.relocations-page,
+.relocation-form-page,
+.relocation-details {
+  width: 100%;
+  max-width: 75rem;
+  margin: 0;
+  padding: 0;
+}
+
+.relocations-breadcrumb {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: var(--text-body-3);
+}
+
+.relocations-breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.relocations-page__heading {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.relocations-page h1,
+.relocation-form-page h1,
+.relocation-details h1 {
+  margin-bottom: 0.5rem;
+  font-size: var(--text-h2);
+}
+
+.relocations-page__request {
+  flex: 0 0 auto;
+  padding: 0.85rem 2rem;
+  border: 2px solid var(--color-secondary);
+  border-radius: 999px;
+  color: var(--color-secondary);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+.relocations-tabs {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  border-bottom: 1px solid var(--color-disabled);
+}
+
+.relocations-tabs button {
+  padding: 0.75rem 0;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  background: transparent;
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.relocations-tabs button[aria-selected="true"] {
+  border-bottom-color: var(--color-secondary);
+  color: var(--color-text);
+}
+
+.relocations-filters {
+  display: grid;
+  grid-template-columns: minmax(12rem, 13.5rem) minmax(12rem, 13.5rem) auto;
+  gap: 1.5rem;
+  align-items: end;
+  margin: 1.5rem 0 2rem;
+}
+
+.relocations-filters > button,
+.relocation-form__submit,
+.relocation-details__actions button {
+  min-height: 3.25rem;
+  padding: 0.75rem 2rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-secondary);
+  color: var(--color-on-brand);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.relocations-filters > button {
+  width: fit-content;
+  min-width: 8.5rem;
+  justify-self: start;
+}
+
+.relocations-table__header,
+.relocations-table__row {
+  display: grid;
+  grid-template-columns: 0.75fr 0.85fr 1.25fr 1.25fr 0.8fr 0.45fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.relocations-table__header {
+  padding: 0 1rem 0.75rem;
+  font-weight: var(--font-weight-bold);
+}
+
+.relocations-table__row {
+  min-height: 5rem;
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+  border: 1px solid var(--color-disabled);
+  border-radius: 1rem;
+}
+
+.relocations-table__row a {
+  color: var(--color-secondary);
+  font-weight: var(--font-weight-bold);
+}
+
+.relocations-table__state {
+  padding: 2rem;
+  text-align: center;
+}
+
+.relocations-error {
+  margin: 1rem 0;
+  color: var(--color-error);
+}
+
+.relocation-form {
+  display: grid;
+  gap: 1.25rem;
+  width: min(100%, 32rem);
+  margin-top: 2rem;
+  padding-right: 4rem;
+  border-right: 1px solid var(--color-disabled);
+}
+
+.relocation-form > label {
+  display: grid;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+}
+
+.relocation-form input,
+.relocation-form textarea {
+  width: 100%;
+  padding: 0 1rem;
+  border: 1px solid var(--color-disabled);
+  border-radius: 1.5rem;
+  background: var(--color-background);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.relocation-form input {
+  min-height: 3.25rem;
+}
+
+.relocation-form textarea {
+  min-height: 7rem;
+  padding-block: 1rem;
+  resize: vertical;
+}
+
+.relocation-form input::placeholder,
+.relocation-form textarea::placeholder {
+  color: var(--color-disabled);
+  font-weight: var(--font-weight-bold);
+}
+
+.relocation-form .prefilled {
+  border-color: var(--color-disabled);
+  background: color-mix(in srgb, var(--color-secondary-light) 20%, transparent);
+  font-weight: var(--font-weight-bold);
+}
+
+.relocation-form__submit {
+  width: 100%;
+  margin-top: 0.75rem;
+}
+
+.relocation-form__submit:disabled,
+.relocation-details__actions button:disabled {
+  border-color: transparent;
+  background: var(--color-disabled-soft);
+  color: var(--color-disabled-text);
+  cursor: default;
+}
+
+.relocation-details__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 2rem;
+  overflow: hidden;
+  border: 1px solid var(--color-disabled);
+  border-radius: 1rem;
+}
+
+.relocation-details__grid > div {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--color-disabled);
+}
+
+.relocation-details__grid dt {
+  margin-bottom: 0.35rem;
+  color: var(--color-text-muted);
+  font-size: var(--text-body-3);
+}
+
+.relocation-details__grid dd {
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+.relocation-details__description {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid var(--color-disabled);
+  border-radius: 1rem;
+}
+
+.relocation-details__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.relocation-details__actions .reject {
+  border: 2px solid var(--color-error);
+  background: transparent;
+  color: var(--color-error);
+}
+
+.relocation-details__actions .approve {
+  background: var(--color-success-darker);
+}
+
+@media (max-width: 850px) {
+  .relocations-page__heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .relocations-filters,
+  .relocation-details__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .relocations-table {
+    overflow-x: auto;
+  }
+
+  .relocations-table__header,
+  .relocations-table__row {
+    min-width: 58rem;
+  }
+
+  .relocation-form {
+    padding-right: 0;
+    border-right: 0;
+  }
+}

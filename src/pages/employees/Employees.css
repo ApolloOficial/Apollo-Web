@@ -1,8 +1,9 @@
 .employees-page,
 .employee-form-page {
-  width: min(100%, 75rem);
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
+  max-width: 75rem;
+  margin: 0;
+  padding: 0;
 }
 
 .employees-page__breadcrumb {
@@ -54,6 +55,12 @@
 }
 
 .employees-filters > button { align-self: center; padding: 0.75rem 2rem; }
+.employees-filters > button:disabled,
+.employee-form__submit:disabled {
+  background: var(--color-disabled-soft);
+  color: var(--color-disabled-text);
+  cursor: default;
+}
 .employees-table__header,
 .employees-table__row {
   display: grid;
@@ -80,7 +87,12 @@
   cursor: pointer;
 }
 
-.employees-table__row button:disabled { border-color: var(--color-disabled); color: var(--color-text-muted); cursor: default; }
+.employees-table__row button:disabled {
+  border-color: transparent;
+  background: var(--color-disabled-soft);
+  color: var(--color-disabled-text);
+  cursor: default;
+}
 .employees-table__state { padding: 2rem; text-align: center; }
 .employees-page__error { margin: 1rem 0; color: var(--color-error); }
 .employees-pagination { display: flex; justify-content: flex-end; align-items: center; gap: 0.75rem; margin-top: 1rem; }

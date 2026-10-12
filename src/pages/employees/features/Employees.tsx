@@ -35,6 +35,8 @@ export function EmployeesFeature() {
     }
   }, [filters, page, size])
 
+  // A listagem remota precisa acompanhar os filtros e a paginação.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => { void loadEmployees() }, [loadEmployees])
 
   useEffect(() => {

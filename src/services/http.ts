@@ -1,6 +1,6 @@
 import { getSession } from '../utils/session'
 
-const BASE_URL = import.meta.env.VITE_API_URL
+const BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:8080/api/v1').replace(/\/$/, '')
 
 interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
@@ -27,7 +27,18 @@ export async function request<TResponse>(path: string, options: RequestOptions =
   }
 
   const text = await response.text()
-  return (text ? JSON.parse(text) : undefined) as TResponse
+  if (!text) return undefined as TResponse
+
+  const contentType = response.headers.get('content-type') ?? ''
+  if (!contentType.includes('application/json')) {
+    throw new Error('A API retornou uma resposta inválida. Confirme se o Spring está rodando na porta 8080.')
+  }
+
+  try {
+    return JSON.parse(text) as TResponse
+  } catch {
+    throw new Error('A API retornou um JSON inválido.')
+  }
 }
 
 async function extractErrorMessage(response: Response): Promise<string> {
@@ -35,6 +46,7 @@ async function extractErrorMessage(response: Response): Promise<string> {
     const body = await response.json()
     if (body?.message) return body.message
   } catch {
+    return `Erro ${response.status}: ${response.statusText}`
   }
   return `Erro ${response.status}: ${response.statusText}`
 }
