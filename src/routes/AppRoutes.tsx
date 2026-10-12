@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import { AuthLayout } from '../components/auth-layout'
+import { Layout } from '../components/layout'
 import EmployeeForm from '../pages/employees/employee-form'
 import Employees from '../pages/employees'
 import FirstAccess from '../pages/first-access'
@@ -21,13 +22,15 @@ export function AppRoutes() {
         <Route path={paths.updatePassword} element={<FirstAccess />} />
       </Route>
 
-      <Route path={paths.home} element={<Home />} />
-      {/*
-        TODO: ao final do projeto, proteger estas duas rotas de funcionário para permitir
-        somente usuários cujo role seja GERENTE.
-      */}
-      <Route path={paths.employees} element={<Employees />} />
-      <Route path={paths.employeeCreate} element={<EmployeeForm />} />
+      <Route element={<Layout />}>
+        <Route path={paths.home} element={<Home />} />
+        {/*
+          TODO: ao final do projeto, proteger estas duas rotas de funcionário para permitir
+          somente usuários cujo role seja GERENTE.
+        */}
+        <Route path={paths.employees} element={<Employees />} />
+        <Route path={paths.employeeCreate} element={<EmployeeForm />} />
+      </Route>
     </Routes>
   )
 }
