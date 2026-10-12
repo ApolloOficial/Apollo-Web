@@ -1,3 +1,4 @@
+import { Icon } from '@iconify/react'
 import './Paginator.css'
 
 interface PaginatorProps {
