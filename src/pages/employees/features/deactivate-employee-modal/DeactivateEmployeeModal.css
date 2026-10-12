@@ -63,8 +63,10 @@
 }
 
 .deactivate-modal__actions button:disabled {
+  border-color: transparent;
+  background: var(--color-disabled-soft);
+  color: var(--color-disabled-text);
   cursor: wait;
-  opacity: 0.65;
 }
 
 .sr-only {

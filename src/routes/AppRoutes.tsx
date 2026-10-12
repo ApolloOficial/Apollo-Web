@@ -8,6 +8,9 @@ import ForgotPassword from '../pages/forgot-password'
 import Home from '../pages/home'
 import Login from '../pages/login'
 import ResetPassword from '../pages/reset-password'
+import Relocations from '../pages/relocations'
+import RelocationDetails from '../pages/relocations/relocation-details'
+import RelocationsForm from '../pages/relocations/relocations-form'
 import Welcome from '../pages/welcome'
 import { paths } from './paths'
 
@@ -30,6 +33,13 @@ export function AppRoutes() {
         */}
         <Route path={paths.employees} element={<Employees />} />
         <Route path={paths.employeeCreate} element={<EmployeeForm />} />
+        {/* Rotas temporárias até a seleção automática de interface por role. */}
+        <Route path={paths.relocations} element={<Relocations audience="operator" />} />
+        <Route path={paths.relocationOperator} element={<Relocations audience="operator" />} />
+        <Route path={paths.relocationManager} element={<Relocations audience="manager" />} />
+        <Route path={paths.relocationCreate} element={<RelocationsForm />} />
+        <Route path={paths.relocationDetails} element={<RelocationDetails />} />
+        <Route path={paths.relocationManagerDetails} element={<RelocationDetails managerMode />} />
       </Route>
     </Routes>
   )
