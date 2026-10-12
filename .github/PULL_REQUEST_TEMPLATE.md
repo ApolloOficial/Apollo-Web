@@ -7,17 +7,17 @@
 <!--
 Apague as opções que não se aplicam a esse PR e preencha a descrição ao lado da que você manteve:
 
-feat: Adição de uma nova funcionalidade
-fix: Correção de um bug
-docs: Alteração apenas de documentação (README, comentários, etc.)
-style: Formatação, espaçamento, ponto e vírgula — sem mudança de lógica
-refactor: Reestruturação de código que não corrige bug nem adiciona funcionalidade
-perf: Alteração que melhora performance
-test: Adição ou correção de testes
-build: Mudanças que afetam o build ou dependências externas (ex: package.json)
-ci: Mudanças em arquivos e scripts de configuração de CI
-chore: Tarefas de manutenção que não alteram código de produção (ex: configs, scripts)
-revert: Reversão de um commit anterior
+`feat`: Adição de uma nova funcionalidade
+`fix`: Correção de um bug
+`docs`: Alteração apenas de documentação (README, comentários, etc.)
+`style`: Formatação, espaçamento, ponto e vírgula — sem mudança de lógica
+`refactor`: Reestruturação de código que não corrige bug nem adiciona funcionalidade
+`perf`: Alteração que melhora performance
+`test`: Adição ou correção de testes
+`build`: Mudanças que afetam o build ou dependências externas (ex: package.json)
+`ci`: Mudanças em arquivos e scripts de configuração de CI
+`chore`: Tarefas de manutenção que não alteram código de produção (ex: configs, scripts)
+`revert`: Reversão de um commit anterior
 -->
 `x`: descrição
 

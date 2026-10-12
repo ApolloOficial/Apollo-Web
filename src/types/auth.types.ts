@@ -30,3 +30,14 @@ export interface FirstAccessFormViewModel {
   newPassword: string;
   confirmPassword: string;
 }
+
+export interface CurrentUserDto {
+  userId: string;
+  fullName: string;
+  email: string;
+  role: string;
+  companyId: number;
+  companyName: string;
+  companyUnitId: string;
+  companyUnitName: string;
+}
