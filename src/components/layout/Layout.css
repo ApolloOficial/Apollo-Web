@@ -1,0 +1,16 @@
+.layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  min-height: 100vh;
+}
+
+.layout__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.layout__content {
+  flex: 1;
+  padding: 2rem 2.25rem;
+}

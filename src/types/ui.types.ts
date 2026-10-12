@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react'
+import type { CurrentUserDto } from './auth.types'
+import type { NavigationItem } from './navigation.types'
 
 export type ButtonVariant = 'primary' | 'secondary'
 
@@ -64,4 +66,26 @@ export interface AuthPageProps {
   align?: 'start' | 'center'
   focusTitle?: boolean
   children?: ReactNode
+}
+
+export interface SidebarProps {
+  items: NavigationItem[]
+  role?: string
+}
+
+export interface HeaderProps {
+  user: CurrentUserDto | null
+  loading?: boolean
+  onLogout: () => void
+}
+
+export interface SearchInputProps {
+  value: string
+  onChange: (value: string) => void
+  placeholder?: string
+}
+
+export interface LayoutContext {
+  user: CurrentUserDto | null
+  loading: boolean
 }
