@@ -52,3 +52,29 @@
   width: max-content;
   margin-top: -0.0625rem;
 }
+
+@media (max-width: 720px) {
+  .auth-page {
+    display: block;
+  }
+
+  .auth-page__body {
+    margin-bottom: 2rem;
+  }
+
+  .auth-page__title {
+    font-size: var(--text-h4);
+    white-space: normal;
+  }
+
+  .auth-page__subtitle,
+  .auth-page--center .auth-page__subtitle {
+    width: auto;
+    margin-top: 0.5rem;
+    font-size: var(--text-body-1);
+  }
+
+  .auth-page__notice {
+    margin: 2rem 0 0;
+  }
+}

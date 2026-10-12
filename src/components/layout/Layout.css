@@ -14,3 +14,14 @@
   flex: 1;
   padding: 1.5rem;
 }
+
+@media (max-width: 720px) {
+  .layout {
+    display: block;
+    padding-bottom: 4.5rem;
+  }
+
+  .layout__content {
+    padding: 1rem;
+  }
+}

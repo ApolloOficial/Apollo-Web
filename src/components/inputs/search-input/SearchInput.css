@@ -27,11 +27,11 @@
   border: 0;
   background: none;
   color: var(--color-text);
-  font-size: 1.0625rem;
+  font-size: var(--text-body-2);
 }
 
 .search-input__field::placeholder {
-  color: var(--color-text);
+  color: var(--color-text-muted);
   opacity: 1;
 }
 
