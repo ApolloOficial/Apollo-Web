@@ -21,3 +21,14 @@
   max-width: 28.625rem;
   margin-top: 2.9375rem;
 }
+
+@media (max-width: 720px) {
+  .welcome__text {
+    margin-right: 0;
+    font-size: var(--text-body-2);
+  }
+
+  .welcome__actions {
+    margin-top: 2rem;
+  }
+}

@@ -1,15 +1,18 @@
 import { useEffect, useRef, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import type { HeaderProps } from '../../types/ui.types'
 import { getInitials } from '../../utils/user'
+import { SearchInput } from '../inputs/search-input'
 import { BellIcon } from '../icons/bell-icon'
 import { ChevronRightIcon } from '../icons/chevron-right-icon'
 import { LogoutIcon } from '../icons/logout-icon'
-import { MoonIcon } from '../icons/moon-icon'
 import './Header.css'
 
 export function Header({ user, loading = false, onLogout }: HeaderProps) {
+  const { pathname } = useLocation()
   const accountRef = useRef<HTMLDivElement>(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [search, setSearch] = useState('')
 
   useEffect(() => {
     if (!menuOpen) return
@@ -37,12 +40,18 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
 
   return (
     <header className="header">
+      {pathname !== '/' && (
+        <div className="header__search">
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            placeholder="Busque por projetos, equipes e muito mais."
+          />
+        </div>
+      )}
+
       <button className="header__action" type="button" aria-label="Notificações">
         <BellIcon className="header__bell" />
-      </button>
-
-      <button className="header__action" type="button" aria-label="Alternar tema">
-        <MoonIcon className="header__moon" />
       </button>
 
       <div ref={accountRef} className="header__account">

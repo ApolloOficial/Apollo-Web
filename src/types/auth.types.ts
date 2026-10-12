@@ -31,6 +31,15 @@ export interface FirstAccessFormViewModel {
   confirmPassword: string;
 }
 
+export interface ForgotPasswordFormValues {
+  email: string;
+}
+
+export interface ResetPasswordFormValues {
+  newPassword: string;
+  confirmPassword: string;
+}
+
 export interface CurrentUserDto {
   userId: string;
   fullName: string;
