@@ -11,6 +11,7 @@ export const paths = {
   alertManagerDetails: '/alerts/manager/:id',
   alertServiceOrder: '/alerts/:id/service-order',
   serviceOrders: '/service-orders',
+  serviceOrderDetails: '/service-orders/:id',
   relocations: '/relocations',
   relocationOperator: '/relocations/operator',
   relocationManager: '/relocations/manager',
