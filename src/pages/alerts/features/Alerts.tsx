@@ -1,0 +1,196 @@
+import { useCallback, useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Paginator } from '../../../components/paginator'
+import { getWarnings } from '../data-access/services/Alerts.service'
+import type { WarningDto } from '../data-access/dto/Alerts.dto'
+import {
+  INITIAL_ALERT_FILTERS,
+  severityLabels,
+  statusLabels,
+  typeLabels,
+  type AlertsFiltersViewModel,
+} from '../data-access/vm/Alerts.vm'
+import { AlertsFilters } from './filters/AlertsFilters'
+
+export type AlertsAudience = 'operator' | 'manager'
+
+interface Props {
+  audience: AlertsAudience
+}
+
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
+}
+
+export function AlertsFeature({ audience }: Props) {
+  const [warnings, setWarnings] = useState<WarningDto[]>([])
+  const [draft, setDraft] = useState<AlertsFiltersViewModel>(
+    INITIAL_ALERT_FILTERS,
+  )
+  const [filters, setFilters] = useState<AlertsFiltersViewModel>(
+    INITIAL_ALERT_FILTERS,
+  )
+  const [page, setPage] = useState(0)
+  const [size, setSize] = useState(10)
+  const [totalPages, setTotalPages] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  const loadWarnings = useCallback(async () => {
+    setLoading(true)
+    setError('')
+
+    try {
+      const result = await getWarnings({ filters, page, size })
+      setWarnings(result.content)
+      setTotalPages(result.totalPages)
+    } catch (cause) {
+      setError(
+        cause instanceof Error
+          ? cause.message
+          : 'Não foi possível carregar os alertas.',
+      )
+    } finally {
+      setLoading(false)
+    }
+  }, [filters, page, size])
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => void loadWarnings(), [loadWarnings])
+
+  return (
+    <main className="alerts-page">
+      <nav className="alerts-breadcrumb" aria-label="Navegação estrutural">
+        <Link to="/">Início</Link>
+        <span>›</span>
+        <strong>Alertas</strong>
+      </nav>
+
+      <header>
+        <h1>Alertas</h1>
+        <p>Acompanhe os alertas ativos da sua filial</p>
+      </header>
+
+      <AlertsFilters
+        value={draft}
+        onChange={setDraft}
+        onApply={() => {
+          setPage(0)
+          setFilters(draft)
+        }}
+      />
+
+      {error && (
+        <p className="alerts-error" role="alert">
+          {error}
+        </p>
+      )}
+
+      <div className="alerts-table" aria-busy={loading}>
+        <div
+          className={
+            audience === 'operator'
+              ? 'alerts-table__header alerts-table__header--operator'
+              : 'alerts-table__header'
+          }
+        >
+          <strong>String / Inversor</strong>
+          <strong>Placa</strong>
+          <strong>Tipo/Origem</strong>
+          <strong>Severidade</strong>
+          <strong>Data</strong>
+          <strong>Status</strong>
+          {audience === 'operator' && <span />}
+        </div>
+
+        {loading && (
+          <p className="alerts-table__state">Carregando...</p>
+        )}
+
+        {!loading &&
+          warnings.map((warning) => {
+            const detailsPath =
+              audience === 'manager'
+                ? `/alerts/manager/${warning.id}`
+                : `/alerts/${warning.id}`
+
+            const canOpenServiceOrder =
+              audience === 'operator' &&
+              warning.status === 'ATIVO' &&
+              warning.maintenanceId === null
+
+            return (
+              <article
+                className={
+                  audience === 'operator'
+                    ? 'alerts-table__row alerts-table__row--operator'
+                    : 'alerts-table__row'
+                }
+                key={warning.id}
+              >
+                <Link className="alerts-table__details" to={detailsPath}>
+                  <span>
+                    {warning.stringCode ??
+                      warning.inverterCode ??
+                      '—'}
+                  </span>
+
+                  <span>{warning.panelSerial ?? 'Todas as placas'}</span>
+
+                  <span>{typeLabels[warning.type]}</span>
+
+                  <span
+                    className={`alerts-severity alerts-severity--${warning.severity.toLowerCase()}`}
+                  >
+                    {severityLabels[warning.severity]}
+                  </span>
+
+                  <span>{formatDate(warning.generationDt)}</span>
+
+                  <span
+                    className={
+                      warning.status === 'RESOLVIDO'
+                        ? 'alerts-status alerts-status--resolved'
+                        : 'alerts-status'
+                    }
+                  >
+                    {statusLabels[warning.status]}
+                  </span>
+                </Link>
+
+                {audience === 'operator' && (
+                  <div className="alerts-table__action">
+                    {canOpenServiceOrder && (
+                      <Link
+                        className="alerts-open-order"
+                        to={`/alerts/${warning.id}/service-order`}
+                      >
+                        Abrir OS
+                      </Link>
+                    )}
+                  </div>
+                )}
+              </article>
+            )
+          })}
+
+        {!loading && warnings.length === 0 && (
+          <p className="alerts-table__state">
+            Nenhum alerta encontrado.
+          </p>
+        )}
+      </div>
+
+      <Paginator
+        page={page}
+        totalPages={totalPages}
+        size={size}
+        onPageChange={setPage}
+        onSizeChange={(newSize) => {
+          setPage(0)
+          setSize(newSize)
+        }}
+      />
+    </main>
+  )
+}
