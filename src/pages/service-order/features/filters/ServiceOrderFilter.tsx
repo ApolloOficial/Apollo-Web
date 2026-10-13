@@ -80,7 +80,7 @@ export function ServiceOrderFilter({
                     placeholder="Tipo"
                     value={value.maintenanceTypeId}
                     options={[
-                        { value: '', label: 'Todos' },
+                        { value: 'ALL', label: 'Todos' },
                         ...maintenanceTypes.map((type) => ({
                             value: String(type.id),
                             label: type.name,
@@ -100,7 +100,7 @@ export function ServiceOrderFilter({
                     placeholder="Status"
                     value={value.status}
                     options={[
-                        { value: '', label: 'Todos' },
+                        { value: 'ALL', label: 'Todos' },
                         { value: 'ABERTA', label: 'Aberta' },
                         { value: 'EM_ANDAMENTO', label: 'Ativo' },
                         { value: 'CONCLUIDA', label: 'Concluída' },
@@ -121,7 +121,7 @@ export function ServiceOrderFilter({
                     placeholder="Período"
                     value={value.period}
                     options={[
-                        { value: '', label: 'Todos' },
+                        { value: 'ALL', label: 'Todos' },
                         { value: 'THIS_MONTH', label: 'Este mês' },
                         { value: 'OVERDUE', label: 'Atrasadas' },
                     ]}
@@ -140,7 +140,7 @@ export function ServiceOrderFilter({
                     placeholder="Prioridade"
                     value={value.priority}
                     options={[
-                        { value: '', label: 'Todas' },
+                        { value: 'ALL', label: 'Todas' },
                         { value: 'BAIXA', label: 'Baixa' },
                         { value: 'MEDIA', label: 'Média' },
                         { value: 'ALTA', label: 'Alta' },

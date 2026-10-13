@@ -1,5 +1,7 @@
 import { SelectInput } from '../../../../components/inputs/select-input'
-import type { AlertsFiltersViewModel } from '../../data-access/vm/Alerts.vm'
+import type {
+  AlertsFiltersViewModel,
+} from '../../data-access/vm/Alerts.vm'
 
 interface Props {
   value: AlertsFiltersViewModel
@@ -7,14 +9,18 @@ interface Props {
   onApply: () => void
 }
 
-export function AlertsFilters({ value, onChange, onApply }: Props) {
+export function AlertsFilters({
+  value,
+  onChange,
+  onApply,
+}: Props) {
   return (
     <div className="alerts-filters">
       <SelectInput
         placeholder="Severidade"
         value={value.severity}
         options={[
-          { value: '', label: 'Todas' },
+          { value: 'ALL', label: 'Todas' },
           { value: 'BAIXA', label: 'Baixa' },
           { value: 'MEDIA', label: 'Média' },
           { value: 'ALTA', label: 'Alta' },
@@ -23,7 +29,8 @@ export function AlertsFilters({ value, onChange, onApply }: Props) {
         onChange={(severity) =>
           onChange({
             ...value,
-            severity: severity as AlertsFiltersViewModel['severity'],
+            severity:
+              severity as AlertsFiltersViewModel['severity'],
           })
         }
       />
@@ -32,9 +39,15 @@ export function AlertsFilters({ value, onChange, onApply }: Props) {
         placeholder="Tipo/Origem"
         value={value.type}
         options={[
-          { value: '', label: 'Todos' },
-          { value: 'EFICIENCIA_BAIXA', label: 'Eficiência baixa' },
-          { value: 'FALHA_INVERSOR', label: 'Falha no inversor' },
+          { value: 'ALL', label: 'Todos' },
+          {
+            value: 'EFICIENCIA_BAIXA',
+            label: 'Eficiência baixa',
+          },
+          {
+            value: 'FALHA_INVERSOR',
+            label: 'Falha no inversor',
+          },
           { value: 'DANO_FISICO', label: 'Dano físico' },
           { value: 'SUJIDADE', label: 'Sujidade' },
           { value: 'PONTO_QUENTE', label: 'Ponto quente' },
@@ -52,7 +65,7 @@ export function AlertsFilters({ value, onChange, onApply }: Props) {
         placeholder="Status"
         value={value.status}
         options={[
-          { value: '', label: 'Todos' },
+          { value: 'ALL', label: 'Todos' },
           { value: 'ATIVO', label: 'Ativo' },
           { value: 'RECONHECIDO', label: 'Reconhecido' },
           { value: 'RESOLVIDO', label: 'Resolvido' },
@@ -60,7 +73,8 @@ export function AlertsFilters({ value, onChange, onApply }: Props) {
         onChange={(status) =>
           onChange({
             ...value,
-            status: status as AlertsFiltersViewModel['status'],
+            status:
+              status as AlertsFiltersViewModel['status'],
           })
         }
       />

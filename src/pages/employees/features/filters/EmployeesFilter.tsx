@@ -23,7 +23,7 @@ export function EmployeesFilter({ value, roles, emailOptions, onChange, onApply 
         onChange={(role) => onChange({ ...value, role })} />
       {/* Com seta: dropdown. */}
       <SelectInput placeholder="Ativo" value={value.isActive}
-        options={[{ value: '', label: 'Todos' },{ value: 'true', label: 'Ativo' },{ value: 'false', label: 'Inativo' },]}  
+        options={[{ value: 'ALL', label: 'Todos' },{ value: 'true', label: 'Ativo' },{ value: 'false', label: 'Inativo' },]}  
         onChange={(isActive) =>
                     onChange({...value, isActive: isActive as EmployeeFiltersVM['isActive'],})}
 />

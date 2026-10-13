@@ -36,18 +36,33 @@ function createServiceOrderQuery({
   }
 
   if (filters.technicianId) {
-    query.set('technicianId', filters.technicianId)
+    query.set(
+      'technicianId',
+      filters.technicianId,
+    )
   }
 
-  if (filters.maintenanceTypeId) {
-    query.set('maintenanceTypeId', filters.maintenanceTypeId)
+  if (
+    filters.maintenanceTypeId &&
+    filters.maintenanceTypeId !== 'ALL'
+  ) {
+    query.set(
+      'maintenanceTypeId',
+      filters.maintenanceTypeId,
+    )
   }
 
-  if (filters.status) {
+  if (
+    filters.status &&
+    filters.status !== 'ALL'
+  ) {
     query.set('status', filters.status)
   }
 
-  if (filters.priority) {
+  if (
+    filters.priority &&
+    filters.priority !== 'ALL'
+  ) {
     query.set('priority', filters.priority)
   }
 
@@ -66,20 +81,24 @@ export async function getServiceOrders({
   filters,
   page,
   size,
-}: GetServiceOrdersParams): Promise<PageDto<ServiceOrderListItemDto>> {
+}: GetServiceOrdersParams): Promise<
+  PageDto<ServiceOrderListItemDto>
+> {
   const query = createServiceOrderQuery({
     filters,
     page,
     size,
   })
 
-  const ordersPage = await request<PageDto<ServiceOrderDto>>(
-    `/maintenance-registers?${query}`,
-  )
+  const ordersPage = await request<
+    PageDto<ServiceOrderDto>
+  >(`/maintenance-registers?${query}`)
 
   const content = await Promise.all(
     ordersPage.content.map(async (order) => {
-      const warning = await getServiceOrderWarning(order.warningId)
+      const warning = await getServiceOrderWarning(
+        order.warningId,
+      )
 
       return {
         order,
@@ -113,7 +132,9 @@ export function getServiceOrder(id: number) {
   )
 }
 
-export function getServiceOrderWarning(warningId: number) {
+export function getServiceOrderWarning(
+  warningId: number,
+) {
   return request<WarningDto>(
     `/warnings/${warningId}`,
   )

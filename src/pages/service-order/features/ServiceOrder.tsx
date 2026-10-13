@@ -1,5 +1,14 @@
-import { useCallback, useEffect, useState } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react'
 import { Link } from 'react-router-dom'
+import {
+  AppliedFilters,
+  type AppliedFilter,
+} from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
 import type {
   EmployeeSummaryDto,
@@ -23,7 +32,9 @@ import { ServiceOrderFilter } from './filters/ServiceOrderFilter'
 function formatDate(value: string | null) {
   if (!value) return '—'
 
-  return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
+  return new Intl.DateTimeFormat('pt-BR').format(
+    new Date(value),
+  )
 }
 
 function getEquipment(item: ServiceOrderListItemDto) {
@@ -58,7 +69,9 @@ function getVisualStatus(item: ServiceOrderListItemDto) {
 export function ServiceOrderFeature() {
   const [items, setItems] = useState<ServiceOrderListItemDto[]>([])
   const [orderIds, setOrderIds] = useState<number[]>([])
-  const [technicians, setTechnicians] = useState<EmployeeSummaryDto[]>([])
+  const [technicians, setTechnicians] = useState<
+    EmployeeSummaryDto[]
+  >([])
   const [maintenanceTypes, setMaintenanceTypes] = useState<
     MaintenanceTypeDto[]
   >([])
@@ -66,10 +79,10 @@ export function ServiceOrderFeature() {
   const [draft, setDraft] = useState<ServiceOrderFiltersViewModel>(
     INITIAL_SERVICE_ORDER_FILTERS,
   )
-
-  const [filters, setFilters] = useState<ServiceOrderFiltersViewModel>(
-    INITIAL_SERVICE_ORDER_FILTERS,
-  )
+  const [filters, setFilters] =
+    useState<ServiceOrderFiltersViewModel>(
+      INITIAL_SERVICE_ORDER_FILTERS,
+    )
 
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
@@ -83,13 +96,15 @@ export function ServiceOrderFeature() {
       getMaintenanceTypes(),
       getServiceOrderIds(),
     ])
-      .then(([techniciansResult, typesResult, ordersResult]) => {
-        setTechnicians(techniciansResult.content)
-        setMaintenanceTypes(typesResult)
-        setOrderIds(
-          ordersResult.content.map((order) => order.id),
-        )
-      })
+      .then(
+        ([techniciansResult, typesResult, ordersResult]) => {
+          setTechnicians(techniciansResult.content)
+          setMaintenanceTypes(typesResult)
+          setOrderIds(
+            ordersResult.content.map((order) => order.id),
+          )
+        },
+      )
       .catch(() => {
         setTechnicians([])
         setMaintenanceTypes([])
@@ -126,6 +141,152 @@ export function ServiceOrderFeature() {
     void loadOrders()
   }, [loadOrders])
 
+  const appliedFilters = useMemo<AppliedFilter[]>(() => {
+    const result: AppliedFilter[] = []
+
+    if (filters.id) {
+      result.push({
+        key: 'id',
+        label: 'ID',
+        value:
+          filters.idLabel ||
+          `OS${filters.id.padStart(5, '0')}`,
+      })
+    }
+
+    if (filters.technicianId) {
+      result.push({
+        key: 'technician',
+        label: 'Técnico',
+        value: filters.technicianName,
+      })
+    }
+
+    if (filters.maintenanceTypeId && filters.maintenanceTypeId !== 'ALL') {
+      const maintenanceType = maintenanceTypes.find(
+        (item) =>
+          String(item.id) === filters.maintenanceTypeId,
+      )
+
+      result.push({
+        key: 'maintenanceType',
+        label: 'Tipo',
+        value:
+          maintenanceType?.name ??
+          filters.maintenanceTypeId,
+      })
+    }
+
+    if (filters.status && filters.status !== 'ALL') {
+      result.push({
+        key: 'status',
+        label: 'Status',
+        value: serviceOrderStatusLabels[filters.status],
+      })
+    }
+
+    if (filters.period && filters.period !== 'ALL') {
+      result.push({
+        key: 'period',
+        label: 'Período',
+        value:
+          filters.period === 'THIS_MONTH'
+            ? 'Este mês'
+            : 'Atrasadas',
+      })
+    }
+
+    if (filters.priority && filters.priority !== 'ALL') {
+      result.push({
+        key: 'priority',
+        label: 'Prioridade',
+        value: priorityLabels[filters.priority],
+      })
+    }
+
+    return result
+  }, [filters, maintenanceTypes])
+
+  function removeAppliedFilter(key: string) {
+    setPage(0)
+
+    if (key === 'id') {
+      setDraft((current) => ({
+        ...current,
+        id: '',
+        idLabel: '',
+      }))
+      setFilters((current) => ({
+        ...current,
+        id: '',
+        idLabel: '',
+      }))
+    }
+
+    if (key === 'technician') {
+      setDraft((current) => ({
+        ...current,
+        technicianId: '',
+        technicianName: '',
+      }))
+      setFilters((current) => ({
+        ...current,
+        technicianId: '',
+        technicianName: '',
+      }))
+    }
+
+    if (key === 'maintenanceType') {
+      setDraft((current) => ({
+        ...current,
+        maintenanceTypeId: '',
+      }))
+      setFilters((current) => ({
+        ...current,
+        maintenanceTypeId: '',
+      }))
+    }
+
+    if (key === 'status') {
+      setDraft((current) => ({
+        ...current,
+        status: '',
+      }))
+      setFilters((current) => ({
+        ...current,
+        status: '',
+      }))
+    }
+
+    if (key === 'period') {
+      setDraft((current) => ({
+        ...current,
+        period: '',
+      }))
+      setFilters((current) => ({
+        ...current,
+        period: '',
+      }))
+    }
+
+    if (key === 'priority') {
+      setDraft((current) => ({
+        ...current,
+        priority: '',
+      }))
+      setFilters((current) => ({
+        ...current,
+        priority: '',
+      }))
+    }
+  }
+
+  function clearAppliedFilters() {
+    setPage(0)
+    setDraft(INITIAL_SERVICE_ORDER_FILTERS)
+    setFilters(INITIAL_SERVICE_ORDER_FILTERS)
+  }
+
   return (
     <main className="service-orders-page">
       <nav
@@ -152,6 +313,12 @@ export function ServiceOrderFeature() {
           setPage(0)
           setFilters(draft)
         }}
+      />
+
+      <AppliedFilters
+        filters={appliedFilters}
+        onRemove={removeAppliedFilter}
+        onClear={clearAppliedFilters}
       />
 
       {error && (
