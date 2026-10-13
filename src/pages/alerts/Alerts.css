@@ -1,0 +1,311 @@
+.alerts-page,
+.alerts-details,
+.service-order-page {
+  width: 100%;
+  max-width: 75rem;
+}
+
+.alerts-breadcrumb {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: var(--text-body-3);
+}
+
+.alerts-breadcrumb a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.alerts-page h1,
+.alerts-details h1,
+.service-order-page h1 {
+  font-size: var(--text-h2);
+}
+
+.alerts-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(12rem, 13.5rem)) auto;
+  gap: 1.5rem;
+  align-items: end;
+  margin: 1rem 0 2rem;
+}
+
+.alerts-filters > button,
+.service-order-form__submit {
+  width: fit-content;
+  min-width: 8.5rem;
+  min-height: 3.25rem;
+  padding: 0.75rem 2rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--color-secondary);
+  color: var(--color-on-brand);
+  font-weight: var(--font-weight-bold);
+  cursor: pointer;
+}
+
+.alerts-table__header {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1.2fr 0.85fr 0.9fr 0.8fr;
+  gap: 1rem;
+  padding: 0 1rem 0.75rem;
+}
+
+.alerts-table__header--operator {
+  grid-template-columns: 1.1fr 1fr 1.2fr 0.85fr 0.9fr 0.8fr 7rem;
+}
+
+.alerts-table__row {
+  margin-bottom: 0.5rem;
+  border: 1px solid var(--color-disabled);
+  border-radius: 1rem;
+}
+
+.alerts-table__row--operator {
+  display: grid;
+  grid-template-columns: 1fr 7rem;
+  align-items: center;
+}
+
+.alerts-table__details {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1.2fr 0.85fr 0.9fr 0.8fr;
+  gap: 1rem;
+  align-items: center;
+  min-height: 4.75rem;
+  padding: 1rem;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.alerts-table__details:hover {
+  background: color-mix(
+    in srgb,
+    var(--color-secondary-light) 10%,
+    transparent
+  );
+}
+
+.alerts-table__action {
+  padding-right: 0.75rem;
+}
+
+.alerts-open-order,
+.alerts-details__open-order {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.5rem;
+  border: 2px solid var(--color-secondary);
+  border-radius: 999px;
+  color: var(--color-secondary);
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
+}
+
+.alerts-severity {
+  display: inline-flex;
+  justify-content: center;
+  width: 5.875rem;
+  padding: 0.375rem;
+  border-radius: 0.5rem;
+  font-weight: var(--font-weight-bold);
+}
+
+.alerts-severity--baixa {
+  background: color-mix(in srgb, var(--color-info-light) 25%, transparent);
+  color: var(--color-info-dark);
+}
+
+.alerts-severity--media {
+  background: color-mix(in srgb, var(--color-alert-light) 25%, transparent);
+  color: var(--color-alert);
+}
+
+.alerts-severity--alta {
+  background: color-mix(in srgb, var(--color-alert) 20%, transparent);
+  color: var(--color-alert-dark);
+}
+
+.alerts-severity--critica {
+  background: color-mix(in srgb, var(--color-error-light) 25%, transparent);
+  color: var(--color-error);
+}
+
+.alerts-status--resolved {
+  color: var(--color-success-dark);
+}
+
+.alerts-table__state {
+  padding: 2rem;
+  text-align: center;
+}
+
+.alerts-error {
+  margin: 1rem 0;
+  color: var(--color-error);
+}
+
+.alerts-details__heading {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.alerts-details__description {
+  margin-top: 1rem;
+}
+
+.alerts-details__description h2 {
+  font-size: var(--text-label-1);
+}
+
+.alerts-details__description p {
+  margin-top: 0.5rem;
+}
+
+.alerts-details__open-order {
+  min-width: 12rem;
+  min-height: 3.25rem;
+  background: var(--color-secondary);
+  color: var(--color-on-brand);
+}
+
+.alerts-details__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(8rem, auto));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.alerts-details__grid div:last-child {
+  grid-column: 1;
+}
+
+.alerts-details__grid dt {
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+}
+
+.alerts-details__grid dd {
+  margin: 0.375rem 0 0;
+}
+
+.service-order-page > p {
+  margin-top: 0.5rem;
+}
+
+.service-order-form {
+  display: grid;
+  gap: 1.25rem;
+  width: min(100%, 32rem);
+  margin-top: 1.5rem;
+  padding-right: 4rem;
+  border-right: 1px solid var(--color-disabled);
+}
+
+.service-order-form > label {
+  display: grid;
+  gap: 0.5rem;
+  font-family: var(--font-heading);
+  font-weight: var(--font-weight-bold);
+}
+
+.service-order-form input,
+.service-order-form textarea {
+  width: 100%;
+  padding: 0 1rem;
+  border: 1px solid var(--color-disabled);
+  border-radius: 1.5rem;
+  background: var(--color-background);
+  font: inherit;
+}
+
+.service-order-form input {
+  min-height: 3.25rem;
+}
+
+.service-order-form textarea {
+  min-height: 5rem;
+  padding-block: 1rem;
+  resize: vertical;
+}
+
+.service-order-form .prefilled {
+  border-color: var(--color-disabled);
+  background: color-mix(
+    in srgb,
+    var(--color-secondary-light) 20%,
+    transparent
+  );
+  font-weight: var(--font-weight-bold);
+}
+
+.service-order-form__submit {
+  width: 100%;
+}
+
+.service-order-form__submit:disabled {
+  background: var(--color-disabled-soft);
+  color: var(--color-disabled-text);
+  cursor: default;
+}
+
+@media (max-width: 1000px) {
+  .alerts-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .alerts-table {
+    overflow-x: auto;
+  }
+
+  .alerts-table__header,
+  .alerts-table__header--operator,
+  .alerts-table__row {
+    min-width: 62rem;
+  }
+
+  .alerts-details__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .alerts-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .alerts-details__heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .alerts-details__open-order {
+    align-self: flex-start;
+  }
+
+  .alerts-details__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .service-order-form {
+    padding-right: 0;
+    border-right: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .alerts-details__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .alerts-details__grid div:last-child {
+    grid-column: auto;
+  }
+}

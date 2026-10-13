@@ -1,4 +1,6 @@
-export type ActiveFilterVM = '' | 'true' | 'false'
+import type { AllFilterValue } from '../../../../types/filter.types'
+
+export type ActiveFilterVM = AllFilterValue | 'true' | 'false'
 
 export interface EmployeeFiltersVM {
   email: string

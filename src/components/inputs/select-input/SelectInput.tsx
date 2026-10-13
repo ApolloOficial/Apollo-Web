@@ -28,7 +28,7 @@ export function SelectInput({
   const containerRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
 
-  const selectedOption = options.find((option) => option.value === value)
+  const selectedOption = value ? options.find((option) => option.value === value) : undefined
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {

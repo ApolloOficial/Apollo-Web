@@ -3,6 +3,11 @@ import { AuthLayout } from '../components/auth-layout'
 import { Layout } from '../components/layout'
 import EmployeeForm from '../pages/employees/employee-form'
 import Employees from '../pages/employees'
+import Alerts from '../pages/alerts'
+import AlertDetails from '../pages/alerts/alert-details'
+import ServiceOrder from '../pages/service-order'
+import ServiceOrderDetails from '../pages/service-order/service-order-details'
+import ServiceOrderForm from '../pages/service-order/service-order-form'
 import FirstAccess from '../pages/first-access'
 import ForgotPassword from '../pages/forgot-password'
 import Home from '../pages/home'
@@ -40,6 +45,13 @@ export function AppRoutes() {
         <Route path={paths.relocationCreate} element={<RelocationsForm />} />
         <Route path={paths.relocationDetails} element={<RelocationDetails />} />
         <Route path={paths.relocationManagerDetails} element={<RelocationDetails managerMode />} />
+        <Route path={paths.alerts} element={<Alerts audience="operator" />} />
+        <Route path={paths.alertsManager} element={<Alerts audience="manager" />} />
+        <Route path={paths.alertDetails} element={<AlertDetails audience="operator" />} />
+        <Route path={paths.alertManagerDetails} element={<AlertDetails audience="manager" />} />
+        <Route path={paths.alertServiceOrder} element={<ServiceOrderForm />} />
+        <Route path={paths.serviceOrders} element={<ServiceOrder />} />
+        <Route path={paths.serviceOrderDetails} element={<ServiceOrderDetails />} />
       </Route>
     </Routes>
   )

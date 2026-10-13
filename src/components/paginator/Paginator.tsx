@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react'
+import { SelectInput } from '../inputs/select-input'
 import './Paginator.css'
 
 interface PaginatorProps {
@@ -21,19 +22,26 @@ export function Paginator({
 
   return (
     <nav className="paginator" aria-label="Paginação">
-      <label className="paginator__size">
-        Mostrar:
-        <select
-          value={size}
-          onChange={(event) => onSizeChange(Number(event.target.value))}
-        >
-          <option value={10}>10</option>
-          <option value={20}>20</option>
-          <option value={50}>50</option>
-        </select>
-      </label>
+      <div className="paginator__size">
+        <span>Mostrar:</span>
 
-      <span>Página {totalPages > 0 ? page + 1 : 0} de {totalPages}</span>
+        <div className="paginator__size-select">
+          <SelectInput
+            placeholder="10"
+            value={String(size)}
+            options={[
+              { value: '10', label: '10' },
+              { value: '20', label: '20' },
+              { value: '50', label: '50' },
+            ]}
+            onChange={(value) => onSizeChange(Number(value))}
+          />
+        </div>
+      </div>
+
+      <span className="paginator__page">
+        Página {totalPages > 0 ? page + 1 : 0} de {totalPages}
+      </span>
 
       <button
         className="paginator__button paginator__button--previous"
@@ -42,7 +50,10 @@ export function Paginator({
         disabled={!hasPreviousPage}
         onClick={() => onPageChange(page - 1)}
       >
-        <Icon icon="lucide:circle-chevron-right" aria-hidden="true" />
+        <Icon
+          icon="lucide:circle-chevron-right"
+          aria-hidden="true"
+        />
       </button>
 
       <button
@@ -52,7 +63,10 @@ export function Paginator({
         disabled={!hasNextPage}
         onClick={() => onPageChange(page + 1)}
       >
-        <Icon icon="lucide:circle-chevron-right" aria-hidden="true" />
+        <Icon
+          icon="lucide:circle-chevron-right"
+          aria-hidden="true"
+        />
       </button>
     </nav>
   )
