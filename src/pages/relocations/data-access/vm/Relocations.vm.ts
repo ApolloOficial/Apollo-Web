@@ -1,10 +1,5 @@
-import type {
-  AllFilterValue,
-} from '../../../../types/filter.types'
-import type {
-  RelocationStatus,
-  RelocationType,
-} from '../dto/Relocations.dto'
+import type { AllFilterValue } from '../../../../types/filter.types'
+import type { RelocationStatus, RelocationType } from '../dto/Relocations.dto'
 
 export interface RelocationFiltersVM {
   status: RelocationStatus | AllFilterValue

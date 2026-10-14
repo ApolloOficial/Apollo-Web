@@ -1,19 +1,11 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   AppliedFilters,
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
-import type {
-  EmployeeDTO,
-  RoleDTO,
-} from '../data-access/dto/Employees.dto'
+import type { EmployeeDTO, RoleDTO } from '../data-access/dto/Employees.dto'
 import {
   getEmployees,
   getRoles,
@@ -64,18 +56,18 @@ export function EmployeesFeature() {
     }
   }, [filters, page, size])
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
-    void loadEmployees()
+    void (async () => {
+      await Promise.resolve()
+      await loadEmployees()
+    })()
   }, [loadEmployees])
 
   useEffect(() => {
     void getRoles()
       .then(({ content }) => {
         setRoles(
-          content.filter(
-            (role) => role.name.toUpperCase() !== 'GERENTE',
-          ),
+          content.filter((role) => role.name.toUpperCase() !== 'GERENTE'),
         )
       })
       .catch(() => setRoles([]))
@@ -100,8 +92,7 @@ export function EmployeesFeature() {
     if (filters.role) {
       const role = roles.find(
         (item) =>
-          item.name === filters.role ||
-          String(item.id) === filters.role,
+          item.name === filters.role || String(item.id) === filters.role,
       )
 
       result.push({
@@ -115,10 +106,7 @@ export function EmployeesFeature() {
       result.push({
         key: 'isActive',
         label: 'Status',
-        value:
-          filters.isActive === 'true'
-            ? 'Ativo'
-            : 'Inativo',
+        value: filters.isActive === 'true' ? 'Ativo' : 'Inativo',
       })
     }
 
@@ -187,10 +175,7 @@ export function EmployeesFeature() {
           <p>Gerencie os funcionários da sua filial</p>
         </div>
 
-        <Link
-          className="employees-page__new"
-          to="/employees/new"
-        >
+        <Link className="employees-page__new" to="/employees/new">
           Cadastrar funcionário
         </Link>
       </header>
@@ -229,10 +214,7 @@ export function EmployeesFeature() {
 
         {!loading &&
           employees.map((employee) => (
-            <article
-              className="employees-table__row"
-              key={employee.id}
-            >
+            <article className="employees-table__row" key={employee.id}>
               <span>{employee.fullName}</span>
               <span>{employee.email}</span>
               <span>{employee.role}</span>
@@ -248,11 +230,7 @@ export function EmployeesFeature() {
             </article>
           ))}
 
-        {loading && (
-          <p className="employees-table__state">
-            Carregando...
-          </p>
-        )}
+        {loading && <p className="employees-table__state">Carregando...</p>}
 
         {!loading && employees.length === 0 && (
           <p className="employees-table__state">

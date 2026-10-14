@@ -6,8 +6,13 @@ export default function EmployeeForm() {
   const navigate = useNavigate()
   return (
     <main className="employee-form-page">
-      <nav className="employees-page__breadcrumb"><Link to="/">Início</Link><span>›</span>
-        <Link to="/employees">Funcionários</Link><span>›</span><strong>Cadastrar funcionário</strong></nav>
+      <nav className="employees-page__breadcrumb">
+        <Link to="/">Início</Link>
+        <span>›</span>
+        <Link to="/employees">Funcionários</Link>
+        <span>›</span>
+        <strong>Cadastrar funcionário</strong>
+      </nav>
       <h1>Cadastre novo funcionário</h1>
       <p>Preencha todos os dados atentamente.</p>
       <EmployeesForm onSuccess={() => navigate('/employees')} />

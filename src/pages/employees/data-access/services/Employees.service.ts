@@ -6,9 +6,7 @@ import type {
   PageDTO,
   RoleDTO,
 } from '../dto/Employees.dto'
-import type {
-  EmployeeFiltersVM,
-} from '../vm/Employees.vm'
+import type { EmployeeFiltersVM } from '../vm/Employees.vm'
 
 export function getEmployees(
   filters: EmployeeFiltersVM,
@@ -30,31 +28,22 @@ export function getEmployees(
     query.set('role', filters.role.trim())
   }
 
-  if (
-    filters.isActive &&
-    filters.isActive !== 'ALL'
-  ) {
+  if (filters.isActive && filters.isActive !== 'ALL') {
     query.set('isActive', filters.isActive)
   }
 
-  return request<PageDTO<EmployeeDTO>>(
-    `/employees?${query}`,
-  )
+  return request<PageDTO<EmployeeDTO>>(`/employees?${query}`)
 }
 
 export function getRoles() {
-  return request<PageDTO<RoleDTO>>(
-    '/roles?page=0&size=100',
-  )
+  return request<PageDTO<RoleDTO>>('/roles?page=0&size=100')
 }
 
 export function getMe() {
   return request<MeDTO>('/auth/me')
 }
 
-export function postEmployee(
-  payload: CreateEmployeeDTO,
-) {
+export function postEmployee(payload: CreateEmployeeDTO) {
   return request<EmployeeDTO>('/employees', {
     method: 'POST',
     body: payload,
@@ -62,10 +51,7 @@ export function postEmployee(
 }
 
 export function patchDeactivateEmployee(id: string) {
-  return request<EmployeeDTO>(
-    `/employees/${id}/deactivate`,
-    {
-      method: 'PATCH',
-    },
-  )
+  return request<EmployeeDTO>(`/employees/${id}/deactivate`, {
+    method: 'PATCH',
+  })
 }

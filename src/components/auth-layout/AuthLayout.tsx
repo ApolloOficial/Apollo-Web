@@ -13,7 +13,9 @@ export function AuthLayout() {
           height={70}
         />
         <div className="auth-layout__tagline">
-          <p className="auth-layout__headline">Energia para seguir em frente.</p>
+          <p className="auth-layout__headline">
+            Energia para seguir em frente.
+          </p>
           <p className="auth-layout__description">
             Gestão inteligente de ativos solares, do planejamento à operação.
           </p>

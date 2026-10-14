@@ -1,5 +1,9 @@
 import { Link } from 'react-router-dom'
-import type { ButtonLinkProps, ButtonProps, ButtonVariant } from '../../types/ui.types'
+import type {
+  ButtonLinkProps,
+  ButtonProps,
+  ButtonVariant,
+} from '../../types/ui.types'
 import './Button.css'
 
 function buildClassName(variant: ButtonVariant, fullWidth: boolean) {

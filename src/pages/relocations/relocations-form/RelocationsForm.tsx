@@ -13,19 +13,53 @@ export default function RelocationsForm() {
   const [error, setError] = useState('')
   const handleError = useCallback((message: string) => setError(message), [])
 
-  return <section className="relocation-form-page">
-    <nav className="relocations-breadcrumb"><Link to={paths.home}>Início</Link><span>›</span>
-      <Link to={paths.relocations}>Realocações</Link><span>›</span><strong>Solicitar realocação</strong></nav>
-    <h1>Solicitar realocação</h1>
-    <p>Preencha todos os dados da realocação. Após a conclusão,<br />o gerente será notificado para validação.</p>
-    <FormFeature onSuccess={() => setSuccessOpen(true)} onError={handleError} />
-    {successOpen && <FeedbackModal image={successImage} title={'Solicitação registrada\ncom sucesso!'}
-      description="Confira ela no catálogo agora."
-      secondaryAction={{ label: 'Fechar', onClick: () => setSuccessOpen(false) }}
-      primaryAction={{ label: 'Conferir', onClick: () => navigate(paths.relocations) }}
-      onClose={() => setSuccessOpen(false)} />}
-    {error && <FeedbackModal alert image={errorImage} title={'Não foi possível registrar\na solicitação.'}
-      description="Aguarde alguns minutos e tente novamente."
-      primaryAction={{ label: 'Tentar novamente', onClick: () => setError('') }} onClose={() => setError('')} />}
-  </section>
+  return (
+    <section className="relocation-form-page">
+      <nav className="relocations-breadcrumb">
+        <Link to={paths.home}>Início</Link>
+        <span>›</span>
+        <Link to={paths.relocations}>Realocações</Link>
+        <span>›</span>
+        <strong>Solicitar realocação</strong>
+      </nav>
+      <h1>Solicitar realocação</h1>
+      <p>
+        Preencha todos os dados da realocação. Após a conclusão,
+        <br />o gerente será notificado para validação.
+      </p>
+      <FormFeature
+        onSuccess={() => setSuccessOpen(true)}
+        onError={handleError}
+      />
+      {successOpen && (
+        <FeedbackModal
+          image={successImage}
+          title={'Solicitação registrada\ncom sucesso!'}
+          description="Confira ela no catálogo agora."
+          secondaryAction={{
+            label: 'Fechar',
+            onClick: () => setSuccessOpen(false),
+          }}
+          primaryAction={{
+            label: 'Conferir',
+            onClick: () => navigate(paths.relocations),
+          }}
+          onClose={() => setSuccessOpen(false)}
+        />
+      )}
+      {error && (
+        <FeedbackModal
+          alert
+          image={errorImage}
+          title={'Não foi possível registrar\na solicitação.'}
+          description="Aguarde alguns minutos e tente novamente."
+          primaryAction={{
+            label: 'Tentar novamente',
+            onClick: () => setError(''),
+          }}
+          onClose={() => setError('')}
+        />
+      )}
+    </section>
+  )
 }

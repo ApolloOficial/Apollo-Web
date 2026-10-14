@@ -2,9 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import reportPendingImage from '../../../../assets/images/service-order-report-pending.png'
 import type { WarningDto } from '../../../alerts/data-access/dto/Alerts.dto'
-import type {
-  ServiceOrderDto,
-} from '../../data-access/dto/ServiceOrder.dto'
+import type { ServiceOrderDto } from '../../data-access/dto/ServiceOrder.dto'
 import {
   getServiceOrder,
   getServiceOrderWarning,
@@ -38,10 +36,7 @@ function formatDate(value: string | null, includeTime = false) {
 
 function getEquipment(warning: WarningDto) {
   return (
-    warning.panelSerial ??
-    warning.stringCode ??
-    warning.inverterCode ??
-    '—'
+    warning.panelSerial ?? warning.stringCode ?? warning.inverterCode ?? '—'
   )
 }
 
@@ -77,9 +72,7 @@ export function ServiceOrderDetailsFeature() {
 
     try {
       const orderResult = await getServiceOrder(Number(id))
-      const warningResult = await getServiceOrderWarning(
-        orderResult.warningId,
-      )
+      const warningResult = await getServiceOrderWarning(orderResult.warningId)
 
       setOrder(orderResult)
       setWarning(warningResult)
@@ -109,10 +102,7 @@ export function ServiceOrderDetailsFeature() {
       },
     ]
 
-    if (
-      order.maintenanceStatus === 'ABERTA' &&
-      !order.cancelledAt
-    ) {
+    if (order.maintenanceStatus === 'ABERTA' && !order.cancelledAt) {
       items.push({
         title: 'Aguardando execução',
         description: 'Aguardando o técnico iniciar o serviço.',
@@ -134,8 +124,7 @@ export function ServiceOrderDetailsFeature() {
     if (order.maintenanceStatus === 'CONCLUIDA') {
       items.push({
         title: 'OS concluída',
-        description:
-          'Laudo técnico e custos registrados pelo técnico.',
+        description: 'Laudo técnico e custos registrados pelo técnico.',
         date: formatDate(order.concludedAt, true),
         tone: 'success',
       })
@@ -144,8 +133,7 @@ export function ServiceOrderDetailsFeature() {
     if (order.maintenanceStatus === 'CANCELADA') {
       items.push({
         title: 'OS cancelada',
-        description:
-          order.cancellationReason ?? 'Ordem de serviço cancelada.',
+        description: order.cancellationReason ?? 'Ordem de serviço cancelada.',
         date: formatDate(order.cancelledAt, true),
         tone: 'cancelled',
       })
@@ -268,16 +256,13 @@ export function ServiceOrderDetailsFeature() {
             </div>
           ) : (
             <div className="service-order-report__pending">
-              <img
-                src={reportPendingImage}
-                alt=""
-              />
+              <img src={reportPendingImage} alt="" />
 
               <h3>Laudo não disponível ainda</h3>
 
               <p>
-                Ele ficará disponível aqui assim que o técnico concluir
-                o serviço e submetê-lo pelo app.
+                Ele ficará disponível aqui assim que o técnico concluir o
+                serviço e submetê-lo pelo app.
               </p>
             </div>
           )}

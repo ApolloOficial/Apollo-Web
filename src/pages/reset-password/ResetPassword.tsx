@@ -27,7 +27,10 @@ export default function ResetPassword() {
   if (isReset) return <PasswordResetSuccess />
 
   return (
-    <AuthPage title="Redefina sua senha" subtitle="Crie uma nova senha para proteger sua conta.">
+    <AuthPage
+      title="Redefina sua senha"
+      subtitle="Crie uma nova senha para proteger sua conta."
+    >
       <form className="reset-password__form" onSubmit={handleSubmit} noValidate>
         <PasswordInput
           id="new-password"
@@ -36,7 +39,9 @@ export default function ResetPassword() {
           autoComplete="new-password"
           icon={null}
           value={form.newPassword}
-          onChange={(newPassword) => setForm((current) => ({ ...current, newPassword }))}
+          onChange={(newPassword) =>
+            setForm((current) => ({ ...current, newPassword }))
+          }
         />
         <PasswordInput
           id="confirm-password"
@@ -45,12 +50,15 @@ export default function ResetPassword() {
           autoComplete="new-password"
           icon={null}
           value={form.confirmPassword}
-          onChange={(confirmPassword) => setForm((current) => ({ ...current, confirmPassword }))}
+          onChange={(confirmPassword) =>
+            setForm((current) => ({ ...current, confirmPassword }))
+          }
         />
         <div className="reset-password__hint" aria-live="polite">
           {form.newPassword !== '' && (
             <StatusMessage tone="alert">
-              A senha deve ter no mínimo 8 caracteres, letras maiúsculas, minúsculas e números.
+              A senha deve ter no mínimo 8 caracteres, letras maiúsculas,
+              minúsculas e números.
             </StatusMessage>
           )}
         </div>

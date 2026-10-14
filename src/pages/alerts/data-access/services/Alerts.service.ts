@@ -7,9 +7,7 @@ import type {
   ServiceOrderCreateDto,
   WarningDto,
 } from '../dto/Alerts.dto'
-import type {
-  AlertsFiltersViewModel,
-} from '../vm/Alerts.vm'
+import type { AlertsFiltersViewModel } from '../vm/Alerts.vm'
 
 interface GetWarningsParams {
   filters: AlertsFiltersViewModel
@@ -17,11 +15,7 @@ interface GetWarningsParams {
   size: number
 }
 
-function createWarningsQuery({
-  filters,
-  page,
-  size,
-}: GetWarningsParams) {
+function createWarningsQuery({ filters, page, size }: GetWarningsParams) {
   const query = new URLSearchParams({
     page: String(page),
     size: String(size),
@@ -29,44 +23,29 @@ function createWarningsQuery({
     direction: 'DESC',
   })
 
-  if (
-    filters.severity &&
-    filters.severity !== 'ALL'
-  ) {
+  if (filters.severity && filters.severity !== 'ALL') {
     query.set('severity', filters.severity)
   }
 
-  if (
-    filters.type &&
-    filters.type !== 'ALL'
-  ) {
+  if (filters.type && filters.type !== 'ALL') {
     query.set('type', filters.type)
   }
 
-  if (
-    filters.status &&
-    filters.status !== 'ALL'
-  ) {
+  if (filters.status && filters.status !== 'ALL') {
     query.set('status', filters.status)
   }
 
   return query
 }
 
-export function getWarnings(
-  params: GetWarningsParams,
-) {
+export function getWarnings(params: GetWarningsParams) {
   const query = createWarningsQuery(params)
 
-  return request<PageDto<WarningDto>>(
-    `/warnings?${query}`,
-  )
+  return request<PageDto<WarningDto>>(`/warnings?${query}`)
 }
 
 export function getWarning(id: number) {
-  return request<WarningDto>(
-    `/warnings/${id}`,
-  )
+  return request<WarningDto>(`/warnings/${id}`)
 }
 
 export function getActiveTechnicians() {
@@ -79,15 +58,11 @@ export function getActiveTechnicians() {
     direction: 'ASC',
   })
 
-  return request<PageDto<EmployeeSummaryDto>>(
-    `/employees?${query}`,
-  )
+  return request<PageDto<EmployeeSummaryDto>>(`/employees?${query}`)
 }
 
 export function getMaintenanceTypes() {
-  return request<MaintenanceTypeDto[]>(
-    '/maintenance-types',
-  )
+  return request<MaintenanceTypeDto[]>('/maintenance-types')
 }
 
 export function postServiceOrder(

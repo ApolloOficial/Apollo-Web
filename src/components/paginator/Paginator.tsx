@@ -50,10 +50,7 @@ export function Paginator({
         disabled={!hasPreviousPage}
         onClick={() => onPageChange(page - 1)}
       >
-        <Icon
-          icon="lucide:circle-chevron-right"
-          aria-hidden="true"
-        />
+        <Icon icon="lucide:circle-chevron-right" aria-hidden="true" />
       </button>
 
       <button
@@ -63,10 +60,7 @@ export function Paginator({
         disabled={!hasNextPage}
         onClick={() => onPageChange(page + 1)}
       >
-        <Icon
-          icon="lucide:circle-chevron-right"
-          aria-hidden="true"
-        />
+        <Icon icon="lucide:circle-chevron-right" aria-hidden="true" />
       </button>
     </nav>
   )

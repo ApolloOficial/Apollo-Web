@@ -58,7 +58,10 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
     if (!menuOpen) return
 
     function handleOutsideClick(event: MouseEvent) {
-      if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
+      if (
+        accountRef.current &&
+        !accountRef.current.contains(event.target as Node)
+      ) {
         setMenuOpen(false)
       }
     }
@@ -90,27 +93,13 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
         </div>
       )}
 
-      <div ref={notificationsRef} className="header__notifications">
-        <button
-          className="header__action"
-          type="button"
-          aria-label="Notificações"
-          aria-haspopup="dialog"
-          aria-expanded={notificationsOpen}
-          onClick={() => setNotificationsOpen((current) => !current)}
-        >
-          <BellIcon className="header__bell" />
-          {hasUnread && <span className="header__bell-dot" aria-hidden="true" />}
-        </button>
-
-        {notificationsOpen && (
-          <NotificationsPanel
-            items={notifications}
-            onItemClick={markAsRead}
-            onClose={() => setNotificationsOpen(false)}
-          />
-        )}
-      </div>
+      <button
+        className="header__action"
+        type="button"
+        aria-label="Notificações"
+      >
+        <BellIcon className="header__bell" />
+      </button>
 
       <div ref={accountRef} className="header__account">
         <button
@@ -129,18 +118,29 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
             <span className="header__user-name">
               {loading ? 'Carregando...' : (user?.fullName ?? 'Usuário')}
             </span>
-            {user && <span className="header__user-company">{user.companyName}</span>}
+            {user && (
+              <span className="header__user-company">{user.companyName}</span>
+            )}
           </span>
 
           <ChevronRightIcon
-            className={menuOpen ? 'header__chevron header__chevron--open' : 'header__chevron'}
+            className={
+              menuOpen
+                ? 'header__chevron header__chevron--open'
+                : 'header__chevron'
+            }
           />
         </button>
 
         {menuOpen && (
           <ul className="header__menu" role="menu">
             <li role="none">
-              <button className="header__menu-item" type="button" role="menuitem" onClick={onLogout}>
+              <button
+                className="header__menu-item"
+                type="button"
+                role="menuitem"
+                onClick={onLogout}
+              >
                 <LogoutIcon className="header__menu-icon" />
                 <span>Sair</span>
               </button>

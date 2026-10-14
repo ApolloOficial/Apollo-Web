@@ -1,7 +1,4 @@
-import {
-  AlertsFeature,
-  type AlertsAudience,
-} from './features/Alerts'
+import { AlertsFeature, type AlertsAudience } from './features/Alerts'
 import './Alerts.css'
 
 interface Props {

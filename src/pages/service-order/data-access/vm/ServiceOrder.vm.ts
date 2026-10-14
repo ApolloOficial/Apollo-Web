@@ -1,10 +1,6 @@
 import type { AllFilterValue } from '../../../../types/filter.types'
-import type {
-  ServiceOrderStatus,
-} from '../dto/ServiceOrder.dto'
-import type {
-  WarningSeverity,
-} from '../../../alerts/data-access/dto/Alerts.dto'
+import type { ServiceOrderStatus } from '../dto/ServiceOrder.dto'
+import type { WarningSeverity } from '../../../alerts/data-access/dto/Alerts.dto'
 
 export type ServiceOrderPeriod = AllFilterValue | 'THIS_MONTH' | 'OVERDUE'
 

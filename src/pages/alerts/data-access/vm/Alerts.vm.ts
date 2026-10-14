@@ -3,9 +3,7 @@ import type {
   WarningStatus,
   WarningType,
 } from '../dto/Alerts.dto'
-import type {
-  AllFilterValue,
-} from '../../../../types/filter.types'
+import type { AllFilterValue } from '../../../../types/filter.types'
 
 export interface AlertsFiltersViewModel {
   severity: WarningSeverity | AllFilterValue

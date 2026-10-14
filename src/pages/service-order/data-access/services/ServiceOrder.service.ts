@@ -1,7 +1,5 @@
 import { request } from '../../../../services/http'
-import type {
-  WarningDto,
-} from '../../../alerts/data-access/dto/Alerts.dto'
+import type { WarningDto } from '../../../alerts/data-access/dto/Alerts.dto'
 import type {
   EmployeeSummaryDto,
   MaintenanceTypeDto,
@@ -9,9 +7,7 @@ import type {
   ServiceOrderDto,
   ServiceOrderListItemDto,
 } from '../dto/ServiceOrder.dto'
-import type {
-  ServiceOrderFiltersViewModel,
-} from '../vm/ServiceOrder.vm'
+import type { ServiceOrderFiltersViewModel } from '../vm/ServiceOrder.vm'
 
 interface GetServiceOrdersParams {
   filters: ServiceOrderFiltersViewModel
@@ -36,33 +32,18 @@ function createServiceOrderQuery({
   }
 
   if (filters.technicianId) {
-    query.set(
-      'technicianId',
-      filters.technicianId,
-    )
+    query.set('technicianId', filters.technicianId)
   }
 
-  if (
-    filters.maintenanceTypeId &&
-    filters.maintenanceTypeId !== 'ALL'
-  ) {
-    query.set(
-      'maintenanceTypeId',
-      filters.maintenanceTypeId,
-    )
+  if (filters.maintenanceTypeId && filters.maintenanceTypeId !== 'ALL') {
+    query.set('maintenanceTypeId', filters.maintenanceTypeId)
   }
 
-  if (
-    filters.status &&
-    filters.status !== 'ALL'
-  ) {
+  if (filters.status && filters.status !== 'ALL') {
     query.set('status', filters.status)
   }
 
-  if (
-    filters.priority &&
-    filters.priority !== 'ALL'
-  ) {
+  if (filters.priority && filters.priority !== 'ALL') {
     query.set('priority', filters.priority)
   }
 
@@ -81,24 +62,20 @@ export async function getServiceOrders({
   filters,
   page,
   size,
-}: GetServiceOrdersParams): Promise<
-  PageDto<ServiceOrderListItemDto>
-> {
+}: GetServiceOrdersParams): Promise<PageDto<ServiceOrderListItemDto>> {
   const query = createServiceOrderQuery({
     filters,
     page,
     size,
   })
 
-  const ordersPage = await request<
-    PageDto<ServiceOrderDto>
-  >(`/maintenance-registers?${query}`)
+  const ordersPage = await request<PageDto<ServiceOrderDto>>(
+    `/maintenance-registers?${query}`,
+  )
 
   const content = await Promise.all(
     ordersPage.content.map(async (order) => {
-      const warning = await getServiceOrderWarning(
-        order.warningId,
-      )
+      const warning = await getServiceOrderWarning(order.warningId)
 
       return {
         order,
@@ -121,29 +98,19 @@ export function getServiceOrderIds() {
     direction: 'DESC',
   })
 
-  return request<PageDto<ServiceOrderDto>>(
-    `/maintenance-registers?${query}`,
-  )
+  return request<PageDto<ServiceOrderDto>>(`/maintenance-registers?${query}`)
 }
 
 export function getServiceOrder(id: number) {
-  return request<ServiceOrderDto>(
-    `/maintenance-registers/${id}`,
-  )
+  return request<ServiceOrderDto>(`/maintenance-registers/${id}`)
 }
 
-export function getServiceOrderWarning(
-  warningId: number,
-) {
-  return request<WarningDto>(
-    `/warnings/${warningId}`,
-  )
+export function getServiceOrderWarning(warningId: number) {
+  return request<WarningDto>(`/warnings/${warningId}`)
 }
 
 export function getMaintenanceTypes() {
-  return request<MaintenanceTypeDto[]>(
-    '/maintenance-types',
-  )
+  return request<MaintenanceTypeDto[]>('/maintenance-types')
 }
 
 export function getActiveTechnicians() {
@@ -156,7 +123,5 @@ export function getActiveTechnicians() {
     direction: 'ASC',
   })
 
-  return request<PageDto<EmployeeSummaryDto>>(
-    `/employees?${query}`,
-  )
+  return request<PageDto<EmployeeSummaryDto>>(`/employees?${query}`)
 }

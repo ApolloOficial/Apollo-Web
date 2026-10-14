@@ -13,7 +13,13 @@ interface ListEmployeesParams extends EmployeeFilters {
   size: number
 }
 
-export function listEmployees({ page, size, email, role, isActive }: ListEmployeesParams) {
+export function listEmployees({
+  page,
+  size,
+  email,
+  role,
+  isActive,
+}: ListEmployeesParams) {
   const query = new URLSearchParams({
     page: String(page),
     size: String(size),
