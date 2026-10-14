@@ -10,10 +10,18 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
 }
 
+/* Ocupa todo o espaço livre à esquerda das ações e centraliza a busca nele */
 .header__search {
-  width: min(34rem, calc(100% - 27rem));
-  margin-right: clamp(2rem, 10.14vw, 9.125rem);
-  margin-left: clamp(2rem, 13.26vw, 11.9375rem);
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  min-width: 0;
+  margin-right: 2rem;
+}
+
+.header__search > * {
+  width: 100%;
+  max-width: 36.9375rem; /* 591px do Figma */
 }
 
 .header__action {
@@ -29,6 +37,25 @@
 
 .header__action + .header__action {
   margin-left: 1.5rem;
+}
+
+.header__notifications {
+  position: relative;
+}
+
+.header__action {
+  position: relative;
+}
+
+.header__bell-dot {
+  position: absolute;
+  top: -0.125rem;
+  right: -0.125rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border: 2px solid var(--color-background);
+  border-radius: 50%;
+  background: var(--color-secondary);
 }
 
 .header__bell {
@@ -137,9 +164,7 @@
   }
 
   .header__search {
-    width: min(55vw, 24rem);
-    margin-right: auto;
-    margin-left: 0;
+    margin-right: 1rem;
   }
 
   .header__user-info {
@@ -156,8 +181,7 @@
   }
 
   .header__search {
-    flex: 1;
-    width: auto;
+    margin-right: 0;
   }
 
   .header__account {
