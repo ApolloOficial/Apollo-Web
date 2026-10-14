@@ -3,9 +3,11 @@
   top: calc(100% + 0.75rem);
   right: 0;
   z-index: 10;
-  width: 16.75rem;
-  min-height: 22rem;
-  padding: 1.25rem 1.125rem;
+  display: flex;
+  flex-direction: column;
+  width: min(22rem, calc(100vw - 2rem)); /* 352px no Figma */
+  height: min(29.75rem, calc(100vh - 7rem)); /* 476px no Figma */
+  padding: 1.5rem;
   border-radius: 1.25rem;
   background: var(--color-background);
   box-shadow: 0 4px 24px rgb(0 0 0 / 10%);
@@ -44,6 +46,9 @@
 }
 
 .notifications__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -134,5 +139,7 @@
     right: 1rem;
     left: 1rem;
     width: auto;
+    height: min(29.75rem, calc(100vh - 5.5rem));
+    padding: 1.25rem;
   }
 }
