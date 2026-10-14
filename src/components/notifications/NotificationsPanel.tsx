@@ -10,7 +10,11 @@ interface NotificationsPanelProps {
   onClose: () => void
 }
 
-export function NotificationsPanel({ items, onItemClick, onClose }: NotificationsPanelProps) {
+export function NotificationsPanel({
+  items,
+  onItemClick,
+  onClose,
+}: NotificationsPanelProps) {
   const navigate = useNavigate()
   const unread = items.filter((item) => !item.read).length
 
@@ -40,12 +44,18 @@ export function NotificationsPanel({ items, onItemClick, onClose }: Notification
                   className={`notifications__item${item.read ? '' : ' notifications__item--unread'}`}
                   onClick={() => handleClick(item)}
                 >
-                  <span className={`notifications__icon notifications__icon--${visual.tone}`}>
+                  <span
+                    className={`notifications__icon notifications__icon--${visual.tone}`}
+                  >
                     <Icon icon={visual.icon} width={22} height={22} />
                   </span>
                   <span className="notifications__content">
-                    <span className="notifications__item-title">{item.title}</span>
-                    <span className="notifications__item-desc">{item.description}</span>
+                    <span className="notifications__item-title">
+                      {item.title}
+                    </span>
+                    <span className="notifications__item-desc">
+                      {item.description}
+                    </span>
                   </span>
                   <time className="notifications__time">{item.time}</time>
                 </button>

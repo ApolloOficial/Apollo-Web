@@ -33,7 +33,10 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
     if (!notificationsOpen) return
 
     function handleOutsideClick(event: MouseEvent) {
-      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target as Node)
+      ) {
         setNotificationsOpen(false)
       }
     }
@@ -52,7 +55,9 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
   }, [notificationsOpen])
 
   function markAsRead(item: NotificationItem) {
-    setReadIds((current) => (current.includes(item.id) ? current : [...current, item.id]))
+    setReadIds((current) =>
+      current.includes(item.id) ? current : [...current, item.id],
+    )
   }
 
   const hasUnread = notifications.some((n) => !n.read)
@@ -61,7 +66,10 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
     if (!menuOpen) return
 
     function handleOutsideClick(event: MouseEvent) {
-      if (accountRef.current && !accountRef.current.contains(event.target as Node)) {
+      if (
+        accountRef.current &&
+        !accountRef.current.contains(event.target as Node)
+      ) {
         setMenuOpen(false)
       }
     }
@@ -103,7 +111,9 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
           onClick={() => setNotificationsOpen((current) => !current)}
         >
           <BellIcon className="header__bell" />
-          {hasUnread && <span className="header__bell-dot" aria-hidden="true" />}
+          {hasUnread && (
+            <span className="header__bell-dot" aria-hidden="true" />
+          )}
         </button>
 
         {notificationsOpen && (
@@ -132,18 +142,29 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
             <span className="header__user-name">
               {loading ? 'Carregando...' : (user?.fullName ?? 'Usuário')}
             </span>
-            {user && <span className="header__user-company">{user.companyName}</span>}
+            {user && (
+              <span className="header__user-company">{user.companyName}</span>
+            )}
           </span>
 
           <ChevronRightIcon
-            className={menuOpen ? 'header__chevron header__chevron--open' : 'header__chevron'}
+            className={
+              menuOpen
+                ? 'header__chevron header__chevron--open'
+                : 'header__chevron'
+            }
           />
         </button>
 
         {menuOpen && (
           <ul className="header__menu" role="menu">
             <li role="none">
-              <button className="header__menu-item" type="button" role="menuitem" onClick={onLogout}>
+              <button
+                className="header__menu-item"
+                type="button"
+                role="menuitem"
+                onClick={onLogout}
+              >
                 <LogoutIcon className="header__menu-icon" />
                 <span>Sair</span>
               </button>

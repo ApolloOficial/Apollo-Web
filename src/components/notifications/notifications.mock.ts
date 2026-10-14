@@ -46,5 +46,7 @@ const operatorNotifications: NotificationItem[] = [
 
 export function getMockNotifications(role?: string): NotificationItem[] {
   if (!role) return []
-  return normalizeRole(role) === 'GERENTE' ? managerNotifications : operatorNotifications
+  return normalizeRole(role) === 'GERENTE'
+    ? managerNotifications
+    : operatorNotifications
 }

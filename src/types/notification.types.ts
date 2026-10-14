@@ -8,7 +8,8 @@ export type NotificationType =
   | 'SERVICE_ORDER_OPENED'
   | 'SERVICE_ORDER_COMPLETED'
 
-export type NotificationTone = 'info' | 'success' | 'alert' | 'error' | 'neutral'
+export type NotificationTone =
+  'info' | 'success' | 'alert' | 'error' | 'neutral'
 
 export interface NotificationItem {
   id: string
