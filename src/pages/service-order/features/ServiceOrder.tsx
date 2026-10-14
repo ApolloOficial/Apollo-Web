@@ -136,9 +136,11 @@ export function ServiceOrderFeature() {
     }
   }, [filters, page, size])
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
-    void loadOrders()
+    void (async () => {
+      await Promise.resolve()
+      await loadOrders()
+    })()
   }, [loadOrders])
 
   const appliedFilters = useMemo<AppliedFilter[]>(() => {

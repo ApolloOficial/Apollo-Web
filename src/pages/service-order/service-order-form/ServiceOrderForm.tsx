@@ -50,30 +50,53 @@ export default function ServiceOrderForm() {
   const [modal, setModal] = useState<ModalState>(null)
 
   useEffect(() => {
-    if (!id || Number.isNaN(Number(id))) {
-      setError('Alerta inválido.')
-      setLoading(false)
-      return
-    }
+    let active = true
 
-    Promise.all([
-      getWarning(Number(id)),
-      getActiveTechnicians(),
-      getMaintenanceTypes(),
-    ])
-      .then(([warningResult, techniciansResult, typesResult]) => {
+    void (async () => {
+      await Promise.resolve()
+
+      if (!active) return
+
+      if (!id || Number.isNaN(Number(id))) {
+        setError('Alerta inválido.')
+        setLoading(false)
+        return
+      }
+
+      try {
+        const [
+          warningResult,
+          techniciansResult,
+          typesResult,
+        ] = await Promise.all([
+          getWarning(Number(id)),
+          getActiveTechnicians(),
+          getMaintenanceTypes(),
+        ])
+
+        if (!active) return
+
         setWarning(warningResult)
         setTechnicians(techniciansResult.content)
         setMaintenanceTypes(typesResult)
-      })
-      .catch((cause: unknown) => {
+      } catch (cause: unknown) {
+        if (!active) return
+
         setError(
           cause instanceof Error
             ? cause.message
             : 'Não foi possível carregar os dados da OS.',
         )
-      })
-      .finally(() => setLoading(false))
+      } finally {
+        if (active) {
+          setLoading(false)
+        }
+      }
+    })()
+
+    return () => {
+      active = false
+    }
   }, [id])
 
   const technicianOptions = useMemo(

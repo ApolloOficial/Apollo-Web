@@ -75,9 +75,11 @@ export function AlertsFeature({ audience }: Props) {
         }
     }, [filters, page, size])
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     useEffect(() => {
-        void loadWarnings()
+        void (async () => {
+            await Promise.resolve()
+            await loadWarnings()
+        })()
     }, [loadWarnings])
 
     const appliedFilters = useMemo<AppliedFilter[]>(() => {

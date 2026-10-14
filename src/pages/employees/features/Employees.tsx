@@ -64,9 +64,11 @@ export function EmployeesFeature() {
     }
   }, [filters, page, size])
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
-    void loadEmployees()
+    void (async () => {
+      await Promise.resolve()
+      await loadEmployees()
+    })()
   }, [loadEmployees])
 
   useEffect(() => {

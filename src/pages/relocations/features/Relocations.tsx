@@ -140,9 +140,11 @@ export function RelocationsFeature({
     }
   }, [audience, filters, tab])
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
-    void load()
+    void (async () => {
+      await Promise.resolve()
+      await load()
+    })()
   }, [load])
 
   const filtered = useMemo(
