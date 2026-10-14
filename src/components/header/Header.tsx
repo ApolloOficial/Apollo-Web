@@ -6,6 +6,9 @@ import { SearchInput } from '../inputs/search-input'
 import { BellIcon } from '../icons/bell-icon'
 import { ChevronRightIcon } from '../icons/chevron-right-icon'
 import { LogoutIcon } from '../icons/logout-icon'
+import { NotificationsPanel } from '../notifications'
+import { getMockNotifications } from '../notifications/notifications.mock'
+import type { NotificationItem } from '../../types/notification.types'
 import './Header.css'
 
 export function Header({ user, loading = false, onLogout }: HeaderProps) {
@@ -13,6 +16,43 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
   const accountRef = useRef<HTMLDivElement>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const [search, setSearch] = useState('')
+  const notificationsRef = useRef<HTMLDivElement>(null)
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const [notifications, setNotifications] = useState<NotificationItem[]>([])
+
+  useEffect(() => {
+    setNotifications(getMockNotifications(user?.role))
+  }, [user?.role])
+
+  useEffect(() => {
+    if (!notificationsOpen) return
+
+    function handleOutsideClick(event: MouseEvent) {
+      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
+        setNotificationsOpen(false)
+      }
+    }
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') setNotificationsOpen(false)
+    }
+
+    document.addEventListener('mousedown', handleOutsideClick)
+    document.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [notificationsOpen])
+
+  function markAsRead(item: NotificationItem) {
+    setNotifications((current) =>
+      current.map((n) => (n.id === item.id ? { ...n, read: true } : n)),
+    )
+  }
+
+  const hasUnread = notifications.some((n) => !n.read)
 
   useEffect(() => {
     if (!menuOpen) return
@@ -50,9 +90,27 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
         </div>
       )}
 
-      <button className="header__action" type="button" aria-label="Notificações">
-        <BellIcon className="header__bell" />
-      </button>
+      <div ref={notificationsRef} className="header__notifications">
+        <button
+          className="header__action"
+          type="button"
+          aria-label="Notificações"
+          aria-haspopup="dialog"
+          aria-expanded={notificationsOpen}
+          onClick={() => setNotificationsOpen((current) => !current)}
+        >
+          <BellIcon className="header__bell" />
+          {hasUnread && <span className="header__bell-dot" aria-hidden="true" />}
+        </button>
+
+        {notificationsOpen && (
+          <NotificationsPanel
+            items={notifications}
+            onItemClick={markAsRead}
+            onClose={() => setNotificationsOpen(false)}
+          />
+        )}
+      </div>
 
       <div ref={accountRef} className="header__account">
         <button
