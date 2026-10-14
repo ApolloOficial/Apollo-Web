@@ -5,10 +5,7 @@ import type {
 } from '../../../alerts/data-access/dto/Alerts.dto'
 
 export type ServiceOrderStatus =
-  | 'ABERTA'
-  | 'EM_ANDAMENTO'
-  | 'CONCLUIDA'
-  | 'CANCELADA'
+  'ABERTA' | 'EM_ANDAMENTO' | 'CONCLUIDA' | 'CANCELADA'
 
 export interface PageDto<T> {
   content: T[]

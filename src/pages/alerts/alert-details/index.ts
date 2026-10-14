@@ -1,1 +1,1 @@
-export {default} from './AlertDetails'
+export { default } from './AlertDetails'

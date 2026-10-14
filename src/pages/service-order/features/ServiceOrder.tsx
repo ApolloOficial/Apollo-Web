@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   AppliedFilters,
@@ -32,9 +27,7 @@ import { ServiceOrderFilter } from './filters/ServiceOrderFilter'
 function formatDate(value: string | null) {
   if (!value) return '—'
 
-  return new Intl.DateTimeFormat('pt-BR').format(
-    new Date(value),
-  )
+  return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
 }
 
 function getEquipment(item: ServiceOrderListItemDto) {
@@ -69,9 +62,7 @@ function getVisualStatus(item: ServiceOrderListItemDto) {
 export function ServiceOrderFeature() {
   const [items, setItems] = useState<ServiceOrderListItemDto[]>([])
   const [orderIds, setOrderIds] = useState<number[]>([])
-  const [technicians, setTechnicians] = useState<
-    EmployeeSummaryDto[]
-  >([])
+  const [technicians, setTechnicians] = useState<EmployeeSummaryDto[]>([])
   const [maintenanceTypes, setMaintenanceTypes] = useState<
     MaintenanceTypeDto[]
   >([])
@@ -79,10 +70,9 @@ export function ServiceOrderFeature() {
   const [draft, setDraft] = useState<ServiceOrderFiltersViewModel>(
     INITIAL_SERVICE_ORDER_FILTERS,
   )
-  const [filters, setFilters] =
-    useState<ServiceOrderFiltersViewModel>(
-      INITIAL_SERVICE_ORDER_FILTERS,
-    )
+  const [filters, setFilters] = useState<ServiceOrderFiltersViewModel>(
+    INITIAL_SERVICE_ORDER_FILTERS,
+  )
 
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
@@ -96,15 +86,11 @@ export function ServiceOrderFeature() {
       getMaintenanceTypes(),
       getServiceOrderIds(),
     ])
-      .then(
-        ([techniciansResult, typesResult, ordersResult]) => {
-          setTechnicians(techniciansResult.content)
-          setMaintenanceTypes(typesResult)
-          setOrderIds(
-            ordersResult.content.map((order) => order.id),
-          )
-        },
-      )
+      .then(([techniciansResult, typesResult, ordersResult]) => {
+        setTechnicians(techniciansResult.content)
+        setMaintenanceTypes(typesResult)
+        setOrderIds(ordersResult.content.map((order) => order.id))
+      })
       .catch(() => {
         setTechnicians([])
         setMaintenanceTypes([])
@@ -150,9 +136,7 @@ export function ServiceOrderFeature() {
       result.push({
         key: 'id',
         label: 'ID',
-        value:
-          filters.idLabel ||
-          `OS${filters.id.padStart(5, '0')}`,
+        value: filters.idLabel || `OS${filters.id.padStart(5, '0')}`,
       })
     }
 
@@ -166,16 +150,13 @@ export function ServiceOrderFeature() {
 
     if (filters.maintenanceTypeId && filters.maintenanceTypeId !== 'ALL') {
       const maintenanceType = maintenanceTypes.find(
-        (item) =>
-          String(item.id) === filters.maintenanceTypeId,
+        (item) => String(item.id) === filters.maintenanceTypeId,
       )
 
       result.push({
         key: 'maintenanceType',
         label: 'Tipo',
-        value:
-          maintenanceType?.name ??
-          filters.maintenanceTypeId,
+        value: maintenanceType?.name ?? filters.maintenanceTypeId,
       })
     }
 
@@ -191,10 +172,7 @@ export function ServiceOrderFeature() {
       result.push({
         key: 'period',
         label: 'Período',
-        value:
-          filters.period === 'THIS_MONTH'
-            ? 'Este mês'
-            : 'Atrasadas',
+        value: filters.period === 'THIS_MONTH' ? 'Este mês' : 'Atrasadas',
       })
     }
 
@@ -329,10 +307,7 @@ export function ServiceOrderFeature() {
         </p>
       )}
 
-      <div
-        className="service-orders-table"
-        aria-busy={loading}
-      >
+      <div className="service-orders-table" aria-busy={loading}>
         <div className="service-orders-table__header">
           <strong>ID</strong>
           <strong>String / Inversor / Placa</strong>
@@ -344,9 +319,7 @@ export function ServiceOrderFeature() {
         </div>
 
         {loading && (
-          <p className="service-orders-table__state">
-            Carregando...
-          </p>
+          <p className="service-orders-table__state">Carregando...</p>
         )}
 
         {!loading &&
@@ -359,25 +332,17 @@ export function ServiceOrderFeature() {
                 to={`/service-orders/${item.order.id}`}
                 key={item.order.id}
               >
-                <span>
-                  OS{String(item.order.id).padStart(5, '0')}
-                </span>
+                <span>OS{String(item.order.id).padStart(5, '0')}</span>
 
                 <span>{getEquipment(item)}</span>
 
-                <span>
-                  {item.order.maintenanceTypeName}
-                </span>
+                <span>{item.order.maintenanceTypeName}</span>
 
                 <span>{item.order.technicianName}</span>
 
-                <span>
-                  {priorityLabels[item.order.priority]}
-                </span>
+                <span>{priorityLabels[item.order.priority]}</span>
 
-                <span>
-                  {formatDate(item.order.dueDate)}
-                </span>
+                <span>{formatDate(item.order.dueDate)}</span>
 
                 <span
                   className={`service-order-status ${visualStatus.className}`}

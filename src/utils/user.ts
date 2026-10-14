@@ -12,5 +12,8 @@ export function formatRole(role: string): string {
 }
 
 export function normalizeRole(role: string): string {
-  return role.trim().toUpperCase().replace(/^ROLE_/, '')
+  return role
+    .trim()
+    .toUpperCase()
+    .replace(/^ROLE_/, '')
 }

@@ -11,7 +11,7 @@ export function ChevronRightIcon({ className }: IconProps) {
       aria-hidden="true"
       focusable="false"
     >
-      <path d="M9 7L14 12L9 16.5" stroke="currentColor" strokeLinecap="round"/>
+      <path d="M9 7L14 12L9 16.5" stroke="currentColor" strokeLinecap="round" />
     </svg>
   )
 }

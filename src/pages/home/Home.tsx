@@ -16,7 +16,9 @@ export default function Home() {
     <section className="home">
       <div className="home__hero">
         <h1 className="home__title">
-          {firstName ? `Olá, ${firstName}. O que você procura?` : 'Olá. O que você procura?'}
+          {firstName
+            ? `Olá, ${firstName}. O que você procura?`
+            : 'Olá. O que você procura?'}
         </h1>
         <div className="home__search">
           <SearchInput

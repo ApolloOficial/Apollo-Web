@@ -1,7 +1,5 @@
 import { SelectInput } from '../../../../components/inputs/select-input'
-import type {
-  RelocationFiltersVM,
-} from '../../data-access/vm/Relocations.vm'
+import type { RelocationFiltersVM } from '../../data-access/vm/Relocations.vm'
 
 interface Props {
   value: RelocationFiltersVM
@@ -9,11 +7,7 @@ interface Props {
   onApply: () => void
 }
 
-export function RelocationsFilters({
-  value,
-  onChange,
-  onApply,
-}: Props) {
+export function RelocationsFilters({ value, onChange, onApply }: Props) {
   return (
     <div className="relocations-filters">
       <SelectInput
@@ -29,8 +23,7 @@ export function RelocationsFilters({
         onChange={(status) =>
           onChange({
             ...value,
-            status:
-              status as RelocationFiltersVM['status'],
+            status: status as RelocationFiltersVM['status'],
           })
         }
       />

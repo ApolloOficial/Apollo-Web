@@ -17,9 +17,7 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
 }
 
-export default function AlertDetails({
-  audience = 'operator',
-}: Props) {
+export default function AlertDetails({ audience = 'operator' }: Props) {
   const { id } = useParams()
   const [warning, setWarning] = useState<WarningDto | null>(null)
   const [loading, setLoading] = useState(true)

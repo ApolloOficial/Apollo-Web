@@ -22,7 +22,7 @@
 .combobox input::placeholder {
   color: var(--color-disabled);
   font-weight: var(--font-weight-bold);
-  opacity:1;
+  opacity: 1;
 }
 
 .combobox__options {

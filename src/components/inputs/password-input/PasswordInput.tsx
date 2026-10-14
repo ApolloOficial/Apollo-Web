@@ -6,7 +6,10 @@ import { LockIcon } from '../../icons/lock-icon'
 import { SimpleInput } from '../simple-input'
 import './PasswordInput.css'
 
-export function PasswordInput({ icon = <LockIcon />, ...props }: PasswordInputProps) {
+export function PasswordInput({
+  icon = <LockIcon />,
+  ...props
+}: PasswordInputProps) {
   const [isVisible, setIsVisible] = useState(false)
 
   return (

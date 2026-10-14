@@ -1,1 +1,1 @@
-export {default} from './EmployeeForm'
+export { default } from './EmployeeForm'

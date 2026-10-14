@@ -41,18 +41,10 @@ function formatValue(value: string) {
   return `${day}/${month}/${year}`
 }
 
-export function DatePicker({
-  label,
-  value,
-  min,
-  required,
-  onChange,
-}: Props) {
+export function DatePicker({ label, value, min, required, onChange }: Props) {
   const id = useId()
   const containerRef = useRef<HTMLDivElement>(null)
-  const selectedDate = value
-    ? new Date(`${value}T12:00:00`)
-    : new Date()
+  const selectedDate = value ? new Date(`${value}T12:00:00`) : new Date()
 
   const [open, setOpen] = useState(false)
   const [visibleMonth, setVisibleMonth] = useState(
@@ -102,11 +94,7 @@ export function DatePicker({
   function changeMonth(amount: number) {
     setVisibleMonth(
       (current) =>
-        new Date(
-          current.getFullYear(),
-          current.getMonth() + amount,
-          1,
-        ),
+        new Date(current.getFullYear(), current.getMonth() + amount, 1),
     )
   }
 
@@ -131,12 +119,7 @@ export function DatePicker({
         </span>
       </button>
 
-      <input
-        type="hidden"
-        value={value}
-        required={required}
-        readOnly
-      />
+      <input type="hidden" value={value} required={required} readOnly />
 
       {open && (
         <section
@@ -154,8 +137,7 @@ export function DatePicker({
             </button>
 
             <strong>
-              {months[visibleMonth.getMonth()]} de{' '}
-              {visibleMonth.getFullYear()}
+              {months[visibleMonth.getMonth()]} de {visibleMonth.getFullYear()}
             </strong>
 
             <button
@@ -177,8 +159,7 @@ export function DatePicker({
           <div className="date-picker__days">
             {days.map((date) => {
               const isoDate = toIsoDate(date)
-              const outside =
-                date.getMonth() !== visibleMonth.getMonth()
+              const outside = date.getMonth() !== visibleMonth.getMonth()
               const selected = isoDate === value
               const disabled = Boolean(min && isoDate < min)
 

@@ -17,9 +17,7 @@ import {
   getWarning,
   postServiceOrder,
 } from '../../alerts/data-access/services/Alerts.service'
-import {
-  severityLabels,
-} from '../../alerts/data-access/vm/Alerts.vm'
+import { severityLabels } from '../../alerts/data-access/vm/Alerts.vm'
 import '../../alerts/Alerts.css'
 
 type ModalState = 'success' | 'error' | null
@@ -64,15 +62,12 @@ export default function ServiceOrderForm() {
       }
 
       try {
-        const [
-          warningResult,
-          techniciansResult,
-          typesResult,
-        ] = await Promise.all([
-          getWarning(Number(id)),
-          getActiveTechnicians(),
-          getMaintenanceTypes(),
-        ])
+        const [warningResult, techniciansResult, typesResult] =
+          await Promise.all([
+            getWarning(Number(id)),
+            getActiveTechnicians(),
+            getMaintenanceTypes(),
+          ])
 
         if (!active) return
 
@@ -221,11 +216,7 @@ export default function ServiceOrderForm() {
 
         <label>
           Descrição
-          <textarea
-            className="prefilled"
-            value={warning.message}
-            readOnly
-          />
+          <textarea className="prefilled" value={warning.message} readOnly />
         </label>
 
         {error && (

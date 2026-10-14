@@ -82,7 +82,14 @@
 }
 
 @media (max-width: 520px) {
-  .deactivate-modal { padding: 2rem 1.25rem 1.5rem; border-radius: 1.5rem; }
-  .deactivate-modal__actions { grid-template-columns: 1fr; }
-  .deactivate-modal__desktop-break { display: none; }
+  .deactivate-modal {
+    padding: 2rem 1.25rem 1.5rem;
+    border-radius: 1.5rem;
+  }
+  .deactivate-modal__actions {
+    grid-template-columns: 1fr;
+  }
+  .deactivate-modal__desktop-break {
+    display: none;
+  }
 }

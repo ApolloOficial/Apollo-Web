@@ -58,7 +58,11 @@ export function Combobox({
       {open && visibleOptions.length > 0 && (
         <ul id={`${id}-options`} className="combobox__options" role="listbox">
           {visibleOptions.map((option) => (
-            <li key={option.value} role="option" aria-selected={option.label === value}>
+            <li
+              key={option.value}
+              role="option"
+              aria-selected={option.label === value}
+            >
               <button
                 type="button"
                 onMouseDown={(event) => event.preventDefault()}
