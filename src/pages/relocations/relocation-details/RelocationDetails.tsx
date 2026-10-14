@@ -57,9 +57,11 @@ export default function RelocationDetails({
   }, [id, type])
 
   // Os detalhes são recarregados sempre que o identificador da rota muda.
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
-    void load()
+    void (async () => {
+      await Promise.resolve()
+      await load()
+    })()
   }, [load])
 
   async function review(status: 'APROVADA' | 'REJEITADA') {
