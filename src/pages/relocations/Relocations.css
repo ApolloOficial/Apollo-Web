@@ -61,7 +61,7 @@
   cursor: pointer;
 }
 
-.relocations-tabs button[aria-selected="true"] {
+.relocations-tabs button[aria-selected='true'] {
   border-bottom-color: var(--color-secondary);
   color: var(--color-text);
 }

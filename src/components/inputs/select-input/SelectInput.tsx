@@ -28,7 +28,9 @@ export function SelectInput({
   const containerRef = useRef<HTMLDivElement>(null)
   const [open, setOpen] = useState(false)
 
-  const selectedOption = value ? options.find((option) => option.value === value) : undefined
+  const selectedOption = value
+    ? options.find((option) => option.value === value)
+    : undefined
 
   useEffect(() => {
     function handleOutsideClick(event: MouseEvent) {
@@ -80,9 +82,7 @@ export function SelectInput({
       >
         <span
           className={
-            selectedOption
-              ? 'select-input__value'
-              : 'select-input__placeholder'
+            selectedOption ? 'select-input__value' : 'select-input__placeholder'
           }
         >
           {selectedOption?.label ?? placeholder}

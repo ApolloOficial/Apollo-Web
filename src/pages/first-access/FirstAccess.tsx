@@ -18,7 +18,10 @@ const initialForm: FirstAccessFormViewModel = {
 
 export default function FirstAccess() {
   const [form, setForm] = useState<FirstAccessFormViewModel>(initialForm)
-  const [status, setStatus] = useState<{ loading: boolean; error: string | null }>({
+  const [status, setStatus] = useState<{
+    loading: boolean
+    error: string | null
+  }>({
     loading: false,
     error: null,
   })
@@ -36,7 +39,10 @@ export default function FirstAccess() {
     setStatus({ loading: true, error: null })
 
     try {
-      await changePassword({ currentPassword: form.currentPassword, newPassword: form.newPassword })
+      await changePassword({
+        currentPassword: form.currentPassword,
+        newPassword: form.newPassword,
+      })
       navigate(paths.home)
     } catch (err) {
       setStatus({ loading: false, error: (err as Error).message })
@@ -47,15 +53,24 @@ export default function FirstAccess() {
   }
 
   return (
-    <AuthPage title="Atualizar senha" subtitle="Defina uma nova senha pra continuar acessando sua conta.">
-      <form className="update-password__form" onSubmit={handleSubmit} noValidate>
+    <AuthPage
+      title="Atualizar senha"
+      subtitle="Defina uma nova senha pra continuar acessando sua conta."
+    >
+      <form
+        className="update-password__form"
+        onSubmit={handleSubmit}
+        noValidate
+      >
         <PasswordInput
           id="current-password"
           label="Senha atual"
           placeholder="Digite aqui sua senha atual"
           autoComplete="current-password"
           value={form.currentPassword}
-          onChange={(currentPassword) => setForm((current) => ({ ...current, currentPassword }))}
+          onChange={(currentPassword) =>
+            setForm((current) => ({ ...current, currentPassword }))
+          }
           invalid={Boolean(status.error)}
         />
         <PasswordInput
@@ -64,7 +79,9 @@ export default function FirstAccess() {
           placeholder="Digite aqui sua nova senha"
           autoComplete="new-password"
           value={form.newPassword}
-          onChange={(newPassword) => setForm((current) => ({ ...current, newPassword }))}
+          onChange={(newPassword) =>
+            setForm((current) => ({ ...current, newPassword }))
+          }
         />
         <PasswordInput
           id="confirm-password"
@@ -72,13 +89,21 @@ export default function FirstAccess() {
           placeholder="Repita a nova senha"
           autoComplete="new-password"
           value={form.confirmPassword}
-          onChange={(confirmPassword) => setForm((current) => ({ ...current, confirmPassword }))}
-          error={form.confirmPassword !== '' && !passwordsMatch ? 'As senhas não coincidem.' : undefined}
+          onChange={(confirmPassword) =>
+            setForm((current) => ({ ...current, confirmPassword }))
+          }
+          error={
+            form.confirmPassword !== '' && !passwordsMatch
+              ? 'As senhas não coincidem.'
+              : undefined
+          }
         />
         <Button type="submit" fullWidth disabled={!canSubmit || status.loading}>
           {status.loading ? 'Atualizando...' : 'Atualizar senha'}
         </Button>
-        {status.error && <StatusMessage tone="alert">{status.error}</StatusMessage>}
+        {status.error && (
+          <StatusMessage tone="alert">{status.error}</StatusMessage>
+        )}
       </form>
     </AuthPage>
   )

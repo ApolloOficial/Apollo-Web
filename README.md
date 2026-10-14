@@ -67,13 +67,13 @@ src/
 
 ## Tecnologias
 
-| Tecnologia | Versão | Uso no projeto |
-|---|---|---|
-| React | 19 | Biblioteca de interface |
-| TypeScript | 6 | Tipagem estática, `strict` ativo |
-| Vite | 8 | Build e servidor de desenvolvimento |
-| React Router | 7 | Roteamento e rotas privadas |
-| ESLint + jsx-a11y | 9 | Análise estática e acessibilidade |
+| Tecnologia        | Versão | Uso no projeto                      |
+| ----------------- | ------ | ----------------------------------- |
+| React             | 19     | Biblioteca de interface             |
+| TypeScript        | 6      | Tipagem estática, `strict` ativo    |
+| Vite              | 8      | Build e servidor de desenvolvimento |
+| React Router      | 7      | Roteamento e rotas privadas         |
+| ESLint + jsx-a11y | 9      | Análise estática e acessibilidade   |
 
 ## Como executar
 
@@ -120,8 +120,8 @@ tipo não aparece no `dev`, só na build.
 
 ## Variáveis de ambiente
 
-| Variável | Padrão local | Descrição |
-|---|---|---|
+| Variável       | Padrão local                   | Descrição          |
+| -------------- | ------------------------------ | ------------------ |
 | `VITE_API_URL` | `http://localhost:8080/api/v1` | Base da Apollo API |
 
 Toda variável usada no código precisa do prefixo `VITE_` para o Vite expor ao
@@ -130,18 +130,18 @@ front, e é lida com `import.meta.env.VITE_NOME`. O `.env` está no
 
 ## Módulos
 
-| Rota | Módulo | Descrição |
-|---|---|---|
-| `/welcome` | Boas-vindas | Tela de entrada, antes do login |
-| `/login` | Login | Autenticação dos funcionários da filial |
-| `/` | Início | Visão geral da filial |
-| `/alerts` | Alertas | Central de alertas — Gerente e Operador decidem se abrem uma OS |
-| `/service-orders` | OS | Abertura, aprovação e acompanhamento de ordens de serviço |
-| `/relocations` | Realocações | Solicitação e aprovação de realocação de placas entre filiais |
-| `/branches` | Filiais | Dados da própria filial e dos lotes cadastrados |
-| `/employees` | Funcionários | Cadastro, edição e desativação de funcionários — exclusivo do Gerente |
-| `/map` | Mapa | Visualização geográfica das filiais |
-| `/metrics` | Métricas | Indicadores e dashboards da filial |
+| Rota              | Módulo       | Descrição                                                             |
+| ----------------- | ------------ | --------------------------------------------------------------------- |
+| `/welcome`        | Boas-vindas  | Tela de entrada, antes do login                                       |
+| `/login`          | Login        | Autenticação dos funcionários da filial                               |
+| `/`               | Início       | Visão geral da filial                                                 |
+| `/alerts`         | Alertas      | Central de alertas — Gerente e Operador decidem se abrem uma OS       |
+| `/service-orders` | OS           | Abertura, aprovação e acompanhamento de ordens de serviço             |
+| `/relocations`    | Realocações  | Solicitação e aprovação de realocação de placas entre filiais         |
+| `/branches`       | Filiais      | Dados da própria filial e dos lotes cadastrados                       |
+| `/employees`      | Funcionários | Cadastro, edição e desativação de funcionários — exclusivo do Gerente |
+| `/map`            | Mapa         | Visualização geográfica das filiais                                   |
+| `/metrics`        | Métricas     | Indicadores e dashboards da filial                                    |
 
 O Analista tem acesso somente leitura a todas as telas acima, exceto
 Funcionários. Todas as rotas exceto `/welcome` e `/login` exigem sessão ativa
@@ -169,14 +169,14 @@ Funcionários. Todas as rotas exceto `/welcome` e `/login` exigem sessão ativa
 <tipo>: <descrição no imperativo>
 ```
 
-| Tipo | Quando usar |
-|---|---|
-| `feat` | Nova funcionalidade |
-| `fix` | Correção de bug |
-| `refactor` | Mudança de código sem alterar comportamento |
-| `docs` | Documentação |
-| `style` | Formatação, sem mudança de lógica |
-| `chore` | Configuração, dependências, tarefas de manutenção |
+| Tipo       | Quando usar                                       |
+| ---------- | ------------------------------------------------- |
+| `feat`     | Nova funcionalidade                               |
+| `fix`      | Correção de bug                                   |
+| `refactor` | Mudança de código sem alterar comportamento       |
+| `docs`     | Documentação                                      |
+| `style`    | Formatação, sem mudança de lógica                 |
+| `chore`    | Configuração, dependências, tarefas de manutenção |
 
 Imperativo, não passado; minúscula depois dos dois-pontos; sem ponto final;
 nada de mensagens genéricas como `update` ou `fix bug`.
@@ -192,12 +192,12 @@ menos um colega, e só faça merge depois da aprovação.
 
 ## Problemas comuns
 
-| Sintoma | Solução |
-|---|---|
-| `Cannot find module ... vite.js` | Caminho do projeto contém `&` ou acento — mova para `C:\dev` |
-| Porta 5173 em uso | `npm run dev -- --port 3000` |
-| Erro após trocar de branch | `npm install` — o `package.json` pode ter mudado |
-| Variável de ambiente indefinida | Confirme o prefixo `VITE_` e reinicie o servidor |
+| Sintoma                            | Solução                                                        |
+| ---------------------------------- | -------------------------------------------------------------- |
+| `Cannot find module ... vite.js`   | Caminho do projeto contém `&` ou acento — mova para `C:\dev`   |
+| Porta 5173 em uso                  | `npm run dev -- --port 3000`                                   |
+| Erro após trocar de branch         | `npm install` — o `package.json` pode ter mudado               |
+| Variável de ambiente indefinida    | Confirme o prefixo `VITE_` e reinicie o servidor               |
 | Requisição para a API sempre falha | Confirme se `VITE_API_URL` termina em `/api/v1`, não só `/api` |
 
 ## Licença

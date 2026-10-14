@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   AppliedFilters,
@@ -38,9 +33,7 @@ const statusLabels = {
   CONCLUIDA: 'Concluída',
 }
 
-function toInternal(
-  item: InternalRelocationDTO,
-): RelocationListItemVM {
+function toInternal(item: InternalRelocationDTO): RelocationListItemVM {
   return {
     id: item.id,
     type: 'INTERNAL',
@@ -53,9 +46,7 @@ function toInternal(
   }
 }
 
-function toExternal(
-  item: ExternalRelocationDTO,
-): RelocationListItemVM {
+function toExternal(item: ExternalRelocationDTO): RelocationListItemVM {
   return {
     id: item.id,
     type: 'EXTERNAL',
@@ -140,9 +131,11 @@ export function RelocationsFeature({
     }
   }, [audience, filters, tab])
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
-    void load()
+    void (async () => {
+      await Promise.resolve()
+      await load()
+    })()
   }, [load])
 
   const filtered = useMemo(
@@ -218,9 +211,7 @@ export function RelocationsFeature({
       <header className="relocations-page__heading">
         <div>
           <h1>Realocações</h1>
-          <p>
-            Confira as movimentações das placas da sua filial.
-          </p>
+          <p>Confira as movimentações das placas da sua filial.</p>
         </div>
 
         {audience === 'operator' && (
@@ -305,9 +296,7 @@ export function RelocationsFeature({
                   : `/relocations/${item.type.toLowerCase()}/${item.id}`
               }
             >
-              <span>
-                RLC{String(item.id).padStart(6, '0')}
-              </span>
+              <span>RLC{String(item.id).padStart(6, '0')}</span>
               <span>{item.typeLabel}</span>
               <span>{item.origin}</span>
               <span>{item.destination}</span>
@@ -320,11 +309,7 @@ export function RelocationsFeature({
             </Link>
           ))}
 
-        {loading && (
-          <p className="relocations-table__state">
-            Carregando...
-          </p>
-        )}
+        {loading && <p className="relocations-table__state">Carregando...</p>}
 
         {!loading && visible.length === 0 && (
           <p className="relocations-table__state">

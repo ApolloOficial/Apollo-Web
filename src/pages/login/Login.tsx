@@ -23,7 +23,10 @@ const initialForm: LoginFormViewModel = {
 
 export default function Login() {
   const [form, setForm] = useState<LoginFormViewModel>(initialForm)
-  const [status, setStatus] = useState<{ loading: boolean; error: string | null }>({
+  const [status, setStatus] = useState<{
+    loading: boolean
+    error: string | null
+  }>({
     loading: false,
     error: null,
   })
@@ -36,7 +39,10 @@ export default function Login() {
     setStatus({ loading: true, error: null })
 
     try {
-      const { token, tokenType, firstAccess } = await login({ email: form.email, password: form.password })
+      const { token, tokenType, firstAccess } = await login({
+        email: form.email,
+        password: form.password,
+      })
       saveSession({ token, tokenType })
       navigate(firstAccess ? paths.updatePassword : paths.home)
     } catch (err) {
@@ -67,7 +73,9 @@ export default function Login() {
           placeholder="Digite aqui sua senha"
           autoComplete="current-password"
           value={form.password}
-          onChange={(password) => setForm((current) => ({ ...current, password }))}
+          onChange={(password) =>
+            setForm((current) => ({ ...current, password }))
+          }
           invalid={Boolean(status.error)}
         />
         <div className="login__options">
@@ -75,14 +83,18 @@ export default function Login() {
             id="remember"
             label="Lembre de mim"
             checked={form.remember}
-            onChange={(remember) => setForm((current) => ({ ...current, remember }))}
+            onChange={(remember) =>
+              setForm((current) => ({ ...current, remember }))
+            }
           />
           <TextLink to={paths.forgotPassword}>Esqueceu sua senha?</TextLink>
         </div>
         <Button type="submit" fullWidth disabled={!canSubmit || status.loading}>
           {status.loading ? 'Entrando...' : 'Começar'}
         </Button>
-        {status.error && <StatusMessage tone="alert">{status.error}</StatusMessage>}
+        {status.error && (
+          <StatusMessage tone="alert">{status.error}</StatusMessage>
+        )}
       </form>
     </AuthPage>
   )

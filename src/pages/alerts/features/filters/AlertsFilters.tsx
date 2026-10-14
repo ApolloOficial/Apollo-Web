@@ -1,7 +1,5 @@
 import { SelectInput } from '../../../../components/inputs/select-input'
-import type {
-  AlertsFiltersViewModel,
-} from '../../data-access/vm/Alerts.vm'
+import type { AlertsFiltersViewModel } from '../../data-access/vm/Alerts.vm'
 
 interface Props {
   value: AlertsFiltersViewModel
@@ -9,11 +7,7 @@ interface Props {
   onApply: () => void
 }
 
-export function AlertsFilters({
-  value,
-  onChange,
-  onApply,
-}: Props) {
+export function AlertsFilters({ value, onChange, onApply }: Props) {
   return (
     <div className="alerts-filters">
       <SelectInput
@@ -29,8 +23,7 @@ export function AlertsFilters({
         onChange={(severity) =>
           onChange({
             ...value,
-            severity:
-              severity as AlertsFiltersViewModel['severity'],
+            severity: severity as AlertsFiltersViewModel['severity'],
           })
         }
       />
@@ -73,8 +66,7 @@ export function AlertsFilters({
         onChange={(status) =>
           onChange({
             ...value,
-            status:
-              status as AlertsFiltersViewModel['status'],
+            status: status as AlertsFiltersViewModel['status'],
           })
         }
       />

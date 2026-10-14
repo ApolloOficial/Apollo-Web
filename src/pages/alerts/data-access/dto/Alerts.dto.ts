@@ -1,22 +1,22 @@
 export interface PageDto<T> {
-    content: T[];
-    totalElements: number
-    totalPages: number
-    size: number
-    number: number
+  content: T[]
+  totalElements: number
+  totalPages: number
+  size: number
+  number: number
 }
 
-export type WarningSeverity = 'BAIXA' | 'MEDIA' | 'ALTA' | 'CRITICA';
+export type WarningSeverity = 'BAIXA' | 'MEDIA' | 'ALTA' | 'CRITICA'
 
 export type WarningType =
-    | 'EFICIENCIA_BAIXA'
-    | 'FALHA_INVERSOR'
-    | 'DANO_FISICO'
-    | 'SUJIDADE'
-    | 'PONTO_QUENTE'
-    | 'CONEXAO'
+  | 'EFICIENCIA_BAIXA'
+  | 'FALHA_INVERSOR'
+  | 'DANO_FISICO'
+  | 'SUJIDADE'
+  | 'PONTO_QUENTE'
+  | 'CONEXAO'
 
-export type WarningStatus = 'ATIVO' | 'RECONHECIDO' | 'RESOLVIDO';
+export type WarningStatus = 'ATIVO' | 'RECONHECIDO' | 'RESOLVIDO'
 
 export interface WarningDto {
   id: number

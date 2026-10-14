@@ -22,7 +22,10 @@ export function SimpleInput({
       <label className="simple-input__label" htmlFor={id}>
         {label}
       </label>
-      <div className="simple-input__field" data-invalid={isInvalid ? 'true' : undefined}>
+      <div
+        className="simple-input__field"
+        data-invalid={isInvalid ? 'true' : undefined}
+      >
         {icon && <span className="simple-input__icon">{icon}</span>}
         <input
           id={id}

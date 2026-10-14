@@ -14,6 +14,11 @@ export const navigationItems: NavigationItem[] = [
   { label: 'OS', to: paths.serviceOrders, icon: ServiceOrderIcon },
   { label: 'Realocações', to: paths.relocations, icon: RelocationIcon },
   { label: 'Filiais', to: paths.branches, icon: SolarPanelIcon },
-  { label: 'Funcionários', to: paths.employees, icon: UsersIcon, roles: ['GERENTE'] },
+  {
+    label: 'Funcionários',
+    to: paths.employees,
+    icon: UsersIcon,
+    roles: ['GERENTE'],
+  },
   { label: 'Métricas', to: paths.metrics, icon: ChartIcon },
 ]

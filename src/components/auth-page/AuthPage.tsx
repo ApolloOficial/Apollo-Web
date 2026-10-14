@@ -16,7 +16,8 @@ export function AuthPage({
     if (focusTitle) titleRef.current?.focus()
   }, [focusTitle])
 
-  const className = align === 'center' ? 'auth-page auth-page--center' : 'auth-page'
+  const className =
+    align === 'center' ? 'auth-page auth-page--center' : 'auth-page'
 
   return (
     <div className={className}>

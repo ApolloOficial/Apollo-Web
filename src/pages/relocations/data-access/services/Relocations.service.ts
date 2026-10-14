@@ -1,7 +1,5 @@
 import { request } from '../../../../services/http'
-import type {
-  AllFilterValue,
-} from '../../../../types/filter.types'
+import type { AllFilterValue } from '../../../../types/filter.types'
 import type {
   CompanyDTO,
   CompanyUnitDTO,
@@ -24,11 +22,7 @@ interface ListParams {
   size: number
 }
 
-function queryOf({
-  status,
-  page,
-  size,
-}: ListParams) {
+function queryOf({ status, page, size }: ListParams) {
   const query = new URLSearchParams({
     page: String(page),
     size: String(size),
@@ -47,90 +41,64 @@ export function getMe() {
   return request<MeDTO>('/auth/me')
 }
 
-export function getMyInternalRelocations(
-  params: ListParams,
-) {
+export function getMyInternalRelocations(params: ListParams) {
   return request<PageDTO<InternalRelocationDTO>>(
     `/relocations/internal/mine?${queryOf(params)}`,
   )
 }
 
-export function getIncomingInternalRelocations(
-  params: ListParams,
-) {
+export function getIncomingInternalRelocations(params: ListParams) {
   return request<PageDTO<InternalRelocationDTO>>(
     `/relocations/internal/incoming?${queryOf(params)}`,
   )
 }
 
-export function getExternalRelocations(
-  params: ListParams,
-) {
+export function getExternalRelocations(params: ListParams) {
   return request<PageDTO<ExternalRelocationDTO>>(
     `/relocations/external?${queryOf(params)}`,
   )
 }
 
 export function getInternalRelocation(id: number) {
-  return request<InternalRelocationDTO>(
-    `/relocations/internal/${id}`,
-  )
+  return request<InternalRelocationDTO>(`/relocations/internal/${id}`)
 }
 
 export function getExternalRelocation(id: number) {
-  return request<ExternalRelocationDTO>(
-    `/relocations/external/${id}`,
-  )
+  return request<ExternalRelocationDTO>(`/relocations/external/${id}`)
 }
 
-export function postInternalRelocation(
-  body: CreateInternalRelocationDTO,
-) {
-  return request<InternalRelocationDTO>(
-    '/relocations/internal',
-    {
-      method: 'POST',
-      body,
-    },
-  )
+export function postInternalRelocation(body: CreateInternalRelocationDTO) {
+  return request<InternalRelocationDTO>('/relocations/internal', {
+    method: 'POST',
+    body,
+  })
 }
 
-export function postExternalRelocation(
-  body: CreateExternalRelocationDTO,
-) {
-  return request<ExternalRelocationDTO>(
-    '/relocations/external',
-    {
-      method: 'POST',
-      body,
-    },
-  )
+export function postExternalRelocation(body: CreateExternalRelocationDTO) {
+  return request<ExternalRelocationDTO>('/relocations/external', {
+    method: 'POST',
+    body,
+  })
 }
 
 export function reviewInternalRelocation(
   id: number,
   body: ReviewRelocationDTO,
 ) {
-  return request<InternalRelocationDTO>(
-    `/relocations/internal/${id}/review`,
-    {
-      method: 'PATCH',
-      body,
-    },
-  )
+  return request<InternalRelocationDTO>(`/relocations/internal/${id}/review`, {
+    method: 'PATCH',
+    body,
+  })
 }
 
 export function reviewExternalRelocation(
   id: number,
   body: ReviewRelocationDTO,
 ) {
-  return request<ExternalRelocationDTO>(
-    `/relocations/external/${id}/review`,
-    {
-      method: 'PATCH',
-      body,
-    },
-  )
+  return request<ExternalRelocationDTO>(`/relocations/external/${id}/review`, {
+    method: 'PATCH',
+    body,
+  })
 }
 
 export function getCompanyUnits() {
@@ -140,15 +108,11 @@ export function getCompanyUnits() {
 }
 
 export function getCompanies() {
-  return request<PageDTO<CompanyDTO>>(
-    '/companies?page=0&size=100',
-  )
+  return request<PageDTO<CompanyDTO>>('/companies?page=0&size=100')
 }
 
 export function getSegments() {
-  return request<PageDTO<SegmentDTO>>(
-    '/segments?page=0&size=100',
-  )
+  return request<PageDTO<SegmentDTO>>('/segments?page=0&size=100')
 }
 
 export function getStrings(unitId: string) {
@@ -158,9 +122,7 @@ export function getStrings(unitId: string) {
     size: '100',
   })
 
-  return request<PageDTO<StringDTO>>(
-    `/strings?${query}`,
-  )
+  return request<PageDTO<StringDTO>>(`/strings?${query}`)
 }
 
 export function getPanels(unitId: string) {
@@ -170,7 +132,5 @@ export function getPanels(unitId: string) {
     size: '100',
   })
 
-  return request<PageDTO<PanelDTO>>(
-    `/panels?${query}`,
-  )
+  return request<PageDTO<PanelDTO>>(`/panels?${query}`)
 }

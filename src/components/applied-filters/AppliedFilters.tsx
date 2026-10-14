@@ -13,18 +13,11 @@ interface Props {
   onClear: () => void
 }
 
-export function AppliedFilters({
-  filters,
-  onRemove,
-  onClear,
-}: Props) {
+export function AppliedFilters({ filters, onRemove, onClear }: Props) {
   if (filters.length === 0) return null
 
   return (
-    <div
-      className="applied-filters"
-      aria-label="Filtros aplicados"
-    >
+    <div className="applied-filters" aria-label="Filtros aplicados">
       <button
         className="applied-filters__item applied-filters__clear"
         type="button"
@@ -32,10 +25,7 @@ export function AppliedFilters({
       >
         <span>Limpar todos os filtros</span>
 
-        <Icon
-          icon="lucide:x"
-          aria-hidden="true"
-        />
+        <Icon icon="lucide:x" aria-hidden="true" />
       </button>
 
       {filters.map((filter) => (
@@ -50,10 +40,7 @@ export function AppliedFilters({
             <strong>{filter.label}:</strong> {filter.value}
           </span>
 
-          <Icon
-            icon="lucide:x"
-            aria-hidden="true"
-          />
+          <Icon icon="lucide:x" aria-hidden="true" />
         </button>
       ))}
     </div>

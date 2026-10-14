@@ -81,11 +81,7 @@
 }
 
 .alerts-table__details:hover {
-  background: color-mix(
-    in srgb,
-    var(--color-secondary-light) 10%,
-    transparent
-  );
+  background: color-mix(in srgb, var(--color-secondary-light) 10%, transparent);
 }
 
 .alerts-table__action {
@@ -237,11 +233,7 @@
 
 .service-order-form .prefilled {
   border-color: var(--color-disabled);
-  background: color-mix(
-    in srgb,
-    var(--color-secondary-light) 20%,
-    transparent
-  );
+  background: color-mix(in srgb, var(--color-secondary-light) 20%, transparent);
   font-weight: var(--font-weight-bold);
 }
 

@@ -39,19 +39,43 @@ export function AppRoutes() {
         <Route path={paths.employees} element={<Employees />} />
         <Route path={paths.employeeCreate} element={<EmployeeForm />} />
         {/* Rotas temporárias até a seleção automática de interface por role. */}
-        <Route path={paths.relocations} element={<Relocations audience="operator" />} />
-        <Route path={paths.relocationOperator} element={<Relocations audience="operator" />} />
-        <Route path={paths.relocationManager} element={<Relocations audience="manager" />} />
+        <Route
+          path={paths.relocations}
+          element={<Relocations audience="operator" />}
+        />
+        <Route
+          path={paths.relocationOperator}
+          element={<Relocations audience="operator" />}
+        />
+        <Route
+          path={paths.relocationManager}
+          element={<Relocations audience="manager" />}
+        />
         <Route path={paths.relocationCreate} element={<RelocationsForm />} />
         <Route path={paths.relocationDetails} element={<RelocationDetails />} />
-        <Route path={paths.relocationManagerDetails} element={<RelocationDetails managerMode />} />
+        <Route
+          path={paths.relocationManagerDetails}
+          element={<RelocationDetails managerMode />}
+        />
         <Route path={paths.alerts} element={<Alerts audience="operator" />} />
-        <Route path={paths.alertsManager} element={<Alerts audience="manager" />} />
-        <Route path={paths.alertDetails} element={<AlertDetails audience="operator" />} />
-        <Route path={paths.alertManagerDetails} element={<AlertDetails audience="manager" />} />
+        <Route
+          path={paths.alertsManager}
+          element={<Alerts audience="manager" />}
+        />
+        <Route
+          path={paths.alertDetails}
+          element={<AlertDetails audience="operator" />}
+        />
+        <Route
+          path={paths.alertManagerDetails}
+          element={<AlertDetails audience="manager" />}
+        />
         <Route path={paths.alertServiceOrder} element={<ServiceOrderForm />} />
         <Route path={paths.serviceOrders} element={<ServiceOrder />} />
-        <Route path={paths.serviceOrderDetails} element={<ServiceOrderDetails />} />
+        <Route
+          path={paths.serviceOrderDetails}
+          element={<ServiceOrderDetails />}
+        />
       </Route>
     </Routes>
   )

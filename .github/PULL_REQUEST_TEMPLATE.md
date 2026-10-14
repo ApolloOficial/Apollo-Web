@@ -1,9 +1,11 @@
 #### Descrição
+
 <!-- Escreva uma breve explicação do que foi feito na branch -->
 
 ---
 
 #### Tipo de alteração
+
 <!--
 Apague as opções que não se aplicam a esse PR e preencha a descrição ao lado da que você manteve:
 
@@ -19,12 +21,15 @@ Apague as opções que não se aplicam a esse PR e preencha a descrição ao lad
 `chore`: Tarefas de manutenção que não alteram código de produção (ex: configs, scripts)
 `revert`: Reversão de um commit anterior
 -->
+
 `x`: descrição
 
 ---
 
 #### Checklist
+
 <!-- Preencha com ✅ ou ❌-->
+
 - [ ] Testei localmente (Spring rodando + front, fluxo completo)
 - [ ] Segue a convenção de nomenclatura do projeto (`Dto`/`ViewModel` nos types, arquivos em `src/types/` e `src/services/`)
 - [ ] Toda comunicação com a API está isolada em `src/services/`, com try/catch e retorno tipado
@@ -37,4 +42,5 @@ Apague as opções que não se aplicam a esse PR e preencha a descrição ao lad
 ---
 
 #### Observações
+
 <!-- Preencha apenas se necessário, caso não for, delete o título Observações -->

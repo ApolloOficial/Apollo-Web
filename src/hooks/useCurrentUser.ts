@@ -9,7 +9,11 @@ interface CurrentUserState {
 }
 
 export function useCurrentUser(enabled = true): CurrentUserState {
-  const [state, setState] = useState<CurrentUserState>({ user: null, loading: enabled, error: null })
+  const [state, setState] = useState<CurrentUserState>({
+    user: null,
+    loading: enabled,
+    error: null,
+  })
 
   useEffect(() => {
     if (!enabled) return

@@ -31,7 +31,11 @@ export default function ForgotPassword() {
       title="Esqueci minha senha"
       subtitle="Informe seu e-mail e enviaremos um link para redefinir sua senha."
     >
-      <form className="forgot-password__form" onSubmit={handleSubmit} noValidate>
+      <form
+        className="forgot-password__form"
+        onSubmit={handleSubmit}
+        noValidate
+      >
         <SimpleInput
           id="email"
           label="E-mail"
