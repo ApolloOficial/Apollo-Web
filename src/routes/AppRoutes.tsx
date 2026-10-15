@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router-dom'
 import { AuthLayout } from '../components/auth-layout'
 import { Layout } from '../components/layout'
 import EmployeeForm from '../pages/employees/employee-form'
+import Branches from '../pages/branches'
 import Employees from '../pages/employees'
 import Alerts from '../pages/alerts'
 import AlertDetails from '../pages/alerts/alert-details'
@@ -32,6 +33,7 @@ export function AppRoutes() {
 
       <Route element={<Layout />}>
         <Route path={paths.home} element={<Home />} />
+        <Route path={paths.branches} element={<Branches />} />
         {/*
           TODO: ao final do projeto, proteger estas duas rotas de funcionário para permitir
           somente usuários cujo role seja GERENTE.

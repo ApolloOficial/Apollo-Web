@@ -1,0 +1,16 @@
+export function formatCnpj(value: string) {
+  const digits = value.replace(/\D/g, '')
+
+  if (digits.length !== 14) return value
+
+  return digits.replace(
+    /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+    '$1.$2.$3/$4-$5',
+  )
+}
+
+export function formatKwp(value: number | null | undefined) {
+  if (value === null || value === undefined) return '-'
+
+  return `${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} kWp`
+}
