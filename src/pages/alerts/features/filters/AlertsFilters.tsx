@@ -9,7 +9,7 @@ interface Props {
 
 export function AlertsFilters({ value, onChange, onApply }: Props) {
   return (
-    <div className="alerts-filters">
+    <div className="filter-bar alerts-filters">
       <SelectInput
         placeholder="Severidade"
         value={value.severity}

@@ -3,6 +3,8 @@ import { AuthLayout } from '../components/auth-layout'
 import { Layout } from '../components/layout'
 import EmployeeForm from '../pages/employees/employee-form'
 import Branches from '../pages/branches'
+import BranchInverterDetails from '../pages/branches/mine-branch/inverter-details'
+import BranchStringDetails from '../pages/branches/mine-branch/string-details'
 import Employees from '../pages/employees'
 import Alerts from '../pages/alerts'
 import AlertDetails from '../pages/alerts/alert-details'
@@ -34,6 +36,14 @@ export function AppRoutes() {
       <Route element={<Layout />}>
         <Route path={paths.home} element={<Home />} />
         <Route path={paths.branches} element={<Branches />} />
+        <Route
+          path={paths.branchStringDetails}
+          element={<BranchStringDetails />}
+        />
+        <Route
+          path={paths.branchInverterDetails}
+          element={<BranchInverterDetails />}
+        />
         {/*
           TODO: ao final do projeto, proteger estas duas rotas de funcionário para permitir
           somente usuários cujo role seja GERENTE.

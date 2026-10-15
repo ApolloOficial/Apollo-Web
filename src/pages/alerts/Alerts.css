@@ -2,7 +2,6 @@
 .alerts-details,
 .service-order-page {
   width: 100%;
-  max-width: 75rem;
 }
 
 .alerts-breadcrumb {
@@ -26,13 +25,12 @@
 
 .alerts-filters {
   display: grid;
-  grid-template-columns: repeat(3, minmax(12rem, 13.5rem)) auto;
+  grid-template-columns: repeat(3, minmax(12rem, 15rem)) auto;
   gap: 1.5rem;
-  align-items: end;
+  align-items: center;
   margin: 1rem 0 2rem;
 }
 
-.alerts-filters > button,
 .service-order-form__submit {
   width: fit-content;
   min-width: 8.5rem;

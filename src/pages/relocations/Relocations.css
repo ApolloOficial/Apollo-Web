@@ -2,7 +2,6 @@
 .relocation-form-page,
 .relocation-details {
   width: 100%;
-  max-width: 75rem;
   margin: 0;
   padding: 0;
 }
@@ -68,13 +67,12 @@
 
 .relocations-filters {
   display: grid;
-  grid-template-columns: minmax(12rem, 13.5rem) minmax(12rem, 13.5rem) auto;
+  grid-template-columns: repeat(2, minmax(12rem, 15rem)) auto;
   gap: 1.5rem;
-  align-items: end;
+  align-items: center;
   margin: 1.5rem 0 2rem;
 }
 
-.relocations-filters > button,
 .relocation-form__submit,
 .relocation-details__actions button {
   min-height: 3.25rem;
@@ -85,12 +83,6 @@
   color: var(--color-on-brand);
   font-weight: var(--font-weight-bold);
   cursor: pointer;
-}
-
-.relocations-filters > button {
-  width: fit-content;
-  min-width: 8.5rem;
-  justify-self: start;
 }
 
 .relocations-table__header,

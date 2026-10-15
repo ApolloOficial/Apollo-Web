@@ -1,7 +1,6 @@
 .service-orders-page,
 .service-order-details {
   width: 100%;
-  max-width: 75rem;
 }
 
 .service-orders-breadcrumb {
@@ -28,9 +27,9 @@
 
 .service-orders-filters {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 13.5rem));
+  grid-template-columns: repeat(4, minmax(0, 15rem));
   gap: 1rem 1.5rem;
-  align-items: end;
+  align-items: center;
   margin: 1rem 0 2rem;
 }
 
@@ -77,22 +76,6 @@
 .service-orders-filters__apply {
   grid-column: 4;
   grid-row: 2;
-  width: fit-content;
-  min-width: 8.5rem;
-  min-height: 3.25rem;
-  padding: 0.75rem 2rem;
-  border: 0;
-  border-radius: 999px;
-  background: var(--color-secondary);
-  color: var(--color-on-brand);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-}
-
-.service-orders-filters__apply:disabled {
-  background: var(--color-disabled-soft);
-  color: var(--color-disabled-text);
-  cursor: default;
 }
 
 .service-orders-table__header,

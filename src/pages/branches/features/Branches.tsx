@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   AppliedFilters,
   type AppliedFilter,
@@ -22,7 +22,9 @@ function uniqueSorted(values: string[]) {
 
 export function BranchesFeature() {
   const { user, loading: userLoading } = useLayoutContext()
-  const [tab, setTab] = useState<BranchesTabVM>('all')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tab: BranchesTabVM =
+    searchParams.get('tab') === 'mine' ? 'mine' : 'all'
   const [draft, setDraft] = useState<BranchFiltersVM>(INITIAL_BRANCH_FILTERS)
   const [filters, setFilters] = useState<BranchFiltersVM>(
     INITIAL_BRANCH_FILTERS,
@@ -57,6 +59,10 @@ export function BranchesFeature() {
 
     return result
   }, [filters])
+
+  function setTab(next: BranchesTabVM) {
+    setSearchParams(next === 'mine' ? { tab: 'mine' } : {}, { replace: true })
+  }
 
   function removeAppliedFilter(key: string) {
     if (key === 'name' || key === 'city') {

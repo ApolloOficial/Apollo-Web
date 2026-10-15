@@ -1,7 +1,6 @@
 .employees-page,
 .employee-form-page {
   width: 100%;
-  max-width: 75rem;
   margin: 0;
   padding: 0;
 }
@@ -40,8 +39,9 @@
 
 .employees-filters {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
+  grid-template-columns: repeat(3, minmax(12rem, 15rem)) auto;
   gap: 1.5rem;
+  align-items: center;
   margin: 1rem 0 2rem;
   font-weight: var(--font-weight-bold);
 }
@@ -54,7 +54,6 @@
   background: var(--color-background);
 }
 
-.employees-filters > button,
 .employee-form__submit {
   border: 0;
   border-radius: 999px;
@@ -64,11 +63,6 @@
   cursor: pointer;
 }
 
-.employees-filters > button {
-  align-self: center;
-  padding: 0.75rem 2rem;
-}
-.employees-filters > button:disabled,
 .employee-form__submit:disabled {
   background: var(--color-disabled-soft);
   color: var(--color-disabled-text);

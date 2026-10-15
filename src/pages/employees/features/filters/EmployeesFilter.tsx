@@ -20,7 +20,7 @@ export function EmployeesFilter({
 }: Props) {
   return (
     <form
-      className="employees-filters"
+      className="filter-bar employees-filters"
       onSubmit={(event) => {
         event.preventDefault()
         onApply()

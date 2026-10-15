@@ -18,7 +18,7 @@ export function BranchesFilters({
 }: Props) {
   return (
     <form
-      className="branches-filters"
+      className="filter-bar branches-filters"
       onSubmit={(event) => {
         event.preventDefault()
         onApply()

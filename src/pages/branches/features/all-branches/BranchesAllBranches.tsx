@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Paginator } from '../../../../components/paginator'
+import { useApiResource } from '../../../../hooks/useApiResource'
 import { formatCnpj } from '../../../../utils/formatters'
-import type { BranchDTO } from '../../data-access/dto/Branches.dto'
 import { getBranches } from '../../data-access/services/Branches.service'
 import type { BranchFiltersVM } from '../../data-access/vm/Branches.vm'
 
@@ -10,12 +10,8 @@ interface Props {
 }
 
 export function BranchesAllBranches({ filters }: Props) {
-  const [branches, setBranches] = useState<BranchDTO[]>([])
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
-  const [totalPages, setTotalPages] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
   const [lastFilters, setLastFilters] = useState(filters)
 
   if (lastFilters !== filters) {
@@ -23,32 +19,15 @@ export function BranchesAllBranches({ filters }: Props) {
     setPage(0)
   }
 
-  const loadBranches = useCallback(async () => {
-    setLoading(true)
-    setError('')
-
-    try {
-      const result = await getBranches(filters, page, size)
-
-      setBranches(result.content)
-      setTotalPages(result.totalPages)
-    } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : 'Não foi possível carregar as filiais.',
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [filters, page, size])
-
-  useEffect(() => {
-    void (async () => {
-      await Promise.resolve()
-      await loadBranches()
-    })()
-  }, [loadBranches])
+  const fetchBranches = useMemo(
+    () => () => getBranches(filters, page, size),
+    [filters, page, size],
+  )
+  const { data, loading, error } = useApiResource(
+    fetchBranches,
+    'Não foi possível carregar as filiais.',
+  )
+  const branches = data?.content ?? []
 
   return (
     <>
@@ -88,7 +67,7 @@ export function BranchesAllBranches({ filters }: Props) {
 
       <Paginator
         page={page}
-        totalPages={totalPages}
+        totalPages={data?.totalPages ?? 0}
         size={size}
         onPageChange={setPage}
         onSizeChange={(newSize) => {

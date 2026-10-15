@@ -9,7 +9,7 @@ interface Props {
 
 export function RelocationsFilters({ value, onChange, onApply }: Props) {
   return (
-    <div className="relocations-filters">
+    <div className="filter-bar relocations-filters">
       <SelectInput
         placeholder="Status"
         value={value.status}
