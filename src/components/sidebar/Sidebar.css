@@ -61,6 +61,32 @@
   background: var(--color-secondary-dark);
 }
 
+.sidebar__sublist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0.9rem 0 0 3.375rem;
+  padding: 0 0 0 2.1rem;
+  border-left: 1px solid var(--color-disabled);
+  list-style: none;
+}
+
+.sidebar__sublink {
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.sidebar__sublink:hover,
+.sidebar__sublink--active {
+  color: var(--color-text);
+}
+
+.sidebar__sublink--active {
+  font-weight: var(--font-weight-bold);
+}
+
 .sidebar__icon {
   flex-shrink: 0;
   width: 1.45rem;
@@ -70,6 +96,10 @@
 @media (max-width: 1100px) {
   .sidebar {
     width: 6rem;
+  }
+
+  .sidebar__sublist {
+    display: none;
   }
 
   .sidebar__link {

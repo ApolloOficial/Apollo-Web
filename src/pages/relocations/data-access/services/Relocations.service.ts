@@ -7,7 +7,6 @@ import type {
   CreateInternalRelocationDTO,
   ExternalRelocationDTO,
   InternalRelocationDTO,
-  MeDTO,
   PageDTO,
   PanelDTO,
   RelocationStatus,
@@ -35,10 +34,6 @@ function queryOf({ status, page, size }: ListParams) {
   }
 
   return query
-}
-
-export function getMe() {
-  return request<MeDTO>('/auth/me')
 }
 
 export function getMyInternalRelocations(params: ListParams) {

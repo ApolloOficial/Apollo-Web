@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Combobox } from '../../../../components/inputs/combobox'
+import { useCurrentUserContext } from '../../../../hooks/useCurrentUserContext'
 import {
-  getMe,
   getRoles,
   postEmployee,
 } from '../../data-access/services/Employees.service'
@@ -19,15 +19,15 @@ interface Props {
 export function EmployeesForm({ onSuccess }: Props) {
   const [form, setForm] = useState<EmployeeFormVM>(INITIAL_EMPLOYEE_FORM)
   const [roles, setRoles] = useState<RoleDTO[]>([])
-  const [companyUnitId, setCompanyUnitId] = useState('')
+  // A filial vem do gerente autenticado e não aparece no formulário.
+  const { user, error: userError } = useCurrentUserContext()
+  const companyUnitId = user?.companyUnitId ?? ''
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    void Promise.all([getMe(), getRoles()])
-      .then(([me, rolesPage]) => {
-        // A filial vem do gerente autenticado e não aparece no formulário.
-        setCompanyUnitId(me.companyUnitId)
+    void getRoles()
+      .then((rolesPage) => {
         setRoles(
           rolesPage.content.filter(
             (role) => role.name.toUpperCase() !== 'GERENTE',
@@ -56,7 +56,7 @@ export function EmployeesForm({ onSuccess }: Props) {
     setError('')
     if (!selectedRole) return setError('Selecione um cargo existente na lista.')
     if (!companyUnitId)
-      return setError('A filial do gerente não foi encontrada.')
+      return setError(userError ?? 'A filial do gerente não foi encontrada.')
     setSubmitting(true)
     try {
       await postEmployee({
@@ -110,7 +110,7 @@ export function EmployeesForm({ onSuccess }: Props) {
           minLength={8}
           maxLength={72}
           value={form.temporaryPassword}
-          placeholder="Digite a senha temporária"
+          placeholder="Digite a senha temporária do funcionário"
           onChange={(event) =>
             setForm({ ...form, temporaryPassword: event.target.value })
           }

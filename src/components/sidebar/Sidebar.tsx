@@ -1,10 +1,11 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { paths } from '../../routes/paths'
 import type { SidebarProps } from '../../types/ui.types'
 import { normalizeRole } from '../../utils/user'
 import './Sidebar.css'
 
 export function Sidebar({ items, role }: SidebarProps) {
+  const { pathname } = useLocation()
   const currentRole = role === undefined ? undefined : normalizeRole(role)
   const visibleItems = items.filter(
     (item) =>
@@ -24,7 +25,7 @@ export function Sidebar({ items, role }: SidebarProps) {
 
       <nav className="sidebar__nav" aria-label="Menu principal">
         <ul className="sidebar__list">
-          {visibleItems.map(({ to, label, icon: ItemIcon }) => (
+          {visibleItems.map(({ to, label, icon: ItemIcon, children }) => (
             <li key={to}>
               <NavLink
                 to={to}
@@ -38,6 +39,25 @@ export function Sidebar({ items, role }: SidebarProps) {
                 <ItemIcon className="sidebar__icon" />
                 <span>{label}</span>
               </NavLink>
+
+              {children && pathname.startsWith(to) && (
+                <ul className="sidebar__sublist">
+                  {children.map((child) => (
+                    <li key={child.to}>
+                      <NavLink
+                        to={child.to}
+                        className={({ isActive }) =>
+                          isActive
+                            ? 'sidebar__sublink sidebar__sublink--active'
+                            : 'sidebar__sublink'
+                        }
+                      >
+                        {child.label}
+                      </NavLink>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
         </ul>

@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Combobox } from '../../../../components/inputs/combobox'
 import { SelectInput } from '../../../../components/inputs/select-input'
+import { useCurrentUserContext } from '../../../../hooks/useCurrentUserContext'
 import type {
   CompanyDTO,
   CompanyUnitDTO,
-  MeDTO,
   PanelDTO,
   SegmentDTO,
   StringDTO,
@@ -13,7 +13,6 @@ import type {
 import {
   getCompanies,
   getCompanyUnits,
-  getMe,
   getPanels,
   getSegments,
   getStrings,
@@ -32,7 +31,11 @@ interface Props {
 
 export function RelocationsForm({ onSuccess, onError }: Props) {
   const [type, setType] = useState<'INTERNAL' | 'EXTERNAL'>('INTERNAL')
-  const [me, setMe] = useState<MeDTO | null>(null)
+  const {
+    user: me,
+    loading: loadingUser,
+    error: userError,
+  } = useCurrentUserContext()
   const [units, setUnits] = useState<CompanyUnitDTO[]>([])
   const [companies, setCompanies] = useState<CompanyDTO[]>([])
   const [segments, setSegments] = useState<SegmentDTO[]>([])
@@ -46,12 +49,19 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
   const [formError, setFormError] = useState('')
 
   useEffect(() => {
+    // Aguarda o usuário autenticado, carregado uma única vez pelo Layout.
+    if (loadingUser) return
+    if (!me) {
+      setLoadError(userError ?? 'Não foi possível carregar os dados.')
+      setLoadingOptions(false)
+      return
+    }
+    const user = me
+
     async function prepare() {
       setLoadingOptions(true)
       setLoadError('')
       try {
-        const user = await getMe()
-        setMe(user)
         const [unitPage, companyPage, segmentPage, stringPage, panelPage] =
           await Promise.all([
             getCompanyUnits(),
@@ -80,7 +90,7 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
       }
     }
     void prepare()
-  }, [])
+  }, [me, loadingUser, userError])
 
   const unit = useMemo(
     () => units.find((item) => item.name === internal.destinationUnitName),

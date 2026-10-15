@@ -5,6 +5,7 @@ import {
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
+import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { paths } from '../../../routes/paths'
 import type {
   ExternalRelocationDTO,
@@ -13,7 +14,6 @@ import type {
 import {
   getExternalRelocations,
   getIncomingInternalRelocations,
-  getMe,
   getMyInternalRelocations,
 } from '../data-access/services/Relocations.service'
 import {
@@ -77,14 +77,33 @@ export function RelocationsFeature({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // O usuário vem do contexto (uma única chamada a /auth/me no Layout).
+  // Só o operador precisa dele; no gerente os valores ficam constantes para
+  // não recarregar a lista quando o usuário termina de carregar.
+  const { user, loading: userLoading, error: userError } =
+    useCurrentUserContext()
+  const isOperator = audience === 'operator'
+  const operatorUserId = isOperator ? user?.userId : undefined
+  const waitingUser = isOperator && userLoading
+  const operatorUserError = isOperator ? userError : null
+
   const load = useCallback(async () => {
+    if (isOperator && !operatorUserId) {
+      if (!waitingUser) {
+        setError(
+          operatorUserError ?? 'Não foi possível identificar o usuário.',
+        )
+        setLoading(false)
+      }
+      return
+    }
+
     setLoading(true)
     setError('')
 
     try {
-      if (audience === 'operator') {
-        const [me, internal, external] = await Promise.all([
-          getMe(),
+      if (isOperator) {
+        const [internal, external] = await Promise.all([
           getMyInternalRelocations({
             status: filters.status,
             page: 0,
@@ -100,7 +119,7 @@ export function RelocationsFeature({
         setItems([
           ...internal.content.map(toInternal),
           ...external.content
-            .filter((item) => item.requestedById === me.userId)
+            .filter((item) => item.requestedById === operatorUserId)
             .map(toExternal),
         ])
       } else if (tab === 'my-unit') {
@@ -129,7 +148,7 @@ export function RelocationsFeature({
     } finally {
       setLoading(false)
     }
-  }, [audience, filters, tab])
+  }, [isOperator, operatorUserId, waitingUser, operatorUserError, filters, tab])
 
   useEffect(() => {
     void (async () => {

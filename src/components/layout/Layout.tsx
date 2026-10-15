@@ -1,5 +1,6 @@
 import { Outlet, useNavigate } from 'react-router-dom'
-import { useCurrentUser } from '../../hooks/useCurrentUser'
+import { CurrentUserProvider } from '../../contexts/CurrentUserProvider'
+import { useCurrentUserContext } from '../../hooks/useCurrentUserContext'
 import { navigationItems } from '../../routes/navigation.config'
 import { paths } from '../../routes/paths'
 import type { LayoutContext } from '../../types/ui.types'
@@ -9,8 +10,16 @@ import { Sidebar } from '../sidebar'
 import './Layout.css'
 
 export function Layout() {
+  return (
+    <CurrentUserProvider>
+      <LayoutContent />
+    </CurrentUserProvider>
+  )
+}
+
+function LayoutContent() {
   const navigate = useNavigate()
-  const { user, loading } = useCurrentUser()
+  const { user, loading } = useCurrentUserContext()
 
   function handleLogout() {
     clearSession()

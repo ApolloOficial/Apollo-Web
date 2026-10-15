@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import { AuthLayout } from '../components/auth-layout'
 import { Layout } from '../components/layout'
 import EmployeeForm from '../pages/employees/employee-form'
@@ -15,6 +15,7 @@ import FirstAccess from '../pages/first-access'
 import ForgotPassword from '../pages/forgot-password'
 import Home from '../pages/home'
 import Login from '../pages/login'
+import Metrics from '../pages/metrics'
 import ResetPassword from '../pages/reset-password'
 import Relocations from '../pages/relocations'
 import RelocationDetails from '../pages/relocations/relocation-details'
@@ -50,6 +51,15 @@ export function AppRoutes() {
         */}
         <Route path={paths.employees} element={<Employees />} />
         <Route path={paths.employeeCreate} element={<EmployeeForm />} />
+        <Route
+          path={paths.metrics}
+          element={<Navigate to={paths.metricsCorporate} replace />}
+        />
+        <Route
+          path={paths.metricsCorporate}
+          element={<Metrics type="corporate" />}
+        />
+        <Route path={paths.metricsSolar} element={<Metrics type="solar" />} />
         {/* Rotas temporárias até a seleção automática de interface por role. */}
         <Route
           path={paths.relocations}

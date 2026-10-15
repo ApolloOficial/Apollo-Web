@@ -24,4 +24,6 @@ export const paths = {
   employees: '/employees',
   employeeCreate: '/employees/new',
   metrics: '/metrics',
+  metricsCorporate: '/metrics/corporate',
+  metricsSolar: '/metrics/solar',
 } as const

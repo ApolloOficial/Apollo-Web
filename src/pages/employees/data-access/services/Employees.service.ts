@@ -2,7 +2,6 @@ import { request } from '../../../../services/http'
 import type {
   CreateEmployeeDTO,
   EmployeeDTO,
-  MeDTO,
   PageDTO,
   RoleDTO,
 } from '../dto/Employees.dto'
@@ -37,10 +36,6 @@ export function getEmployees(
 
 export function getRoles() {
   return request<PageDTO<RoleDTO>>('/roles?page=0&size=100')
-}
-
-export function getMe() {
-  return request<MeDTO>('/auth/me')
 }
 
 export function postEmployee(payload: CreateEmployeeDTO) {

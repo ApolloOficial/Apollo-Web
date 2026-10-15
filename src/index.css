@@ -73,7 +73,14 @@
 }
 
 html {
-  font-size: 16px;
+  /* 90% de 16px: o layout todo é em rem, então a interface fica na proporção do zoom de 90%. */
+  font-size: 14.4px;
+  /* Esconde só a barra de rolagem; a página continua rolando normalmente. */
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
 }
 
 *,
