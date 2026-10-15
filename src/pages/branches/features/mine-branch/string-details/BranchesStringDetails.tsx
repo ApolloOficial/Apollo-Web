@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { Paginator } from '../../../../../components/paginator'
 import { useApiResource } from '../../../../../hooks/useApiResource'
 import { paths } from '../../../../../routes/paths'
@@ -20,6 +20,9 @@ import { BranchesStatusChip } from '../../status-chip/BranchesStatusChip'
 
 export function BranchesStringDetails() {
   const { id } = useParams()
+  const location = useLocation()
+  const inverterId = (location.state as { inverterId?: string } | null)
+    ?.inverterId
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
 
@@ -43,7 +46,7 @@ export function BranchesStringDetails() {
   const listPath = `${paths.branches}?tab=mine`
 
   return (
-    <section className="branches-page">
+    <section className="branches-page list-page">
       <nav
         className="branches-page__breadcrumb"
         aria-label="Navegação estrutural"
@@ -52,7 +55,15 @@ export function BranchesStringDetails() {
         <span>›</span>
         <Link to={listPath}>Filiais</Link>
         <span>›</span>
-        <Link to={listPath}>Strings</Link>
+        <Link to={listPath}>Inversores</Link>
+        <span>›</span>
+        {inverterId ? (
+          <Link to={`/branches/inverters/${inverterId}`}>
+            {item?.inverterCode ?? '...'}
+          </Link>
+        ) : (
+          <span>{item?.inverterCode ?? '...'}</span>
+        )}
         <span>›</span>
         <strong>{item?.code ?? '...'}</strong>
       </nav>
@@ -104,7 +115,7 @@ export function BranchesStringDetails() {
         </>
       )}
 
-      <section className="branches-section branches-section--first">
+      <section className="branches-section branches-section--first list-panel">
         <h2 className="branches-section__title">Placas</h2>
 
         {panelsResource.error && (
@@ -113,7 +124,10 @@ export function BranchesStringDetails() {
           </p>
         )}
 
-        <div className="branches-table" aria-busy={panelsResource.loading}>
+        <div
+          className="branches-table list-table"
+          aria-busy={panelsResource.loading}
+        >
           <div
             className="branches-table__header branches-table__header--panels"
           >

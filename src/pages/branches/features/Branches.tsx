@@ -77,7 +77,7 @@ export function BranchesFeature() {
   }
 
   return (
-    <section className="branches-page">
+    <section className="branches-page list-page">
       <nav
         className="branches-page__breadcrumb"
         aria-label="Navegação estrutural"
@@ -148,6 +148,9 @@ export function BranchesFeature() {
 
       <div
         id="branches-panel"
+        className={
+          tab === 'all' ? 'list-panel' : 'list-panel list-panel--scroll'
+        }
         role="tabpanel"
         aria-labelledby={`branches-tab-${tab}`}
       >

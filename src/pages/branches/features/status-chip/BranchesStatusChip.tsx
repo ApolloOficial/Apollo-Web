@@ -1,13 +1,18 @@
-import type { StatusVM } from '../../data-access/vm/Branches.vm'
+import { Tag, type TagTone } from '../../../../components/tag'
+import type { StatusVM, StatusToneVM } from '../../data-access/vm/Branches.vm'
 
 interface Props {
   status: StatusVM
 }
 
+const tones: Record<StatusToneVM, TagTone> = {
+  success: 'success',
+  alert: 'alert',
+  error: 'error',
+  muted: 'muted',
+  outline: 'outline',
+}
+
 export function BranchesStatusChip({ status }: Props) {
-  return (
-    <span className={`branches-status branches-status--${status.tone}`}>
-      {status.label}
-    </span>
-  )
+  return <Tag label={status.label} tone={tones[status.tone]} />
 }

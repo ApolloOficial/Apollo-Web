@@ -220,7 +220,7 @@ export function RelocationsFeature({
   }
 
   return (
-    <section className="relocations-page">
+    <section className="relocations-page list-page">
       <nav className="relocations-breadcrumb">
         <Link to={paths.home}>Início</Link>
         <span>›</span>
@@ -294,7 +294,7 @@ export function RelocationsFeature({
         </p>
       )}
 
-      <div className="relocations-table" aria-busy={loading}>
+      <div className="relocations-table list-table" aria-busy={loading}>
         <div className="relocations-table__header">
           <strong>ID</strong>
           <strong>Tipo</strong>

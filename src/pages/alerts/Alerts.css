@@ -4,26 +4,6 @@
   width: 100%;
 }
 
-/* Listagem: titulo, descricao e filtros ficam fixos; so a tabela rola. */
-@media (min-width: 721px) {
-  .alerts-page {
-    display: flex;
-    flex-direction: column;
-    /* 100dvh - header da aplicacao (6rem) - padding vertical do conteudo (3rem) */
-    height: calc(100dvh - 9rem);
-  }
-
-  .alerts-page > * {
-    flex-shrink: 0;
-  }
-
-  .alerts-page > .alerts-table {
-    flex: 1 1 0;
-    min-height: 0;
-    overflow-y: auto;
-  }
-}
-
 .alerts-breadcrumb {
   display: flex;
   gap: 1rem;
@@ -41,18 +21,6 @@
 .alerts-details h1,
 .service-order-page h1 {
   font-size: var(--text-h2);
-}
-
-.alerts-page .alerts-breadcrumb {
-  margin-bottom: 2rem;
-}
-
-.alerts-page > header h1 {
-  font-size: var(--text-display-2);
-}
-
-.alerts-page > header p {
-  font-size: var(--text-body-1);
 }
 
 .alerts-filters {
@@ -81,12 +49,7 @@
     minmax(0, 0.85fr) minmax(0, 0.9fr) minmax(0, 0.8fr);
 }
 
-/* +1px: a linha tem borda de 1px, o cabecalho precisa do mesmo recuo para alinhar. */
 .alerts-table__header {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: var(--color-background);
   display: grid;
   grid-template-columns: var(--alerts-columns);
   gap: 1rem;
@@ -94,47 +57,6 @@
 }
 
 /* A ultima coluna (acao) tem 7rem na linha; aqui 6rem + 1rem de gap = 7rem. */
-.alerts-table::-webkit-scrollbar {
-  width: 1.75rem;
-}
-
-.alerts-table::-webkit-scrollbar-track {
-  background: linear-gradient(var(--color-disabled), var(--color-disabled)) center /
-    2px 100% no-repeat;
-}
-
-.alerts-table::-webkit-scrollbar-thumb {
-  border: 0.5rem solid transparent;
-  border-radius: 999px;
-  background: var(--color-secondary);
-  background-clip: padding-box;
-}
-
-.alerts-table::-webkit-scrollbar-button:single-button {
-  display: block;
-  width: 1.75rem;
-  height: 1.75rem;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: 1.375rem;
-}
-
-.alerts-table::-webkit-scrollbar-button:single-button:vertical:decrement {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22' fill='none' stroke='%23ff672c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='10'/%3E%3Cpath d='M7.5 13l3.5-3.5 3.5 3.5'/%3E%3C/svg%3E");
-}
-
-.alerts-table::-webkit-scrollbar-button:single-button:vertical:increment {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22' fill='none' stroke='%23ff672c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='10'/%3E%3Cpath d='M7.5 9l3.5 3.5L14.5 9'/%3E%3C/svg%3E");
-}
-
-/* Firefox nao suporta os pseudo-elementos acima. */
-@supports not selector(::-webkit-scrollbar) {
-  .alerts-table {
-    scrollbar-width: thin;
-    scrollbar-color: var(--color-secondary) transparent;
-  }
-}
-
 .alerts-table__header--operator {
   grid-template-columns: var(--alerts-columns) 6rem;
 }
@@ -178,37 +100,6 @@
   color: var(--color-secondary);
   font-weight: var(--font-weight-bold);
   text-decoration: none;
-}
-
-.alerts-severity {
-  display: inline-flex;
-  justify-content: center;
-  justify-self: start;
-  width: 5.5rem;
-  padding: 0.25rem 0;
-  border-radius: 0.5rem;
-  font-size: var(--text-body-3);
-  font-weight: var(--font-weight-bold);
-}
-
-.alerts-severity--baixa {
-  background: color-mix(in srgb, var(--color-info-light) 25%, transparent);
-  color: var(--color-info-dark);
-}
-
-.alerts-severity--media {
-  background: color-mix(in srgb, var(--color-alert-light) 25%, transparent);
-  color: var(--color-alert);
-}
-
-.alerts-severity--alta {
-  background: color-mix(in srgb, var(--color-alert) 20%, transparent);
-  color: var(--color-alert-dark);
-}
-
-.alerts-severity--critica {
-  background: color-mix(in srgb, var(--color-error-light) 25%, transparent);
-  color: var(--color-error);
 }
 
 .alerts-status--resolved {

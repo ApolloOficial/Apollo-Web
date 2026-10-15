@@ -6,7 +6,6 @@ import {
   getBranch,
 } from '../../data-access/services/Branches.service'
 import { BranchesInvertersTable } from './inverters-table/BranchesInvertersTable'
-import { BranchesStringsTable } from './strings-table/BranchesStringsTable'
 
 interface Props {
   unitId: string | null
@@ -89,7 +88,6 @@ export function BranchesMineBranch({ unitId, userLoading }: Props) {
         </>
       )}
 
-      <BranchesStringsTable unitId={unitId} />
       <BranchesInvertersTable unitId={unitId} />
     </>
   )

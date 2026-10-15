@@ -28,7 +28,7 @@ export const INITIAL_SERVICE_ORDER_FILTERS: ServiceOrderFiltersViewModel = {
 
 export const serviceOrderStatusLabels: Record<ServiceOrderStatus, string> = {
   ABERTA: 'Aberta',
-  EM_ANDAMENTO: 'Ativo',
+  EM_ANDAMENTO: 'Em andamento',
   CONCLUIDA: 'Concluída',
   CANCELADA: 'Cancelada',
 }

@@ -166,43 +166,6 @@ a.branches-table__row:focus-visible {
   text-align: center;
 }
 
-.branches-status {
-  display: inline-flex;
-  align-items: center;
-  justify-self: start;
-  min-height: 1.75rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: var(--text-body-3);
-  font-weight: var(--font-weight-bold);
-}
-
-.branches-status--success {
-  background: color-mix(in srgb, var(--color-success-light) 35%, transparent);
-  color: var(--color-success-dark);
-}
-
-.branches-status--alert {
-  background: color-mix(in srgb, var(--color-alert-light) 35%, transparent);
-  color: var(--color-alert-dark);
-}
-
-.branches-status--outline {
-  border: 1px solid var(--color-disabled);
-  background: transparent;
-  color: var(--color-text);
-}
-
-.branches-status--muted {
-  background: var(--color-disabled-soft);
-  color: var(--color-text-muted);
-}
-
-.branches-status--error {
-  background: color-mix(in srgb, var(--color-error-light) 30%, transparent);
-  color: var(--color-error);
-}
-
 .branches-tone--success {
   color: var(--color-success-dark);
 }

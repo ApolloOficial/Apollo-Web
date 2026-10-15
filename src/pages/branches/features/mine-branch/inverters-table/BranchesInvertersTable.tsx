@@ -53,7 +53,7 @@ export function BranchesInvertersTable({ unitId }: Props) {
         </p>
       )}
 
-      <div className="branches-table" aria-busy={loading}>
+      <div className="branches-table list-table" aria-busy={loading}>
         <div
           className="branches-table__header branches-table__header--inverters"
         >

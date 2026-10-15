@@ -159,7 +159,7 @@ export function EmployeesFeature() {
   }
 
   return (
-    <main className="employees-page">
+    <main className="employees-page list-page">
       <nav
         className="employees-page__breadcrumb"
         aria-label="Navegação estrutural"
@@ -203,7 +203,7 @@ export function EmployeesFeature() {
         </p>
       )}
 
-      <div className="employees-table" aria-busy={loading}>
+      <div className="employees-table list-table" aria-busy={loading}>
         <div className="employees-table__header">
           <strong>Nome</strong>
           <strong>E-mail</strong>

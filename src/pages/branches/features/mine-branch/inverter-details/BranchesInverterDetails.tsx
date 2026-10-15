@@ -56,7 +56,7 @@ export function BranchesInverterDetails() {
   )
   const entriesResource = useApiResource(
     fetchEntries,
-    'Não foi possível carregar as entradas.',
+    'Não foi possível carregar as strings.',
   )
 
   const status = inverter ? toInverterStatusVM(inverter.status) : null
@@ -67,7 +67,7 @@ export function BranchesInverterDetails() {
   const listPath = `${paths.branches}?tab=mine`
 
   return (
-    <section className="branches-page">
+    <section className="branches-page list-page">
       <nav
         className="branches-page__breadcrumb"
         aria-label="Navegação estrutural"
@@ -132,8 +132,8 @@ export function BranchesInverterDetails() {
         </>
       )}
 
-      <section className="branches-section branches-section--first">
-        <h2 className="branches-section__title">Entradas</h2>
+      <section className="branches-section branches-section--first list-panel">
+        <h2 className="branches-section__title">Strings</h2>
 
         {entriesResource.error && (
           <p className="branches-page__error" role="alert">
@@ -141,7 +141,10 @@ export function BranchesInverterDetails() {
           </p>
         )}
 
-        <div className="branches-table" aria-busy={entriesResource.loading}>
+        <div
+          className="branches-table list-table"
+          aria-busy={entriesResource.loading}
+        >
           <div
             className="branches-table__header branches-table__header--entries"
           >
@@ -154,16 +157,18 @@ export function BranchesInverterDetails() {
 
           {!entriesResource.loading &&
             entries.map((entry) => (
-              <article
+              <Link
                 className="branches-table__row branches-table__row--entries"
                 key={entry.id}
+                to={`/branches/strings/${entry.id}`}
+                state={{ inverterId: id }}
               >
                 <span>{`MPPT ${padNumber(entry.mpptNumber)} · Entrada ${padNumber(entry.entryNumber)}`}</span>
-                <Link to={`/branches/strings/${entry.id}`}>{entry.code}</Link>
+                <span>{entry.code}</span>
                 <span>{`${entry.installedPanels}/${entry.purchasedQty}`}</span>
                 <span>{`${entry.manufacturer} ${entry.model}`}</span>
                 <span>{formatPercent(entry.healthScore)}</span>
-              </article>
+              </Link>
             ))}
 
           {entriesResource.loading && (
@@ -174,7 +179,7 @@ export function BranchesInverterDetails() {
             !entriesResource.error &&
             entries.length === 0 && (
               <p className="branches-table__state">
-                Nenhuma entrada com string neste inversor.
+                Nenhuma string neste inversor.
               </p>
             )}
         </div>

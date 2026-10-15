@@ -1,0 +1,59 @@
+.tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  justify-self: start;
+  box-sizing: border-box;
+  padding: 0.25rem 0;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-size: var(--text-body-3);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.tag--sm {
+  width: 5.5rem;
+}
+
+.tag--md {
+  width: 7.5rem;
+}
+
+.tag--success {
+  background: color-mix(in srgb, var(--color-success-light) 35%, transparent);
+  color: var(--color-success-dark);
+}
+
+.tag--info {
+  background: color-mix(in srgb, var(--color-info-light) 25%, transparent);
+  color: var(--color-info-dark);
+}
+
+.tag--caution {
+  background: color-mix(in srgb, var(--color-alert-light) 25%, transparent);
+  color: var(--color-alert);
+}
+
+.tag--alert {
+  background: color-mix(in srgb, var(--color-alert) 20%, transparent);
+  color: var(--color-alert-dark);
+}
+
+.tag--error {
+  background: color-mix(in srgb, var(--color-error-light) 25%, transparent);
+  color: var(--color-error);
+}
+
+.tag--muted {
+  background: var(--color-disabled-soft);
+  color: var(--color-text-muted);
+}
+
+.tag--outline {
+  border-color: var(--color-disabled);
+  background: transparent;
+  color: var(--color-text);
+}

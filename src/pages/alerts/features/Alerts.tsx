@@ -5,6 +5,7 @@ import {
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
+import { Tag, type TagTone } from '../../../components/tag'
 import type { WarningDto } from '../data-access/dto/Alerts.dto'
 import { getWarnings } from '../data-access/services/Alerts.service'
 import {
@@ -24,6 +25,13 @@ interface Props {
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
+}
+
+const severityTones: Record<WarningDto['severity'], TagTone> = {
+  BAIXA: 'info',
+  MEDIA: 'caution',
+  ALTA: 'alert',
+  CRITICA: 'error',
 }
 
 export function AlertsFeature({ audience }: Props) {
@@ -127,7 +135,7 @@ export function AlertsFeature({ audience }: Props) {
   }
 
   return (
-    <main className="alerts-page">
+    <main className="alerts-page list-page">
       <nav className="alerts-breadcrumb" aria-label="Navegação estrutural">
         <Link to="/">Início</Link>
         <span>›</span>
@@ -160,7 +168,7 @@ export function AlertsFeature({ audience }: Props) {
         </p>
       )}
 
-      <div className="alerts-table" aria-busy={loading}>
+      <div className="alerts-table list-table" aria-busy={loading}>
         <div
           className={
             audience === 'operator'
@@ -209,11 +217,11 @@ export function AlertsFeature({ audience }: Props) {
 
                   <span>{typeLabels[warning.type]}</span>
 
-                  <span
-                    className={`alerts-severity alerts-severity--${warning.severity.toLowerCase()}`}
-                  >
-                    {severityLabels[warning.severity]}
-                  </span>
+                  <Tag
+                    label={severityLabels[warning.severity]}
+                    tone={severityTones[warning.severity]}
+                    size="sm"
+                  />
 
                   <span>{formatDate(warning.generationDt)}</span>
 

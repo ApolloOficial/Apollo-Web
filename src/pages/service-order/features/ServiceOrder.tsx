@@ -5,10 +5,12 @@ import {
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
+import { Tag, type TagTone } from '../../../components/tag'
 import type {
   EmployeeSummaryDto,
   MaintenanceTypeDto,
   ServiceOrderListItemDto,
+  ServiceOrderStatus,
 } from '../data-access/dto/ServiceOrder.dto'
 import {
   getActiveTechnicians,
@@ -39,6 +41,13 @@ function getEquipment(item: ServiceOrderListItemDto) {
   )
 }
 
+const serviceOrderStatusTones: Record<ServiceOrderStatus, TagTone> = {
+  ABERTA: 'info',
+  EM_ANDAMENTO: 'outline',
+  CONCLUIDA: 'success',
+  CANCELADA: 'muted',
+}
+
 function getVisualStatus(item: ServiceOrderListItemDto) {
   const { order } = item
 
@@ -49,13 +58,13 @@ function getVisualStatus(item: ServiceOrderListItemDto) {
   ) {
     return {
       label: 'Atrasada',
-      className: 'service-order-status--overdue',
+      tone: 'error' as TagTone,
     }
   }
 
   return {
     label: serviceOrderStatusLabels[order.maintenanceStatus],
-    className: `service-order-status--${order.maintenanceStatus.toLowerCase()}`,
+    tone: serviceOrderStatusTones[order.maintenanceStatus],
   }
 }
 
@@ -268,7 +277,7 @@ export function ServiceOrderFeature() {
   }
 
   return (
-    <main className="service-orders-page">
+    <main className="service-orders-page list-page">
       <nav
         className="service-orders-breadcrumb"
         aria-label="Navegação estrutural"
@@ -307,7 +316,7 @@ export function ServiceOrderFeature() {
         </p>
       )}
 
-      <div className="service-orders-table" aria-busy={loading}>
+      <div className="service-orders-table list-table" aria-busy={loading}>
         <div className="service-orders-table__header">
           <strong>ID</strong>
           <strong>String / Inversor / Placa</strong>
@@ -344,11 +353,7 @@ export function ServiceOrderFeature() {
 
                 <span>{formatDate(item.order.dueDate)}</span>
 
-                <span
-                  className={`service-order-status ${visualStatus.className}`}
-                >
-                  {visualStatus.label}
-                </span>
+                <Tag label={visualStatus.label} tone={visualStatus.tone} />
               </Link>
             )
           })}
