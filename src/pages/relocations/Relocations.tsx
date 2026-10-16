@@ -1,3 +1,5 @@
+import { useSearchParams } from 'react-router-dom'
+import { relocationFiltersFromParams } from './data-access/vm/Relocations.vm'
 import {
   RelocationsFeature,
   type RelocationsAudience,
@@ -9,5 +11,13 @@ export default function Relocations({
 }: {
   audience?: RelocationsAudience
 }) {
-  return <RelocationsFeature audience={audience} />
+  const [params] = useSearchParams()
+
+  return (
+    <RelocationsFeature
+      key={params.toString()}
+      audience={audience}
+      initialFilters={relocationFiltersFromParams(params)}
+    />
+  )
 }
