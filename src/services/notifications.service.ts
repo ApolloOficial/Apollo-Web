@@ -100,9 +100,7 @@ export async function markNotificationRead(
   }
 }
 
-export async function markAllNotificationsRead(): Promise<
-  ServiceResult<null>
-> {
+export async function markAllNotificationsRead(): Promise<ServiceResult<null>> {
   try {
     await request<{ updated: number }>('/api/v1/notifications/read-all', {
       method: 'PATCH',

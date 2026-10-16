@@ -36,5 +36,4 @@ export interface NotificationItem {
 }
 
 export type ServiceResult<T> =
-  | { ok: true; data: T }
-  | { ok: false; error: string }
+  { ok: true; data: T } | { ok: false; error: string }
