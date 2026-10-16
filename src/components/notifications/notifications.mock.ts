@@ -1,6 +1,6 @@
-import { paths } from '../../routes/paths'
 import type { NotificationItem } from '../../types/notification.types'
 import { normalizeRole } from '../../utils/user'
+import { notificationRoute } from './notification.routes'
 
 const managerNotifications: NotificationItem[] = [
   {
@@ -10,7 +10,7 @@ const managerNotifications: NotificationItem[] = [
     description: 'Filial de Sorocaba, SP aguarda sua aprovação.',
     time: '09:12',
     read: false,
-    to: paths.relocationManager,
+    to: notificationRoute('RELOCATION_RECEIVED'),
   },
 ]
 
@@ -22,7 +22,7 @@ const operatorNotifications: NotificationItem[] = [
     description: 'Lote ITJ-MAT-001 - eficiência crítica.',
     time: '10:58',
     read: false,
-    to: paths.alerts,
+    to: notificationRoute('ALERT_ACTIVE'),
   },
   {
     id: 'o2',
@@ -31,7 +31,7 @@ const operatorNotifications: NotificationItem[] = [
     description: 'Realocação para filial de Petrolina, PE aprovada.',
     time: '10:12',
     read: false,
-    to: paths.relocationOperator,
+    to: notificationRoute('RELOCATION_APPROVED'),
   },
   {
     id: 'o3',
@@ -40,7 +40,7 @@ const operatorNotifications: NotificationItem[] = [
     description: 'Segmento sugerido: Agronegócio.',
     time: '08:12',
     read: false,
-    to: paths.relocations,
+    to: notificationRoute('EXTERNAL_RELOCATION_CANDIDATE'),
   },
 ]
 

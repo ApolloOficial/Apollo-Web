@@ -20,19 +20,20 @@ export type AlertsAudience = 'operator' | 'manager'
 
 interface Props {
   audience: AlertsAudience
+  initialFilters?: AlertsFiltersViewModel
 }
 
 function formatDate(value: string) {
   return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
 }
 
-export function AlertsFeature({ audience }: Props) {
+export function AlertsFeature({ audience, initialFilters }: Props) {
   const [warnings, setWarnings] = useState<WarningDto[]>([])
   const [draft, setDraft] = useState<AlertsFiltersViewModel>(
-    INITIAL_ALERT_FILTERS,
+    initialFilters ?? INITIAL_ALERT_FILTERS,
   )
   const [filters, setFilters] = useState<AlertsFiltersViewModel>(
-    INITIAL_ALERT_FILTERS,
+    initialFilters ?? INITIAL_ALERT_FILTERS,
   )
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)

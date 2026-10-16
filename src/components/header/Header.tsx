@@ -11,6 +11,25 @@ import { getMockNotifications } from '../notifications/notifications.mock'
 import type { NotificationItem } from '../../types/notification.types'
 import './Header.css'
 
+const READ_IDS_KEY = 'apollo:notifications:read'
+
+function loadReadIds(): string[] {
+  try {
+    const raw = window.sessionStorage.getItem(READ_IDS_KEY)
+    return raw ? (JSON.parse(raw) as string[]) : []
+  } catch {
+    return []
+  }
+}
+
+function saveReadIds(ids: string[]) {
+  try {
+    window.sessionStorage.setItem(READ_IDS_KEY, JSON.stringify(ids))
+  } catch {
+    return
+  }
+}
+
 export function Header({ user, loading = false, onLogout }: HeaderProps) {
   const { pathname } = useLocation()
   const accountRef = useRef<HTMLDivElement>(null)
@@ -18,9 +37,8 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
   const [search, setSearch] = useState('')
   const notificationsRef = useRef<HTMLDivElement>(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
-  const [readIds, setReadIds] = useState<string[]>([])
+  const [readIds, setReadIds] = useState<string[]>(loadReadIds)
 
-  // Derivado do perfil, sem setState dentro de useEffect (regra react-hooks/set-state-in-effect)
   const notifications = useMemo<NotificationItem[]>(
     () =>
       getMockNotifications(user?.role).map((n) =>
@@ -55,9 +73,12 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
   }, [notificationsOpen])
 
   function markAsRead(item: NotificationItem) {
-    setReadIds((current) =>
-      current.includes(item.id) ? current : [...current, item.id],
-    )
+    setReadIds((current) => {
+      if (current.includes(item.id)) return current
+      const next = [...current, item.id]
+      saveReadIds(next)
+      return next
+    })
   }
 
   const hasUnread = notifications.some((n) => !n.read)
