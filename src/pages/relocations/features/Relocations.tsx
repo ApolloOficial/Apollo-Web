@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   AppliedFilters,
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
+import { Tag } from '../../../components/tag'
 import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { paths } from '../../../routes/paths'
 import type {
@@ -18,6 +19,8 @@ import {
 } from '../data-access/services/Relocations.service'
 import {
   INITIAL_RELOCATION_FILTERS,
+  relocationStatusLabels as statusLabels,
+  relocationStatusTones,
   type RelocationFiltersVM,
   type RelocationListItemVM,
 } from '../data-access/vm/Relocations.vm'
@@ -25,13 +28,7 @@ import { RelocationsFilters } from './filters/RelocationsFilters'
 
 export type RelocationsAudience = 'operator' | 'manager'
 type ManagerTab = 'others' | 'my-unit'
-
-const statusLabels = {
-  PENDENTE: 'Pendente',
-  APROVADA: 'Aprovada',
-  REJEITADA: 'Rejeitada',
-  CONCLUIDA: 'Concluída',
-}
+type OperatorTab = 'external' | 'internal'
 
 function toInternal(item: InternalRelocationDTO): RelocationListItemVM {
   return {
@@ -72,6 +69,9 @@ export function RelocationsFeature({
     INITIAL_RELOCATION_FILTERS,
   )
   const [tab, setTab] = useState<ManagerTab>('others')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const operatorTab: OperatorTab =
+    searchParams.get('tab') === 'internal' ? 'internal' : 'external'
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
   const [loading, setLoading] = useState(true)
@@ -88,7 +88,7 @@ export function RelocationsFeature({
   const operatorUserError = isOperator ? userError : null
 
   const load = useCallback(async () => {
-    if (isOperator && !operatorUserId) {
+    if (isOperator && operatorTab === 'external' && !operatorUserId) {
       if (!waitingUser) {
         setError(
           operatorUserError ?? 'Não foi possível identificar o usuário.',
@@ -102,26 +102,26 @@ export function RelocationsFeature({
     setError('')
 
     try {
-      if (isOperator) {
-        const [internal, external] = await Promise.all([
-          getMyInternalRelocations({
-            status: filters.status,
-            page: 0,
-            size: 100,
-          }),
-          getExternalRelocations({
-            status: filters.status,
-            page: 0,
-            size: 100,
-          }),
-        ])
+      if (isOperator && operatorTab === 'internal') {
+        const result = await getMyInternalRelocations({
+          status: filters.status,
+          page: 0,
+          size: 100,
+        })
 
-        setItems([
-          ...internal.content.map(toInternal),
-          ...external.content
+        setItems(result.content.map(toInternal))
+      } else if (isOperator) {
+        const result = await getExternalRelocations({
+          status: filters.status,
+          page: 0,
+          size: 100,
+        })
+
+        setItems(
+          result.content
             .filter((item) => item.requestedById === operatorUserId)
             .map(toExternal),
-        ])
+        )
       } else if (tab === 'my-unit') {
         const result = await getIncomingInternalRelocations({
           status: filters.status,
@@ -148,7 +148,15 @@ export function RelocationsFeature({
     } finally {
       setLoading(false)
     }
-  }, [isOperator, operatorUserId, waitingUser, operatorUserError, filters, tab])
+  }, [
+    isOperator,
+    operatorTab,
+    operatorUserId,
+    waitingUser,
+    operatorUserError,
+    filters,
+    tab,
+  ])
 
   useEffect(() => {
     void (async () => {
@@ -172,6 +180,13 @@ export function RelocationsFeature({
   )
 
   const totalPages = Math.ceil(filtered.length / size)
+
+  // Colunas conforme o protótipo: "Minha filial" mostra o revisor no lugar da origem.
+  const layout = isOperator
+    ? 'operator'
+    : tab === 'my-unit'
+      ? 'unit'
+      : 'default'
 
   const visible = useMemo(
     () => filtered.slice(page * size, page * size + size),
@@ -199,6 +214,30 @@ export function RelocationsFeature({
 
     return result
   }, [filters])
+  const tabs = isOperator
+    ? [
+        { key: 'external', label: 'Externas' },
+        { key: 'internal', label: 'Internas' },
+      ]
+    : [
+        { key: 'others', label: 'Outros' },
+        { key: 'my-unit', label: 'Minha filial' },
+      ]
+  const activeTab = isOperator ? operatorTab : tab
+
+  function selectTab(key: string) {
+    setPage(0)
+
+    if (isOperator) {
+      setSearchParams(key === 'internal' ? { tab: 'internal' } : {}, {
+        replace: true,
+      })
+      return
+    }
+
+    setTab(key as ManagerTab)
+  }
+
   function removeAppliedFilter(key: string) {
     setPage(0)
 
@@ -244,6 +283,7 @@ export function RelocationsFeature({
       </header>
 
       <RelocationsFilters
+        hideType={isOperator}
         value={draft}
         onChange={setDraft}
         onApply={() => {
@@ -258,35 +298,20 @@ export function RelocationsFeature({
         onClear={clearAppliedFilters}
       />
 
-      {audience === 'manager' && (
-        <div className="relocations-tabs" role="tablist">
+      <div className="relocations-tabs" role="tablist">
+        {tabs.map(({ key, label }) => (
           <button
+            key={key}
             type="button"
             role="tab"
-            aria-selected={tab === 'others'}
-            className={tab === 'others' ? 'active' : ''}
-            onClick={() => {
-              setPage(0)
-              setTab('others')
-            }}
+            aria-selected={activeTab === key}
+            className={activeTab === key ? 'active' : ''}
+            onClick={() => selectTab(key)}
           >
-            Outros
+            {label}
           </button>
-
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'my-unit'}
-            className={tab === 'my-unit' ? 'active' : ''}
-            onClick={() => {
-              setPage(0)
-              setTab('my-unit')
-            }}
-          >
-            Minha filial
-          </button>
-        </div>
-      )}
+        ))}
+      </div>
 
       {error && (
         <p className="relocations-error" role="alert">
@@ -295,19 +320,22 @@ export function RelocationsFeature({
       )}
 
       <div className="relocations-table list-table" aria-busy={loading}>
-        <div className="relocations-table__header">
+        <div
+          className={`relocations-table__header relocations-table__header--${layout}`}
+        >
           <strong>ID</strong>
-          <strong>Tipo</strong>
-          <strong>Origem</strong>
+          {!isOperator && <strong>Tipo</strong>}
+          {layout !== 'unit' && <strong>Origem</strong>}
           <strong>Destino</strong>
           <strong>Solicitante</strong>
+          {layout === 'unit' && <strong>Revisor</strong>}
           <strong>Status</strong>
         </div>
 
         {!loading &&
           visible.map((item) => (
             <Link
-              className="relocations-table__row"
+              className={`relocations-table__row relocations-table__row--${layout}`}
               key={`${item.type}-${item.id}`}
               to={
                 audience === 'manager'
@@ -316,15 +344,15 @@ export function RelocationsFeature({
               }
             >
               <span>RLC{String(item.id).padStart(6, '0')}</span>
-              <span>{item.typeLabel}</span>
-              <span>{item.origin}</span>
+              {!isOperator && <span>{item.typeLabel}</span>}
+              {layout !== 'unit' && <span>{item.origin}</span>}
               <span>{item.destination}</span>
               <span>{item.requester}</span>
-              <span
-                className={`relocation-status ${item.status.toLowerCase()}`}
-              >
-                {statusLabels[item.status]}
-              </span>
+              {layout === 'unit' && <span>{item.reviewer}</span>}
+              <Tag
+                label={statusLabels[item.status]}
+                tone={relocationStatusTones[item.status]}
+              />
             </Link>
           ))}
 

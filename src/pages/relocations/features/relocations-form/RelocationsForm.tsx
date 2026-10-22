@@ -51,11 +51,7 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
   useEffect(() => {
     // Aguarda o usuário autenticado, carregado uma única vez pelo Layout.
     if (loadingUser) return
-    if (!me) {
-      setLoadError(userError ?? 'Não foi possível carregar os dados.')
-      setLoadingOptions(false)
-      return
-    }
+    if (!me) return
     const user = me
 
     async function prepare() {
@@ -90,7 +86,13 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
       }
     }
     void prepare()
-  }, [me, loadingUser, userError])
+  }, [me, loadingUser])
+
+  // Erro e carregamento derivados do usuário, sem setState dentro do efeito.
+  const userMissingError =
+    !loadingUser && !me ? (userError ?? 'Não foi possível carregar os dados.') : ''
+  const shownError = loadError || userMissingError
+  const optionsLoading = loadingUser || (Boolean(me) && loadingOptions)
 
   const unit = useMemo(
     () => units.find((item) => item.name === internal.destinationUnitName),
@@ -175,7 +177,7 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
         label="Tipo"
         placeholder="Tipo"
         value={type}
-        disabled={loadingOptions}
+        disabled={optionsLoading}
         options={[
           { value: 'INTERNAL', label: 'Interna' },
           { value: 'EXTERNAL', label: 'Externa' },
@@ -303,9 +305,9 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
           </label>
         </>
       )}
-      {loadError && (
+      {shownError && (
         <p className="relocations-error" role="alert">
-          {loadError}
+          {shownError}
         </p>
       )}
       {formError && (
@@ -315,7 +317,7 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
       )}
       <button
         className="relocation-form__submit"
-        disabled={loadingOptions || submitting || !me || Boolean(loadError)}
+        disabled={optionsLoading || submitting || !me || Boolean(shownError)}
       >
         {submitting ? 'Solicitando...' : 'Solicitar'}
       </button>

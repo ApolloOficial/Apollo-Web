@@ -73,6 +73,10 @@
   margin: 1.5rem 0 2rem;
 }
 
+.relocations-filters--compact {
+  grid-template-columns: minmax(12rem, 15rem) auto;
+}
+
 .relocation-form__submit,
 .relocation-details__actions button {
   min-height: 3.25rem;
@@ -88,9 +92,26 @@
 .relocations-table__header,
 .relocations-table__row {
   display: grid;
-  grid-template-columns: 0.75fr 0.85fr 1.25fr 1.25fr 0.8fr 0.45fr;
+  grid-template-columns: 0.8fr 0.8fr 1.3fr 1.3fr 1.3fr 7.5rem;
   gap: 1rem;
   align-items: center;
+}
+
+/* "Minha filial": ID, Tipo, Destino, Solicitante, Revisor, Status */
+.relocations-table__header--unit,
+.relocations-table__row--unit {
+  grid-template-columns: 0.8fr 0.8fr 1.3fr 1.3fr 1.3fr 7.5rem;
+}
+
+/* Operador e "Outros": ID, Tipo, Origem, Destino, Solicitante, Status */
+.relocations-table__header--default,
+.relocations-table__row--default {
+  grid-template-columns: 0.8fr 0.8fr 1.3fr 1.3fr 1.3fr 7.5rem;
+}
+
+.relocations-table__header--operator,
+.relocations-table__row--operator {
+  grid-template-columns: 0.8fr 1.3fr 1.3fr 1.3fr 7.5rem;
 }
 
 .relocations-table__header {
@@ -184,43 +205,64 @@
 }
 
 .relocation-details__grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0;
-  margin-top: 2rem;
-  overflow: hidden;
-  border: 1px solid var(--color-disabled);
-  border-radius: 1rem;
-}
-
-.relocation-details__grid > div {
-  padding: 1rem 1.25rem;
-  border-bottom: 1px solid var(--color-disabled);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 4rem;
+  margin-top: 1.5rem;
 }
 
 .relocation-details__grid dt {
-  margin-bottom: 0.35rem;
-  color: var(--color-text-muted);
-  font-size: var(--text-body-3);
+  font-size: var(--text-body-1);
+  font-weight: var(--font-weight-bold);
 }
 
 .relocation-details__grid dd {
   margin: 0;
-  font-weight: var(--font-weight-bold);
+  font-size: var(--text-body-2);
+}
+
+.relocation-details__grid .status-text {
+  font-weight: var(--font-weight-regular, 400);
+}
+
+.relocation-details__grid .status-text.pendente {
+  color: var(--color-alert);
+}
+
+.relocation-details__grid .status-text.aprovada {
+  color: var(--color-success-dark);
+}
+
+.relocation-details__grid .status-text.rejeitada {
+  color: var(--color-error);
+}
+
+.relocation-details__grid .status-text.concluida {
+  color: var(--color-info-dark);
 }
 
 .relocation-details__description {
-  margin-top: 1.5rem;
-  padding: 1.25rem;
-  border: 1px solid var(--color-disabled);
-  border-radius: 1rem;
+  margin-top: 1.75rem;
+}
+
+.relocation-details__description h2 {
+  font-size: var(--text-body-1);
+}
+
+.relocation-details__description p {
+  margin-top: 0.25rem;
+  font-size: var(--text-body-3);
 }
 
 .relocation-details__actions {
   display: flex;
   gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
+  justify-content: flex-start;
+  margin-top: 2rem;
+}
+
+.relocation-details__actions button {
+  min-width: 15rem;
 }
 
 .relocation-details__actions .reject {

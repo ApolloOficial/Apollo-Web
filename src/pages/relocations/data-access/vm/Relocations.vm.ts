@@ -1,5 +1,20 @@
+import type { TagTone } from '../../../../components/tag'
 import type { AllFilterValue } from '../../../../types/filter.types'
 import type { RelocationStatus, RelocationType } from '../dto/Relocations.dto'
+
+export const relocationStatusLabels: Record<RelocationStatus, string> = {
+  PENDENTE: 'Pendente',
+  APROVADA: 'Aprovada',
+  REJEITADA: 'Rejeitada',
+  CONCLUIDA: 'Concluída',
+}
+
+export const relocationStatusTones: Record<RelocationStatus, TagTone> = {
+  PENDENTE: 'caution',
+  APROVADA: 'success',
+  REJEITADA: 'error',
+  CONCLUIDA: 'info',
+}
 
 export interface RelocationFiltersVM {
   status: RelocationStatus | AllFilterValue
