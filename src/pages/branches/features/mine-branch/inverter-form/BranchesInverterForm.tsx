@@ -8,37 +8,24 @@ import { FormActions } from '../../../../../components/form-actions'
 import { FormLayout } from '../../../../../components/form-layout'
 import { InfoNote } from '../../../../../components/info-note'
 import { Combobox } from '../../../../../components/inputs/combobox'
-import { RadioCardGroup } from '../../../../../components/inputs/radio-card-group'
 import { SimpleInput } from '../../../../../components/inputs/simple-input'
 import { Step, Stepper } from '../../../../../components/stepper'
 import { useApiResource } from '../../../../../hooks/useApiResource'
 import { paths } from '../../../../../routes/paths'
 import type { StepStatus } from '../../../../../types/ui.types'
 import { formatKw, todayIso } from '../../../../../utils/formatters'
-import { isValidIpv4, isValidPort } from '../../../../../utils/validators'
 import {
   getInverterModels,
   postInverter,
-  simulateInverterConnectionTest,
 } from '../../../data-access/services/Branches.service'
 import {
   INITIAL_INVERTER_FORM,
-  INVERTER_SOURCE_LABELS,
+  INVERTER_DATA_SOURCE,
   SUPPORTED_INVERTER_BRANDS,
-  type ConnectionStatusVM,
   type InverterFormVM,
-  type InverterSourceVM,
   type InverterStepVM,
 } from '../../../data-access/vm/Branches.vm'
-import { BranchesInverterConnectionTest } from './connection-test/BranchesInverterConnectionTest'
-
-const SOURCE_OPTIONS = (
-  Object.keys(INVERTER_SOURCE_LABELS) as InverterSourceVM[]
-).map((source) => ({
-  value: source,
-  title: INVERTER_SOURCE_LABELS[source].title,
-  description: INVERTER_SOURCE_LABELS[source].hint,
-}))
+import { BranchesInverterSungrowConnection } from './sungrow-connection/BranchesInverterSungrowConnection'
 
 function sameText(a: string, b: string) {
   return (
@@ -54,7 +41,6 @@ export function BranchesInverterForm() {
   )
   const [form, setForm] = useState<InverterFormVM>(INITIAL_INVERTER_FORM)
   const [step, setStep] = useState<InverterStepVM>(1)
-  const [connection, setConnection] = useState<ConnectionStatusVM>('idle')
   const [formError, setFormError] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [successOpen, setSuccessOpen] = useState(false)
@@ -92,15 +78,6 @@ export function BranchesInverterForm() {
     ? selectedModel.mpptCount * selectedModel.stringsPerMppt
     : null
 
-  const hostInvalid = form.host.trim() !== '' && !isValidIpv4(form.host)
-  const portInvalid = form.port.trim() !== '' && !isValidPort(form.port)
-  const canTest =
-    form.source === 'CLOUD' ||
-    (form.source === 'LOCAL' &&
-      isValidIpv4(form.host) &&
-      isValidPort(form.port))
-  const testing = connection === 'testing'
-
   const listPath = `${paths.branches}?tab=mine`
 
   function statusOf(number: InverterStepVM): StepStatus {
@@ -127,16 +104,6 @@ export function BranchesInverterForm() {
     })
   }
 
-  function changeSource(source: string) {
-    setForm((current) => ({ ...current, source: source as InverterSourceVM }))
-    setConnection('idle')
-  }
-
-  function changeNetwork(field: 'host' | 'port', value: string) {
-    setForm((current) => ({ ...current, [field]: value }))
-    setConnection('idle')
-  }
-
   function submitData(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
@@ -146,7 +113,7 @@ export function BranchesInverterForm() {
     }
 
     setFormError('')
-    setStep(connection === 'success' ? 3 : 2)
+    setStep(2)
   }
 
   function editData() {
@@ -154,22 +121,9 @@ export function BranchesInverterForm() {
     setStep(1)
   }
 
-  function editSource() {
+  function editConnection() {
     setFormError('')
-    setConnection('idle')
     setStep(2)
-  }
-
-  async function testConnection() {
-    setConnection('testing')
-
-    try {
-      await simulateInverterConnectionTest()
-      setConnection('success')
-      setStep(3)
-    } catch {
-      setConnection('error')
-    }
   }
 
   async function submit() {
@@ -198,18 +152,8 @@ export function BranchesInverterForm() {
     }
   }
 
-  const sourceSummary =
-    form.source === 'LOCAL'
-      ? `${INVERTER_SOURCE_LABELS.LOCAL.title} · ${form.host.trim()}`
-      : `${INVERTER_SOURCE_LABELS.CLOUD.title} · ${INVERTER_SOURCE_LABELS.CLOUD.hint}`
-
-  const connectionTest = (
-    <BranchesInverterConnectionTest
-      status={connection}
-      canTest={canTest}
-      entriesCount={entriesCount}
-      onTest={() => void testConnection()}
-    />
+  const sungrowConnection = (
+    <BranchesInverterSungrowConnection serialNumber={form.serialNumber} />
   )
 
   return (
@@ -240,7 +184,7 @@ export function BranchesInverterForm() {
             number={1}
             title="Dados do inversor"
             status={statusOf(1)}
-            onEdit={testing ? undefined : editData}
+            onEdit={editData}
           >
             {step === 1 && (
               <form className="branches-inverter-form" onSubmit={submitData}>
@@ -312,67 +256,23 @@ export function BranchesInverterForm() {
 
           <Step
             number={2}
-            title="Fonte dos dados"
+            title="Conexão com a Sungrow"
             status={statusOf(2)}
-            onEdit={editSource}
+            onEdit={editConnection}
           >
             {step === 2 && (
               <div className="branches-inverter-source">
-                <p className="branches-inverter-source__question">
-                  De onde o Apollo vai ler a geração desse inversor?
-                </p>
+                {sungrowConnection}
 
-                <RadioCardGroup
-                  name="inverter-source"
-                  label="Fonte dos dados"
-                  value={form.source}
-                  options={SOURCE_OPTIONS}
-                  disabled={testing}
-                  onChange={changeSource}
-                />
-
-                {form.source === 'LOCAL' && (
-                  <>
-                    <div className="branches-inverter-source__network">
-                      <SimpleInput
-                        id="inverter-host"
-                        label="IP"
-                        placeholder="192.168.1.50"
-                        value={form.host}
-                        inputMode="decimal"
-                        autoComplete="off"
-                        invalid={hostInvalid}
-                        disabled={testing}
-                        onChange={(host) => changeNetwork('host', host)}
-                      />
-
-                      <SimpleInput
-                        id="inverter-port"
-                        label="Porta"
-                        value={form.port}
-                        inputMode="numeric"
-                        autoComplete="off"
-                        maxLength={5}
-                        invalid={portInvalid}
-                        disabled={testing}
-                        onChange={(port) => changeNetwork('port', port)}
-                      />
-                    </div>
-
-                    {(hostInvalid || portInvalid) && (
-                      <p className="branches-page__error" role="alert">
-                        Informe um IP válido, como 192.168.1.50, e uma porta
-                        entre 1 e 65535.
-                      </p>
-                    )}
-                  </>
-                )}
-
-                {connectionTest}
+                <FormActions>
+                  <Button fullWidth onClick={() => setStep(3)}>
+                    Continuar
+                  </Button>
+                </FormActions>
               </div>
             )}
 
-            {step === 3 && connectionTest}
+            {step === 3 && sungrowConnection}
           </Step>
 
           <Step number={3} title="Revisão" status={statusOf(3)}>
@@ -397,11 +297,7 @@ export function BranchesInverterForm() {
                   </div>
                   <div>
                     <dt>Fonte de dados</dt>
-                    <dd>{sourceSummary}</dd>
-                  </div>
-                  <div>
-                    <dt>Conexão</dt>
-                    <dd>Funcionando</dd>
+                    <dd>{INVERTER_DATA_SOURCE}</dd>
                   </div>
                   <div>
                     <dt>Entradas</dt>

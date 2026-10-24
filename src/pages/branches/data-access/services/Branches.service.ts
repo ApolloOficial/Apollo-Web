@@ -126,12 +126,6 @@ export function postInverter(payload: CreateInverterDTO) {
   })
 }
 
-export function simulateInverterConnectionTest() {
-  return new Promise<void>((resolve) => {
-    window.setTimeout(resolve, 1500)
-  })
-}
-
 export async function getLastReading(unitId: string, inverterCode: string) {
   const result = await getStrings({
     unitId,
