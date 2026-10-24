@@ -1,13 +1,11 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { SearchInput } from '../../components/inputs/search-input'
+import { GlobalSearch } from '../../components/global-search'
 import { useLayoutContext } from '../../hooks/useLayoutContext'
 import { getHomeCards } from './home.config'
 import './Home.css'
 
 export default function Home() {
   const { user } = useLayoutContext()
-  const [search, setSearch] = useState('')
 
   const firstName = user?.fullName.trim().split(/\s+/)[0]
   const cards = user ? getHomeCards(user.role) : []
@@ -21,11 +19,7 @@ export default function Home() {
             : 'Olá. O que você procura?'}
         </h1>
         <div className="home__search">
-          <SearchInput
-            value={search}
-            onChange={setSearch}
-            placeholder="Busque por projetos, equipes e muito mais."
-          />
+          <GlobalSearch />
         </div>
       </div>
 

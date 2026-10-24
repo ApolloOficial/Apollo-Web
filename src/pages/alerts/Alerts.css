@@ -1,6 +1,5 @@
 .alerts-page,
-.alerts-details,
-.service-order-page {
+.alerts-details {
   width: 100%;
 }
 
@@ -18,8 +17,7 @@
 }
 
 .alerts-page h1,
-.alerts-details h1,
-.service-order-page h1 {
+.alerts-details h1 {
   font-size: var(--text-h2);
 }
 
@@ -29,19 +27,6 @@
   gap: 1.5rem;
   align-items: center;
   margin: 1.5rem 0 2rem;
-}
-
-.service-order-form__submit {
-  width: fit-content;
-  min-width: 8.5rem;
-  min-height: 3.25rem;
-  padding: 0.75rem 2rem;
-  border: 0;
-  border-radius: 999px;
-  background: var(--color-secondary);
-  color: var(--color-on-brand);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
 }
 
 .alerts-table {
@@ -163,62 +148,6 @@
   margin: 0.375rem 0 0;
 }
 
-.service-order-page > p {
-  margin-top: 0.5rem;
-}
-
-.service-order-form {
-  display: grid;
-  gap: 1.25rem;
-  width: min(100%, 32rem);
-  margin-top: 1.5rem;
-  padding-right: 4rem;
-  border-right: 1px solid var(--color-disabled);
-}
-
-.service-order-form > label {
-  display: grid;
-  gap: 0.5rem;
-  font-family: var(--font-heading);
-  font-weight: var(--font-weight-bold);
-}
-
-.service-order-form input,
-.service-order-form textarea {
-  width: 100%;
-  padding: 0 1rem;
-  border: 1px solid var(--color-disabled);
-  border-radius: 1.5rem;
-  background: var(--color-background);
-  font: inherit;
-}
-
-.service-order-form input {
-  min-height: 3.25rem;
-}
-
-.service-order-form textarea {
-  min-height: 5rem;
-  padding-block: 1rem;
-  resize: vertical;
-}
-
-.service-order-form .prefilled {
-  border-color: var(--color-disabled);
-  background: color-mix(in srgb, var(--color-secondary-light) 20%, transparent);
-  font-weight: var(--font-weight-bold);
-}
-
-.service-order-form__submit {
-  width: 100%;
-}
-
-.service-order-form__submit:disabled {
-  background: var(--color-disabled-soft);
-  color: var(--color-disabled-text);
-  cursor: default;
-}
-
 @media (max-width: 1000px) {
   .alerts-filters {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -256,11 +185,6 @@
   .alerts-details__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
-  }
-
-  .service-order-form {
-    padding-right: 0;
-    border-right: 0;
   }
 }
 

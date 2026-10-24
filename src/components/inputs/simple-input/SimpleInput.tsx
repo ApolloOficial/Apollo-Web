@@ -16,6 +16,8 @@ export function SimpleInput({
   required,
   disabled,
   maxLength,
+  minLength,
+  readOnly,
   inputMode,
 }: SimpleInputProps) {
   const errorId = `${id}-error`
@@ -29,6 +31,7 @@ export function SimpleInput({
       <div
         className="simple-input__field"
         data-invalid={isInvalid ? 'true' : undefined}
+        data-readonly={readOnly ? 'true' : undefined}
       >
         {icon && <span className="simple-input__icon">{icon}</span>}
         <input
@@ -41,6 +44,8 @@ export function SimpleInput({
           required={required}
           disabled={disabled}
           maxLength={maxLength}
+          minLength={minLength}
+          readOnly={readOnly}
           inputMode={inputMode}
           aria-invalid={isInvalid ? true : undefined}
           aria-describedby={error ? errorId : undefined}

@@ -39,7 +39,20 @@ export interface SimpleInputProps {
   required?: boolean
   disabled?: boolean
   maxLength?: number
+  minLength?: number
+  readOnly?: boolean
   inputMode?: 'text' | 'numeric' | 'decimal'
+}
+
+export interface TextareaInputProps {
+  id: string
+  label: string
+  value: string
+  onChange?: (value: string) => void
+  placeholder?: string
+  required?: boolean
+  readOnly?: boolean
+  maxLength?: number
 }
 
 export type PasswordInputProps = Omit<SimpleInputProps, 'type' | 'endAdornment'>

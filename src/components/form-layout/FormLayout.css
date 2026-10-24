@@ -17,6 +17,42 @@
   border-right: 1px solid var(--color-disabled);
 }
 
+.form-layout__form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.form-layout__error {
+  color: var(--color-error);
+}
+
+.form-layout .select-input__label,
+.form-layout .date-picker__label {
+  margin-bottom: 0.6875rem;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-label-1);
+  line-height: normal;
+}
+
+.form-layout .select-input__trigger,
+.form-layout .date-picker__trigger {
+  padding-inline: 1rem;
+  border: 2px solid var(--color-disabled-soft);
+  font-size: var(--text-label-1);
+}
+
+.form-layout .select-input__placeholder,
+.form-layout .date-picker__placeholder {
+  color: var(--color-disabled-soft);
+  font-weight: var(--font-weight-regular);
+}
+
+.form-layout .select-input__value {
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-regular);
+}
+
 .form-layout .combobox label {
   margin-bottom: 0.6875rem;
   color: var(--color-text);

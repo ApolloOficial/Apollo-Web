@@ -1,7 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
+import { Button } from '../../../../components/button'
+import { FormActions } from '../../../../components/form-actions'
 import { Combobox } from '../../../../components/inputs/combobox'
 import { SelectInput } from '../../../../components/inputs/select-input'
+import { SimpleInput } from '../../../../components/inputs/simple-input'
+import { TextareaInput } from '../../../../components/inputs/textarea-input'
 import { useCurrentUserContext } from '../../../../hooks/useCurrentUserContext'
 import type {
   CompanyDTO,
@@ -23,6 +27,8 @@ import {
   INITIAL_EXTERNAL_FORM,
   INITIAL_INTERNAL_FORM,
 } from '../../data-access/vm/Relocations.vm'
+
+function noop() {}
 
 interface Props {
   onSuccess: () => void
@@ -90,7 +96,9 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
 
   // Erro e carregamento derivados do usuário, sem setState dentro do efeito.
   const userMissingError =
-    !loadingUser && !me ? (userError ?? 'Não foi possível carregar os dados.') : ''
+    !loadingUser && !me
+      ? (userError ?? 'Não foi possível carregar os dados.')
+      : ''
   const shownError = loadError || userMissingError
   const optionsLoading = loadingUser || (Boolean(me) && loadingOptions)
 
@@ -172,7 +180,10 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
   }
 
   return (
-    <form className="relocation-form" onSubmit={(event) => void submit(event)}>
+    <form
+      className="form-layout__form"
+      onSubmit={(event) => void submit(event)}
+    >
       <SelectInput
         label="Tipo"
         placeholder="Tipo"
@@ -189,14 +200,13 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
       />
       {type === 'INTERNAL' ? (
         <>
-          <label>
-            Filial de origem
-            <input
-              className="prefilled"
-              value={me?.companyUnitName ?? ''}
-              readOnly
-            />
-          </label>
+          <SimpleInput
+            id="relocation-origin-unit"
+            label="Filial de origem"
+            value={me?.companyUnitName ?? ''}
+            readOnly
+            onChange={noop}
+          />
           <Combobox
             label="Filial de destino"
             placeholder="Digite o nome da filial de destino"
@@ -221,41 +231,42 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
               setInternal({ ...internal, stringCode: value })
             }
           />
-          <label>
-            Quantidade de placas
-            <input
-              required
-              type="number"
-              min={1}
-              step={1}
-              value={internal.quantity}
-              onChange={(event) =>
-                setInternal({ ...internal, quantity: event.target.value })
-              }
-            />
-          </label>
-          <label>
-            Justificativa
-            <textarea
-              required
-              value={internal.justification}
-              placeholder="Descreva o motivo aqui"
-              onChange={(event) =>
-                setInternal({ ...internal, justification: event.target.value })
-              }
-            />
-          </label>
+          <SimpleInput
+            id="relocation-quantity"
+            label="Quantidade de placas"
+            placeholder="Digite a quantidade de placas"
+            value={internal.quantity}
+            inputMode="numeric"
+            maxLength={6}
+            autoComplete="off"
+            required
+            onChange={(quantity) =>
+              setInternal({
+                ...internal,
+                quantity: quantity.replace(/\D/g, ''),
+              })
+            }
+          />
+          <TextareaInput
+            id="relocation-justification"
+            label="Justificativa"
+            placeholder="Descreva o motivo aqui"
+            value={internal.justification}
+            required
+            onChange={(justification) =>
+              setInternal({ ...internal, justification })
+            }
+          />
         </>
       ) : (
         <>
-          <label>
-            Empresa de origem
-            <input
-              className="prefilled"
-              value={me?.companyName ?? ''}
-              readOnly
-            />
-          </label>
+          <SimpleInput
+            id="relocation-origin-company"
+            label="Empresa de origem"
+            value={me?.companyName ?? ''}
+            readOnly
+            onChange={noop}
+          />
           <Combobox
             label="Empresa de destino"
             placeholder="Digite o nome da empresa de destino"
@@ -292,35 +303,37 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
               setExternal({ ...external, panelLabel: value })
             }
           />
-          <label>
-            Justificativa
-            <textarea
-              required
-              value={external.justification}
-              placeholder="Descreva o motivo aqui"
-              onChange={(event) =>
-                setExternal({ ...external, justification: event.target.value })
-              }
-            />
-          </label>
+          <TextareaInput
+            id="relocation-justification"
+            label="Justificativa"
+            placeholder="Descreva o motivo aqui"
+            value={external.justification}
+            required
+            onChange={(justification) =>
+              setExternal({ ...external, justification })
+            }
+          />
         </>
       )}
       {shownError && (
-        <p className="relocations-error" role="alert">
+        <p className="form-layout__error" role="alert">
           {shownError}
         </p>
       )}
       {formError && (
-        <p className="relocations-error" role="alert">
+        <p className="form-layout__error" role="alert">
           {formError}
         </p>
       )}
-      <button
-        className="relocation-form__submit"
-        disabled={optionsLoading || submitting || !me || Boolean(shownError)}
-      >
-        {submitting ? 'Solicitando...' : 'Solicitar'}
-      </button>
+      <FormActions>
+        <Button
+          type="submit"
+          fullWidth
+          disabled={optionsLoading || submitting || !me || Boolean(shownError)}
+        >
+          {submitting ? 'Solicitando...' : 'Solicitar'}
+        </Button>
+      </FormActions>
     </form>
   )
 }
