@@ -1,0 +1,52 @@
+.form-layout {
+  width: 100%;
+}
+
+.form-layout__header {
+  margin-bottom: 2rem;
+}
+
+.form-layout__title {
+  margin-bottom: 0.5rem;
+  font-size: var(--text-h2);
+}
+
+.form-layout__body {
+  width: min(100%, max(50%, 30rem));
+  padding-right: 4.5rem;
+  border-right: 1px solid var(--color-disabled);
+}
+
+.form-layout .combobox label {
+  margin-bottom: 0.6875rem;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-label-1);
+  line-height: normal;
+}
+
+.form-layout .combobox input {
+  padding: 0 1.625rem 0 1rem;
+  border: 2px solid var(--color-disabled-soft);
+  color: var(--color-text-muted);
+  font-size: var(--text-label-1);
+  font-weight: var(--font-weight-regular);
+}
+
+.form-layout .combobox input::placeholder {
+  color: var(--color-disabled-soft);
+  font-weight: var(--font-weight-regular);
+}
+
+@media (max-width: 850px) {
+  .form-layout__body {
+    padding-right: 0;
+    border-right: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .form-layout__title {
+    font-size: var(--text-h4);
+  }
+}

@@ -13,6 +13,10 @@ export function SimpleInput({
   endAdornment,
   error,
   invalid,
+  required,
+  disabled,
+  maxLength,
+  inputMode,
 }: SimpleInputProps) {
   const errorId = `${id}-error`
   const isInvalid = Boolean(error || invalid)
@@ -34,6 +38,10 @@ export function SimpleInput({
           value={value}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          required={required}
+          disabled={disabled}
+          maxLength={maxLength}
+          inputMode={inputMode}
           aria-invalid={isInvalid ? true : undefined}
           aria-describedby={error ? errorId : undefined}
           onChange={(event) => onChange(event.target.value)}

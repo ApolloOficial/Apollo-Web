@@ -17,6 +17,42 @@ export const INITIAL_BRANCH_FILTERS: BranchFiltersVM = {
   city: '',
 }
 
+export type InverterStepVM = 1 | 2 | 3
+
+export type InverterSourceVM = 'CLOUD' | 'LOCAL'
+
+export type ConnectionStatusVM = 'idle' | 'testing' | 'success' | 'error'
+
+export interface InverterFormVM {
+  code: string
+  manufacturer: string
+  model: string
+  serialNumber: string
+  source: InverterSourceVM | ''
+  host: string
+  port: string
+}
+
+export const INITIAL_INVERTER_FORM: InverterFormVM = {
+  code: '',
+  manufacturer: '',
+  model: '',
+  serialNumber: '',
+  source: '',
+  host: '',
+  port: '502',
+}
+
+export const SUPPORTED_INVERTER_BRANDS = ['Sungrow']
+
+export const INVERTER_SOURCE_LABELS: Record<
+  InverterSourceVM,
+  { title: string; hint: string }
+> = {
+  CLOUD: { title: 'Nuvem', hint: 'API da Sungrow (iSolarCloud)' },
+  LOCAL: { title: 'Rede local', hint: 'IP e Porta' },
+}
+
 const STRING_STATUS: Record<string, StatusVM> = {
   ATIVA: { label: 'Ativo', tone: 'success' },
   MANUTENCAO: { label: 'Em manutenção', tone: 'alert' },

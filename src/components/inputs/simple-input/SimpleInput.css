@@ -58,6 +58,10 @@
   outline: none;
 }
 
+.simple-input__control:disabled {
+  cursor: not-allowed;
+}
+
 .simple-input__control::placeholder {
   color: var(--color-disabled-soft);
   opacity: 1;

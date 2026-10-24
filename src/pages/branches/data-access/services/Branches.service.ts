@@ -1,6 +1,7 @@
 import { request } from '../../../../services/http'
 import type {
   BranchDTO,
+  CreateInverterDTO,
   InverterDTO,
   InverterModelDTO,
   PageDTO,
@@ -116,6 +117,19 @@ export function getInverter(id: string) {
 
 export function getInverterModels() {
   return request<PageDTO<InverterModelDTO>>('/inverter-models?page=0&size=100')
+}
+
+export function postInverter(payload: CreateInverterDTO) {
+  return request<InverterDTO>('/inverters', {
+    method: 'POST',
+    body: payload,
+  })
+}
+
+export function simulateInverterConnectionTest() {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, 1500)
+  })
 }
 
 export async function getLastReading(unitId: string, inverterCode: string) {

@@ -103,3 +103,11 @@ export interface InverterModelDTO {
   stringsPerMppt: number
   stringCurrentMonitoring: boolean
 }
+
+export interface CreateInverterDTO {
+  inverterModelId: number
+  code: string
+  serialNumber: string
+  installedAt: string
+  strings: []
+}

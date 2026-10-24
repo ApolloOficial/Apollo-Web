@@ -127,9 +127,14 @@
   border-radius: 1rem;
 }
 
-.relocations-table__row a {
-  color: var(--color-secondary);
-  font-weight: var(--font-weight-bold);
+a.relocations-table__row {
+  color: inherit;
+  text-decoration: none;
+}
+
+a.relocations-table__row:hover,
+a.relocations-table__row:focus-visible {
+  border-color: var(--color-secondary);
 }
 
 .relocations-table__state {

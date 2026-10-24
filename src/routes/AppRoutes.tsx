@@ -4,6 +4,7 @@ import { Layout } from '../components/layout'
 import EmployeeForm from '../pages/employees/employee-form'
 import Branches from '../pages/branches'
 import BranchInverterDetails from '../pages/branches/mine-branch/inverter-details'
+import BranchInverterForm from '../pages/branches/mine-branch/inverter-form'
 import BranchStringDetails from '../pages/branches/mine-branch/string-details'
 import Employees from '../pages/employees'
 import Alerts from '../pages/alerts'
@@ -40,6 +41,10 @@ export function AppRoutes() {
         <Route
           path={paths.branchStringDetails}
           element={<BranchStringDetails />}
+        />
+        <Route
+          path={paths.branchInverterCreate}
+          element={<BranchInverterForm />}
         />
         <Route
           path={paths.branchInverterDetails}

@@ -21,6 +21,7 @@ export const paths = {
   branches: '/branches',
   branchStringDetails: '/branches/strings/:id',
   branchInverterDetails: '/branches/inverters/:id',
+  branchInverterCreate: '/branches/inverters/new',
   employees: '/employees',
   employeeCreate: '/employees/new',
   metrics: '/metrics',

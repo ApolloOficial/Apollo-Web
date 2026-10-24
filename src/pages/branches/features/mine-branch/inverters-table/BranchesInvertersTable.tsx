@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Paginator } from '../../../../../components/paginator'
 import { useApiResource } from '../../../../../hooks/useApiResource'
+import { paths } from '../../../../../routes/paths'
 import { formatLastReading } from '../../../../../utils/formatters'
 import {
   getInverters,
@@ -45,7 +46,16 @@ export function BranchesInvertersTable({ unitId }: Props) {
 
   return (
     <section className="branches-section">
-      <h3 className="branches-section__title">Inversores</h3>
+      <div className="branches-section__header">
+        <h3 className="branches-section__title">Inversores</h3>
+
+        <Link
+          className="branches-section__action"
+          to={paths.branchInverterCreate}
+        >
+          Cadastrar inversor
+        </Link>
+      </div>
 
       {error && (
         <p className="branches-page__error" role="alert">
