@@ -194,11 +194,6 @@ export function AlertsFeature({ audience }: Props) {
                 ? `/alerts/manager/${warning.id}`
                 : `/alerts/${warning.id}`
 
-            const canOpenServiceOrder =
-              audience === 'operator' &&
-              warning.status === 'ATIVO' &&
-              warning.maintenanceId === null
-
             return (
               <article
                 className={
@@ -238,14 +233,12 @@ export function AlertsFeature({ audience }: Props) {
 
                 {audience === 'operator' && (
                   <div className="alerts-table__action">
-                    {canOpenServiceOrder && (
-                      <Link
-                        className="alerts-open-order"
-                        to={`/alerts/${warning.id}/service-order`}
-                      >
-                        Abrir OS
-                      </Link>
-                    )}
+                    <Link
+                      className="alerts-open-order"
+                      to={`/alerts/${warning.id}/service-order`}
+                    >
+                      Abrir OS
+                    </Link>
                   </div>
                 )}
               </article>
