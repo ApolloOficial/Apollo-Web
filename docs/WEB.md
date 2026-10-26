@@ -195,4 +195,3 @@ informações.
 Desenvolvido pela equipe **Apollo** para o Projeto Interdisciplinar 2026. 🚀
 
 </div>
-
