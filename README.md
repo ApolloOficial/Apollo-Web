@@ -57,4 +57,3 @@ O comando de testes permite ausência de testes; uma execução sem casos não c
 - [Arquitetura, módulos, convenções e problemas comuns](docs/WEB.md)
 - [Configuração de ambiente](.env.example)
 - [API da plataforma](https://github.com/ApolloOficial/Apollo-API-Spring)
-
