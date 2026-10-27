@@ -74,7 +74,7 @@ As principais áreas do painel são:
 | `/` e `/alerts`              | Visão da filial e tratamento de alertas         |
 | `/service-orders`            | Abertura e acompanhamento de ordens de serviço  |
 | `/relocations` e `/branches` | Realocações e dados da filial                   |
-| `/employees`                 | Administração de funcionários pelo Gerente     |
+| `/employees`                 | Administração de funcionários pelo Gerente      |
 | `/map` e `/metrics`          | Mapa das filiais e indicadores                  |
 
 As rotas privadas exigem sessão ativa. A matriz completa de acesso por perfil está em [docs/WEB.md](docs/WEB.md).
