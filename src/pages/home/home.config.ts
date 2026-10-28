@@ -6,7 +6,7 @@ import { SolarPanelIcon } from '../../components/icons/solar-panel-icon'
 import { UsersIcon } from '../../components/icons/users-icon'
 import { paths } from '../../routes/paths'
 import type { HomeCardItem } from '../../types/home.types'
-import { normalizeRole } from '../../utils/user'
+import { isManager } from '../../utils/user'
 
 const managerCards: HomeCardItem[] = [
   {
@@ -63,5 +63,5 @@ const operatorCards: HomeCardItem[] = [
 ]
 
 export function getHomeCards(role: string): HomeCardItem[] {
-  return normalizeRole(role) === 'GERENTE' ? managerCards : operatorCards
+  return isManager(role) ? managerCards : operatorCards
 }
