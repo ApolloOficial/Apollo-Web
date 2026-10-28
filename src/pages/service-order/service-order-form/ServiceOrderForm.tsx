@@ -69,12 +69,11 @@ export default function ServiceOrderForm() {
       }
 
       try {
-        const [warningResult, techniciansResult, typesResult] =
-          await Promise.all([
-            getWarning(Number(id)),
-            getActiveTechnicians(),
-            getMaintenanceTypes(),
-          ])
+        const warningResult = await getWarning(Number(id))
+        const [techniciansResult, typesResult] = await Promise.all([
+          getActiveTechnicians(warningResult.companyUnitId),
+          getMaintenanceTypes(),
+        ])
 
         if (!active) return
 

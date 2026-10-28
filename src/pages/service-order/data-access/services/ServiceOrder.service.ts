@@ -113,7 +113,7 @@ export function getMaintenanceTypes() {
   return request<MaintenanceTypeDto[]>('/maintenance-types')
 }
 
-export function getActiveTechnicians() {
+export function getActiveTechnicians(companyUnitId?: string | null) {
   const query = new URLSearchParams({
     role: 'TECNICO',
     isActive: 'true',
@@ -122,6 +122,10 @@ export function getActiveTechnicians() {
     sortBy: 'fullName',
     direction: 'ASC',
   })
+
+  if (companyUnitId) {
+    query.set('companyUnitId', companyUnitId)
+  }
 
   return request<PageDto<EmployeeSummaryDto>>(`/employees?${query}`)
 }

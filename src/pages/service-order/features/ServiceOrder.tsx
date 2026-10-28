@@ -5,6 +5,7 @@ import {
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
+import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { Tag, type TagTone } from '../../../components/tag'
 import { formatDate } from '../../../utils/formatters'
 import type {
@@ -64,6 +65,8 @@ function getVisualStatus(item: ServiceOrderListItemDto) {
 }
 
 export function ServiceOrderFeature() {
+  const { user, loading: loadingUser } = useCurrentUserContext()
+  const companyUnitId = user?.companyUnitId ?? null
   const [items, setItems] = useState<ServiceOrderListItemDto[]>([])
   const [orderIds, setOrderIds] = useState<number[]>([])
   const [technicians, setTechnicians] = useState<EmployeeSummaryDto[]>([])
@@ -85,8 +88,10 @@ export function ServiceOrderFeature() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    if (loadingUser) return
+
     Promise.all([
-      getActiveTechnicians(),
+      getActiveTechnicians(companyUnitId),
       getMaintenanceTypes(),
       getServiceOrderIds(),
     ])
@@ -100,7 +105,7 @@ export function ServiceOrderFeature() {
         setMaintenanceTypes([])
         setOrderIds([])
       })
-  }, [])
+  }, [loadingUser, companyUnitId])
 
   const loadOrders = useCallback(async () => {
     setLoading(true)
