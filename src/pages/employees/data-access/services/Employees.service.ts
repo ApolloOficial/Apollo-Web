@@ -11,6 +11,7 @@ export function getEmployees(
   filters: EmployeeFiltersVM,
   page: number,
   size: number,
+  companyUnitId?: string | null,
 ) {
   const query = new URLSearchParams({
     page: String(page),
@@ -18,6 +19,10 @@ export function getEmployees(
     sortBy: 'fullName',
     direction: 'ASC',
   })
+
+  if (companyUnitId) {
+    query.set('companyUnitId', companyUnitId)
+  }
 
   if (filters.email.trim()) {
     query.set('email', filters.email.trim())

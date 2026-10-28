@@ -5,6 +5,8 @@ import {
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
+import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
+import { isManager } from '../../../utils/user'
 import type { EmployeeDTO, RoleDTO } from '../data-access/dto/Employees.dto'
 import {
   getEmployees,
@@ -20,6 +22,7 @@ import { DeactivateEmployeeModal } from './deactivate-employee-modal'
 import { EmployeesFilter } from './filters/EmployeesFilter'
 
 export function EmployeesFeature() {
+  const { user, loading: loadingUser } = useCurrentUserContext()
   const [employees, setEmployees] = useState<EmployeeDTO[]>([])
   const [roles, setRoles] = useState<RoleDTO[]>([])
   const [draft, setDraft] = useState<EmployeeFiltersVM>(
@@ -36,12 +39,17 @@ export function EmployeesFeature() {
   const [deactivating, setDeactivating] = useState(false)
   const [error, setError] = useState('')
 
+  const companyUnitId = user?.companyUnitId ?? null
+  const currentUserId = user?.userId ?? null
+
   const loadEmployees = useCallback(async () => {
+    if (loadingUser) return
+
     setLoading(true)
     setError('')
 
     try {
-      const result = await getEmployees(filters, page, size)
+      const result = await getEmployees(filters, page, size, companyUnitId)
 
       setEmployees(result.content)
       setTotalPages(result.totalPages)
@@ -54,7 +62,7 @@ export function EmployeesFeature() {
     } finally {
       setLoading(false)
     }
-  }, [filters, page, size])
+  }, [filters, page, size, loadingUser, companyUnitId])
 
   useEffect(() => {
     void (async () => {
@@ -220,13 +228,17 @@ export function EmployeesFeature() {
               <span>{employee.role}</span>
               <span>{employee.active ? 'Sim' : 'Não'}</span>
 
-              <button
-                type="button"
-                disabled={!employee.active}
-                onClick={() => setSelected(employee)}
-              >
-                {employee.active ? 'Desligar' : 'Desligado'}
-              </button>
+              {employee.id !== currentUserId && !isManager(employee.role) ? (
+                <button
+                  type="button"
+                  disabled={!employee.active}
+                  onClick={() => setSelected(employee)}
+                >
+                  {employee.active ? 'Desligar' : 'Desligado'}
+                </button>
+              ) : (
+                <span />
+              )}
             </article>
           ))}
 
