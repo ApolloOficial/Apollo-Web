@@ -40,6 +40,60 @@ export interface ResetPasswordFormValues {
   confirmPassword: string
 }
 
+export interface VerifyCodeFormViewModel {
+  code: string
+}
+
+export interface RecoveryStartPayloadDto {
+  email: string
+}
+
+export interface RecoveryMethodDto {
+  method: string
+  destination: string
+}
+
+export interface RecoveryStartResponseDto {
+  challengeId: string
+  methods: RecoveryMethodDto[]
+}
+
+export interface OtpSendPayloadDto {
+  challengeId: string
+  method: string
+}
+
+export interface OtpSentResponseDto {
+  destination: string
+  resendInSeconds: number
+  expiresInSeconds: number
+}
+
+export interface OtpVerifyPayloadDto {
+  challengeId: string
+  code: string
+}
+
+export interface OtpVerifyResponseDto {
+  resetToken: string
+}
+
+export interface PasswordResetPayloadDto {
+  resetToken: string
+  newPassword: string
+}
+
+export interface RecoveryChallengeViewModel {
+  challengeId: string
+  method: string
+  destination: string
+  resendInSeconds: number
+}
+
+export interface ResetPasswordLocationStateViewModel {
+  resetToken: string
+}
+
 export interface CurrentUserDto {
   userId: string
   fullName: string

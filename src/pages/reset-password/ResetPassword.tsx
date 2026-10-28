@@ -1,10 +1,18 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import { Navigate, useLocation } from 'react-router-dom'
 import { AuthPage } from '../../components/auth-page'
 import { Button } from '../../components/button'
 import { PasswordInput } from '../../components/inputs/password-input'
 import { StatusMessage } from '../../components/status-message'
-import type { ResetPasswordFormValues } from '../../types/auth.types'
+import { paths } from '../../routes/paths'
+import { resetPassword } from '../../services/auth.service'
+import type {
+  ResetPasswordFormValues,
+  ResetPasswordLocationStateViewModel,
+} from '../../types/auth.types'
+import { translateAuthMessage } from '../../utils/auth-messages'
+import { PASSWORD_RULES_MESSAGE, isValidPassword } from '../../utils/validators'
 import { PasswordResetSuccess } from './password-reset-success'
 import './ResetPassword.css'
 
@@ -13,16 +21,54 @@ const initialForm: ResetPasswordFormValues = {
   confirmPassword: '',
 }
 
+function getResetToken(state: unknown): string | null {
+  if (typeof state !== 'object' || state === null) return null
+
+  const { resetToken } = state as Partial<ResetPasswordLocationStateViewModel>
+
+  return typeof resetToken === 'string' && resetToken !== '' ? resetToken : null
+}
+
 export default function ResetPassword() {
+  const { state } = useLocation()
   const [form, setForm] = useState<ResetPasswordFormValues>(initialForm)
   const [isReset, setIsReset] = useState(false)
+  const [status, setStatus] = useState<{
+    loading: boolean
+    error: string | null
+  }>({
+    loading: false,
+    error: null,
+  })
 
-  const canSubmit = form.newPassword !== '' && form.confirmPassword !== ''
+  const resetToken = getResetToken(state)
+  const newPasswordValid = isValidPassword(form.newPassword)
+  const passwordsMatch = form.newPassword === form.confirmPassword
+  const canSubmit =
+    form.newPassword !== '' &&
+    form.confirmPassword !== '' &&
+    newPasswordValid &&
+    passwordsMatch
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setIsReset(true)
+
+    if (!resetToken) return
+
+    setStatus({ loading: true, error: null })
+
+    try {
+      await resetPassword({ resetToken, newPassword: form.newPassword })
+      setIsReset(true)
+    } catch (err) {
+      setStatus({
+        loading: false,
+        error: translateAuthMessage((err as Error).message),
+      })
+    }
   }
+
+  if (!resetToken) return <Navigate to={paths.forgotPassword} replace />
 
   if (isReset) return <PasswordResetSuccess />
 
@@ -53,17 +99,26 @@ export default function ResetPassword() {
           onChange={(confirmPassword) =>
             setForm((current) => ({ ...current, confirmPassword }))
           }
+          error={
+            form.confirmPassword !== '' && !passwordsMatch
+              ? 'As senhas não coincidem.'
+              : undefined
+          }
         />
         <div className="reset-password__hint" aria-live="polite">
-          {form.newPassword !== '' && (
-            <StatusMessage tone="alert">
-              A senha deve ter no mínimo 8 caracteres, letras maiúsculas,
-              minúsculas e números.
-            </StatusMessage>
+          {status.error ? (
+            <StatusMessage tone="alert">{status.error}</StatusMessage>
+          ) : (
+            form.newPassword !== '' &&
+            !newPasswordValid && (
+              <StatusMessage tone="alert">
+                {PASSWORD_RULES_MESSAGE}
+              </StatusMessage>
+            )
           )}
         </div>
-        <Button type="submit" fullWidth disabled={!canSubmit}>
-          Redefinir senha
+        <Button type="submit" fullWidth disabled={!canSubmit || status.loading}>
+          {status.loading ? 'Redefinindo...' : 'Redefinir senha'}
         </Button>
       </form>
     </AuthPage>
