@@ -16,7 +16,7 @@ export const notificationVisuals: Record<NotificationType, NotificationVisual> =
     RELOCATION_APPROVED: { icon: 'lucide:circle-check', tone: 'success' },
     RELOCATION_REJECTED: { icon: 'lucide:circle-x', tone: 'error' },
     EXTERNAL_RELOCATION_CANDIDATE: {
-      icon: 'lucide:square-dashed',
+      icon: 'fluent:square-hint-sparkles-16-regular',
       tone: 'neutral',
     },
     SERVICE_ORDER_OPENED: { icon: 'lucide:clipboard-list', tone: 'info' },
