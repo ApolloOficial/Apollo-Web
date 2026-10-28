@@ -7,14 +7,11 @@ import {
   statusLabels,
   typeLabels,
 } from '../data-access/vm/Alerts.vm'
+import { formatDate } from '../../../utils/formatters'
 import '../Alerts.css'
 
 interface Props {
   audience?: 'operator' | 'manager'
-}
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
 }
 
 export default function AlertDetails({ audience = 'operator' }: Props) {

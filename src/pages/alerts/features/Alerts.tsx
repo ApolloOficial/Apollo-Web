@@ -6,6 +6,7 @@ import {
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
 import { Tag, type TagTone } from '../../../components/tag'
+import { formatDate } from '../../../utils/formatters'
 import type { WarningDto } from '../data-access/dto/Alerts.dto'
 import { getWarnings } from '../data-access/services/Alerts.service'
 import {
@@ -21,10 +22,6 @@ export type AlertsAudience = 'operator' | 'manager'
 
 interface Props {
   audience: AlertsAudience
-}
-
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
 }
 
 const severityTones: Record<WarningDto['severity'], TagTone> = {

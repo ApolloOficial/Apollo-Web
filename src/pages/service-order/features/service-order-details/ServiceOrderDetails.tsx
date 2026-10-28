@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import reportPendingImage from '../../../../assets/images/service-order-report-pending.png'
 import type { WarningDto } from '../../../alerts/data-access/dto/Alerts.dto'
+import { formatDate, formatDateTime } from '../../../../utils/formatters'
 import type { ServiceOrderDto } from '../../data-access/dto/ServiceOrder.dto'
 import {
   getServiceOrder,
@@ -17,21 +18,6 @@ interface HistoryItem {
   description: string
   date?: string
   tone: 'success' | 'waiting' | 'cancelled'
-}
-
-function formatDate(value: string | null, includeTime = false) {
-  if (!value) return '—'
-
-  const date = new Date(value)
-
-  if (includeTime) {
-    return new Intl.DateTimeFormat('pt-BR', {
-      dateStyle: 'short',
-      timeStyle: 'short',
-    }).format(date)
-  }
-
-  return new Intl.DateTimeFormat('pt-BR').format(date)
 }
 
 function getEquipment(warning: WarningDto) {
@@ -97,7 +83,7 @@ export function ServiceOrderDetailsFeature() {
       {
         title: 'OS Criada',
         description: `Aberta a partir do alerta ${order.warningId}. Técnico(a) ${order.technicianName} atribuído.`,
-        date: formatDate(order.openingDt, true),
+        date: formatDateTime(order.openingDt),
         tone: 'success',
       },
     ]
@@ -125,7 +111,7 @@ export function ServiceOrderDetailsFeature() {
       items.push({
         title: 'OS concluída',
         description: 'Laudo técnico e custos registrados pelo técnico.',
-        date: formatDate(order.concludedAt, true),
+        date: formatDateTime(order.concludedAt),
         tone: 'success',
       })
     }
@@ -134,7 +120,7 @@ export function ServiceOrderDetailsFeature() {
       items.push({
         title: 'OS cancelada',
         description: order.cancellationReason ?? 'Ordem de serviço cancelada.',
-        date: formatDate(order.cancelledAt, true),
+        date: formatDateTime(order.cancelledAt),
         tone: 'cancelled',
       })
     }

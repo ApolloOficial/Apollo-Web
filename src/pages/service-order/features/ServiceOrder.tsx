@@ -6,6 +6,7 @@ import {
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
 import { Tag, type TagTone } from '../../../components/tag'
+import { formatDate } from '../../../utils/formatters'
 import type {
   EmployeeSummaryDto,
   MaintenanceTypeDto,
@@ -25,12 +26,6 @@ import {
   type ServiceOrderFiltersViewModel,
 } from '../data-access/vm/ServiceOrder.vm'
 import { ServiceOrderFilter } from './filters/ServiceOrderFilter'
-
-function formatDate(value: string | null) {
-  if (!value) return '—'
-
-  return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
-}
 
 function getEquipment(item: ServiceOrderListItemDto) {
   return (
