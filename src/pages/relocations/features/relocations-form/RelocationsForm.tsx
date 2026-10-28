@@ -57,8 +57,9 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
   useEffect(() => {
     // Aguarda o usuário autenticado, carregado uma única vez pelo Layout.
     if (loadingUser) return
-    if (!me) return
+    if (!me?.companyUnitId) return
     const user = me
+    const unitId = me.companyUnitId
 
     async function prepare() {
       setLoadingOptions(true)
@@ -69,12 +70,10 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
             getCompanyUnits(),
             getCompanies(),
             getSegments(),
-            getStrings(user.companyUnitId),
-            getPanels(user.companyUnitId),
+            getStrings(unitId),
+            getPanels(unitId),
           ])
-        setUnits(
-          unitPage.content.filter((item) => item.id !== user.companyUnitId),
-        )
+        setUnits(unitPage.content.filter((item) => item.id !== unitId))
         setCompanies(
           companyPage.content.filter((item) => item.id !== user.companyId),
         )
@@ -98,9 +97,12 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
   const userMissingError =
     !loadingUser && !me
       ? (userError ?? 'Não foi possível carregar os dados.')
-      : ''
+      : !loadingUser && !me?.companyUnitId
+        ? 'Seu usuário não está vinculado a uma filial.'
+        : ''
   const shownError = loadError || userMissingError
-  const optionsLoading = loadingUser || (Boolean(me) && loadingOptions)
+  const optionsLoading =
+    loadingUser || (Boolean(me?.companyUnitId) && loadingOptions)
 
   const unit = useMemo(
     () => units.find((item) => item.name === internal.destinationUnitName),

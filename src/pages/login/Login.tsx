@@ -40,7 +40,7 @@ export default function Login() {
 
     try {
       const { token, tokenType, firstAccess } = await login({
-        email: form.email,
+        email: form.email.trim(),
         password: form.password,
       })
       saveSession({ token, tokenType })

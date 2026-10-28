@@ -46,7 +46,7 @@ export interface CurrentUserDto {
   email: string
   role: string
   companyId: number
-  companyName: string
-  companyUnitId: string
+  companyName: string | null
+  companyUnitId: string | null
   companyUnitName: string
 }
