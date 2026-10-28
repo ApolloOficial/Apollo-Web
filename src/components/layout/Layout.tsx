@@ -1,8 +1,10 @@
+import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { CurrentUserProvider } from '../../contexts/CurrentUserProvider'
 import { useCurrentUserContext } from '../../hooks/useCurrentUserContext'
 import { navigationItems } from '../../routes/navigation.config'
 import { paths } from '../../routes/paths'
+import { UNAUTHORIZED_EVENT } from '../../services/http'
 import type { LayoutContext } from '../../types/ui.types'
 import { clearSession } from '../../utils/session'
 import { Header } from '../header'
@@ -20,6 +22,17 @@ export function Layout() {
 function LayoutContent() {
   const navigate = useNavigate()
   const { user, loading } = useCurrentUserContext()
+
+  useEffect(() => {
+    function handleUnauthorized() {
+      navigate(paths.login, { replace: true })
+    }
+
+    window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized)
+
+    return () =>
+      window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized)
+  }, [navigate])
 
   function handleLogout() {
     clearSession()
