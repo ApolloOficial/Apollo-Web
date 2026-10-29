@@ -1,8 +1,5 @@
 import { request } from '../../../../services/http'
-import type {
-  CreateEmployeeDTO,
-  RoleDTO,
-} from '../dto/Employees.dto'
+import type { CreateEmployeeDTO, RoleDTO } from '../dto/Employees.dto'
 import type { EmployeeFiltersVM } from '../vm/Employees.vm'
 import type { PageDto } from '../../../../types/common.types'
 import type { EmployeeDto } from '../../../../types/employee.types'

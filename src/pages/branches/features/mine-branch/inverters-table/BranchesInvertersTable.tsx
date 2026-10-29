@@ -64,9 +64,7 @@ export function BranchesInvertersTable({ unitId }: Props) {
       )}
 
       <div className="branches-table list-table" aria-busy={loading}>
-        <div
-          className="branches-table__header branches-table__header--inverters"
-        >
+        <div className="branches-table__header branches-table__header--inverters">
           <strong>Inversor</strong>
           <strong>Modelo</strong>
           <strong>Strings</strong>

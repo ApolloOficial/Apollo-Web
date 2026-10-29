@@ -128,9 +128,7 @@ export function BranchesStringDetails() {
           className="branches-table list-table"
           aria-busy={panelsResource.loading}
         >
-          <div
-            className="branches-table__header branches-table__header--panels"
-          >
+          <div className="branches-table__header branches-table__header--panels">
             <strong>Nº de série</strong>
             <strong>Fabricante</strong>
             <strong>Modelo</strong>

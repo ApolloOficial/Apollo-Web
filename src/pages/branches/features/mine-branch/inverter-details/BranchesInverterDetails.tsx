@@ -22,10 +22,7 @@ export function BranchesInverterDetails() {
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
 
-  const fetchInverter = useMemo(
-    () => (id ? () => getInverter(id) : null),
-    [id],
-  )
+  const fetchInverter = useMemo(() => (id ? () => getInverter(id) : null), [id])
   const inverterResource = useApiResource(
     fetchInverter,
     'Não foi possível carregar o inversor.',
@@ -145,9 +142,7 @@ export function BranchesInverterDetails() {
           className="branches-table list-table"
           aria-busy={entriesResource.loading}
         >
-          <div
-            className="branches-table__header branches-table__header--entries"
-          >
+          <div className="branches-table__header branches-table__header--entries">
             <strong>Entrada</strong>
             <strong>String</strong>
             <strong>Qtd. de placas instaladas</strong>

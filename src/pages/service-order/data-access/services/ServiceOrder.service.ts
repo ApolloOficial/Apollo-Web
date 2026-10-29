@@ -1,8 +1,6 @@
 import { request } from '../../../../services/http'
 import { ROLE } from '../../../../utils/user'
-import type {
-  WarningDto,
-} from '../../../alerts/data-access/dto/Alerts.dto'
+import type { WarningDto } from '../../../alerts/data-access/dto/Alerts.dto'
 import type {
   ServiceOrderDto,
   ServiceOrderListItemDto,

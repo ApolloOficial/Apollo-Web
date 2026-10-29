@@ -99,7 +99,10 @@ export function AppRoutes() {
               path={paths.alertServiceOrder}
               element={<ServiceOrderForm />}
             />
-            <Route path={paths.relocationCreate} element={<RelocationsForm />} />
+            <Route
+              path={paths.relocationCreate}
+              element={<RelocationsForm />}
+            />
           </Route>
 
           <Route

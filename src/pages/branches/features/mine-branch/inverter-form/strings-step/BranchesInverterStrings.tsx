@@ -87,18 +87,14 @@ export function BranchesInverterStrings({
             placeholder="Número da nota fiscal"
             value={item.invoiceNumber}
             required
-            onChange={(invoiceNumber) =>
-              updateString(index, { invoiceNumber })
-            }
+            onChange={(invoiceNumber) => updateString(index, { invoiceNumber })}
           />
 
           <DatePicker
             label="Data de aquisição"
             value={item.acquisitionDt}
             required
-            onChange={(acquisitionDt) =>
-              updateString(index, { acquisitionDt })
-            }
+            onChange={(acquisitionDt) => updateString(index, { acquisitionDt })}
           />
 
           <SimpleInput

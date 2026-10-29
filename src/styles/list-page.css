@@ -86,8 +86,8 @@
 
 .list-table::-webkit-scrollbar-track,
 .list-panel--scroll::-webkit-scrollbar-track {
-  background: linear-gradient(var(--color-disabled), var(--color-disabled)) center /
-    2px 100% no-repeat;
+  background: linear-gradient(var(--color-disabled), var(--color-disabled))
+    center / 2px 100% no-repeat;
 }
 
 .list-table::-webkit-scrollbar-thumb,

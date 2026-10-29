@@ -7,9 +7,7 @@ import {
 import { Paginator } from '../../../components/paginator'
 import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { isManager } from '../../../utils/user'
-import type {
-  RoleDTO,
-} from '../data-access/dto/Employees.dto'
+import type { RoleDTO } from '../data-access/dto/Employees.dto'
 import {
   getEmployees,
   getRoles,

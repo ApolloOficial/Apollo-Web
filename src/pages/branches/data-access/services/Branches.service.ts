@@ -8,10 +8,7 @@ import type {
 import type { BranchFiltersVM } from '../vm/Branches.vm'
 import type { PageDto } from '../../../../types/common.types'
 import type { StringDto } from '../../../../types/string.types'
-import type {
-  PanelDto,
-  PanelModelDto,
-} from '../../../../types/panel.types'
+import type { PanelDto, PanelModelDto } from '../../../../types/panel.types'
 
 interface StringsParams {
   unitId: string
@@ -161,10 +158,7 @@ export async function getLastReadings(inverters: InverterDTO[]) {
     inverters.map((inverter, index) => {
       const result = results[index]
 
-      return [
-        inverter.id,
-        result.status === 'fulfilled' ? result.value : null,
-      ]
+      return [inverter.id, result.status === 'fulfilled' ? result.value : null]
     }),
   ) as Record<string, string | null>
 }

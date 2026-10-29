@@ -1,13 +1,7 @@
 import './Tag.css'
 
 export type TagTone =
-  | 'success'
-  | 'info'
-  | 'caution'
-  | 'alert'
-  | 'error'
-  | 'muted'
-  | 'outline'
+  'success' | 'info' | 'caution' | 'alert' | 'error' | 'muted' | 'outline'
 
 export type TagSize = 'sm' | 'md'
 

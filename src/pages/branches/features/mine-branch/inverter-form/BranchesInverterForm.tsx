@@ -152,11 +152,7 @@ export function BranchesInverterForm() {
 
     if (!selectedModel) return
 
-    const message = validateInverterStrings(
-      strings,
-      selectedModel,
-      panelModels,
-    )
+    const message = validateInverterStrings(strings, selectedModel, panelModels)
 
     if (message) {
       setFormError(message)
@@ -170,11 +166,7 @@ export function BranchesInverterForm() {
   async function submit() {
     if (!selectedModel) return
 
-    const message = validateInverterStrings(
-      strings,
-      selectedModel,
-      panelModels,
-    )
+    const message = validateInverterStrings(strings, selectedModel, panelModels)
 
     if (message) {
       setFormError(message)

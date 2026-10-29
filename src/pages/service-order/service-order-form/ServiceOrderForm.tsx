@@ -12,9 +12,7 @@ import { TextareaInput } from '../../../components/inputs/textarea-input'
 import { paths } from '../../../routes/paths'
 import errorImage from '../../../assets/images/relocation-error.png'
 import successImage from '../../../assets/images/relocation-success.png'
-import type {
-  WarningDto,
-} from '../../alerts/data-access/dto/Alerts.dto'
+import type { WarningDto } from '../../alerts/data-access/dto/Alerts.dto'
 import {
   getActiveTechnicians,
   getMaintenanceTypes,
