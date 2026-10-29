@@ -27,7 +27,7 @@ import {
 import { ServiceOrderFilter } from './filters/ServiceOrderFilter'
 import type { EmployeeDto } from '../../../types/employee.types'
 import type { MaintenanceTypeDto } from '../../../types/service-order.types'
-import { Spinner } from '../../../components/spinner'
+import { TableSkeleton } from '../../../components/table-skeleton'
 
 function getEquipment(item: ServiceOrderListItemDto) {
   return (
@@ -328,11 +328,7 @@ export function ServiceOrderFeature() {
           <strong>Status</strong>
         </div>
 
-        {loading && (
-          <p className="service-orders-table__state">
-            <Spinner />
-          </p>
-        )}
+        {loading && <TableSkeleton />}
 
         {!loading &&
           items.map((item) => {

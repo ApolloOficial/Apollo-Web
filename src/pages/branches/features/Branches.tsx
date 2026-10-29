@@ -5,6 +5,7 @@ import {
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { useLayoutContext } from '../../../hooks/useLayoutContext'
+import { useTabIndicator } from '../../../hooks/useTabIndicator'
 import { paths } from '../../../routes/paths'
 import { getBranches } from '../data-access/services/Branches.service'
 import {
@@ -24,6 +25,7 @@ export function BranchesFeature() {
   const { user, loading: userLoading } = useLayoutContext()
   const [searchParams, setSearchParams] = useSearchParams()
   const tab: BranchesTabVM = searchParams.get('tab') === 'mine' ? 'mine' : 'all'
+  const { ref: tabsRef, indicatorProps } = useTabIndicator(tab)
   const [draft, setDraft] = useState<BranchFiltersVM>(INITIAL_BRANCH_FILTERS)
   const [applied, setApplied] = useState<BranchFiltersVM>(
     INITIAL_BRANCH_FILTERS,
@@ -135,10 +137,12 @@ export function BranchesFeature() {
       )}
 
       <div
+        ref={tabsRef}
         className="branches-tabs"
         role="tablist"
         aria-label="Visualização de filiais"
       >
+        <span {...indicatorProps} />
         <button
           type="button"
           role="tab"

@@ -70,6 +70,12 @@
   --text-label-4: 0.75rem;
   --text-label-5: 0.625rem;
   --text-caption: 0.5rem;
+
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+  --duration-fast: 250ms;
+  --duration-base: 450ms;
+  --duration-slow: 650ms;
+  --duration-indicator: 700ms;
 }
 
 html {
