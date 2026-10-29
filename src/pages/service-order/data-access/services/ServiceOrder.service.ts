@@ -76,16 +76,22 @@ export async function getServiceOrders({
     `/maintenance-registers?${query}`,
   )
 
-  const content = await Promise.all(
-    ordersPage.content.map(async (order) => {
-      const warning = await getServiceOrderWarning(order.warningId)
-
-      return {
-        order,
-        warning,
-      }
-    }),
+  const warningIds = [
+    ...new Set(ordersPage.content.map((order) => order.warningId)),
+  ]
+  const warnings = new Map(
+    await Promise.all(
+      warningIds.map(
+        async (id) => [id, await getServiceOrderWarning(id)] as const,
+      ),
+    ),
   )
+
+  const content = ordersPage.content.flatMap((order) => {
+    const warning = warnings.get(order.warningId)
+
+    return warning ? [{ order, warning }] : []
+  })
 
   return {
     ...ordersPage,
