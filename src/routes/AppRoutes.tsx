@@ -22,6 +22,8 @@ import Relocations from '../pages/relocations'
 import RelocationDetails from '../pages/relocations/relocation-details'
 import RelocationsForm from '../pages/relocations/relocations-form'
 import Welcome from '../pages/welcome'
+import { ROLE } from '../utils/user'
+import { PrivateRoute } from './PrivateRoute'
 import { paths } from './paths'
 
 export function AppRoutes() {
@@ -36,73 +38,91 @@ export function AppRoutes() {
       </Route>
 
       <Route element={<Layout />}>
-        <Route path={paths.home} element={<Home />} />
-        <Route path={paths.branches} element={<Branches />} />
-        <Route
-          path={paths.branchStringDetails}
-          element={<BranchStringDetails />}
-        />
-        <Route
-          path={paths.branchInverterCreate}
-          element={<BranchInverterForm />}
-        />
-        <Route
-          path={paths.branchInverterDetails}
-          element={<BranchInverterDetails />}
-        />
-        {/*
-          TODO: ao final do projeto, proteger estas duas rotas de funcionário para permitir
-          somente usuários cujo role seja GERENTE.
-        */}
-        <Route path={paths.employees} element={<Employees />} />
-        <Route path={paths.employeeCreate} element={<EmployeeForm />} />
-        <Route
-          path={paths.metrics}
-          element={<Navigate to={paths.metricsCorporate} replace />}
-        />
-        <Route
-          path={paths.metricsCorporate}
-          element={<Metrics type="corporate" />}
-        />
-        <Route path={paths.metricsSolar} element={<Metrics type="solar" />} />
-        {/* Rotas temporárias até a seleção automática de interface por role. */}
-        <Route
-          path={paths.relocations}
-          element={<Relocations audience="operator" />}
-        />
-        <Route
-          path={paths.relocationOperator}
-          element={<Relocations audience="operator" />}
-        />
-        <Route
-          path={paths.relocationManager}
-          element={<Relocations audience="manager" />}
-        />
-        <Route path={paths.relocationCreate} element={<RelocationsForm />} />
-        <Route path={paths.relocationDetails} element={<RelocationDetails />} />
-        <Route
-          path={paths.relocationManagerDetails}
-          element={<RelocationDetails managerMode />}
-        />
-        <Route path={paths.alerts} element={<Alerts audience="operator" />} />
-        <Route
-          path={paths.alertsManager}
-          element={<Alerts audience="manager" />}
-        />
-        <Route
-          path={paths.alertDetails}
-          element={<AlertDetails audience="operator" />}
-        />
-        <Route
-          path={paths.alertManagerDetails}
-          element={<AlertDetails audience="manager" />}
-        />
-        <Route path={paths.alertServiceOrder} element={<ServiceOrderForm />} />
-        <Route path={paths.serviceOrders} element={<ServiceOrder />} />
-        <Route
-          path={paths.serviceOrderDetails}
-          element={<ServiceOrderDetails />}
-        />
+        <Route element={<PrivateRoute />}>
+          <Route path={paths.home} element={<Home />} />
+          <Route path={paths.branches} element={<Branches />} />
+          <Route
+            path={paths.branchStringDetails}
+            element={<BranchStringDetails />}
+          />
+          <Route
+            path={paths.branchInverterDetails}
+            element={<BranchInverterDetails />}
+          />
+          <Route
+            path={paths.metrics}
+            element={<Navigate to={paths.metricsCorporate} replace />}
+          />
+          <Route
+            path={paths.metricsCorporate}
+            element={<Metrics type="corporate" />}
+          />
+          <Route path={paths.metricsSolar} element={<Metrics type="solar" />} />
+          <Route path={paths.alerts} element={<Alerts audience="operator" />} />
+          <Route
+            path={paths.alertsManager}
+            element={<Alerts audience="manager" />}
+          />
+          <Route
+            path={paths.alertDetails}
+            element={<AlertDetails audience="operator" />}
+          />
+          <Route
+            path={paths.alertManagerDetails}
+            element={<AlertDetails audience="manager" />}
+          />
+          <Route path={paths.serviceOrders} element={<ServiceOrder />} />
+          <Route
+            path={paths.serviceOrderDetails}
+            element={<ServiceOrderDetails />}
+          />
+
+          <Route element={<PrivateRoute roles={[ROLE.MANAGER]} />}>
+            <Route path={paths.employees} element={<Employees />} />
+            <Route path={paths.employeeCreate} element={<EmployeeForm />} />
+            <Route
+              path={paths.relocationManager}
+              element={<Relocations audience="manager" />}
+            />
+            <Route
+              path={paths.relocationManagerDetails}
+              element={<RelocationDetails managerMode />}
+            />
+          </Route>
+
+          <Route element={<PrivateRoute roles={[ROLE.OPERATOR]} />}>
+            <Route
+              path={paths.branchInverterCreate}
+              element={<BranchInverterForm />}
+            />
+            <Route
+              path={paths.alertServiceOrder}
+              element={<ServiceOrderForm />}
+            />
+            <Route path={paths.relocationCreate} element={<RelocationsForm />} />
+          </Route>
+
+          <Route
+            element={
+              <PrivateRoute
+                roles={[ROLE.MANAGER, ROLE.OPERATOR, ROLE.ANALYST]}
+              />
+            }
+          >
+            <Route
+              path={paths.relocations}
+              element={<Relocations audience="operator" />}
+            />
+            <Route
+              path={paths.relocationOperator}
+              element={<Relocations audience="operator" />}
+            />
+            <Route
+              path={paths.relocationDetails}
+              element={<RelocationDetails />}
+            />
+          </Route>
+        </Route>
       </Route>
     </Routes>
   )

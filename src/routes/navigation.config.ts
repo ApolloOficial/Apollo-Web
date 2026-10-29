@@ -13,7 +13,12 @@ export const navigationItems: NavigationItem[] = [
   { label: 'Início', to: paths.home, icon: HomeIcon },
   { label: 'Alertas', to: paths.alerts, icon: SirenIcon },
   { label: 'OS', to: paths.serviceOrders, icon: ServiceOrderIcon },
-  { label: 'Realocações', to: paths.relocations, icon: RelocationIcon },
+  {
+    label: 'Realocações',
+    to: paths.relocations,
+    icon: RelocationIcon,
+    roles: [ROLE.MANAGER, ROLE.OPERATOR, ROLE.ANALYST],
+  },
   { label: 'Filiais', to: paths.branches, icon: SolarPanelIcon },
   {
     label: 'Funcionários',
