@@ -1,11 +1,11 @@
 import { request } from '../../../../services/http'
 import type {
   CreateEmployeeDTO,
-  EmployeeDTO,
-  PageDTO,
   RoleDTO,
 } from '../dto/Employees.dto'
 import type { EmployeeFiltersVM } from '../vm/Employees.vm'
+import type { PageDto } from '../../../../types/common.types'
+import type { EmployeeDto } from '../../../../types/employee.types'
 
 export function getEmployees(
   filters: EmployeeFiltersVM,
@@ -40,22 +40,22 @@ export function getEmployees(
     query.set('isActive', filters.isActive)
   }
 
-  return request<PageDTO<EmployeeDTO>>(`/employees?${query}`)
+  return request<PageDto<EmployeeDto>>(`/employees?${query}`)
 }
 
 export function getRoles() {
-  return request<PageDTO<RoleDTO>>('/roles?page=0&size=100')
+  return request<PageDto<RoleDTO>>('/roles?page=0&size=100')
 }
 
 export function postEmployee(payload: CreateEmployeeDTO) {
-  return request<EmployeeDTO>('/employees', {
+  return request<EmployeeDto>('/employees', {
     method: 'POST',
     body: payload,
   })
 }
 
 export function patchDeactivateEmployee(id: string) {
-  return request<EmployeeDTO>(`/employees/${id}/deactivate`, {
+  return request<EmployeeDto>(`/employees/${id}/deactivate`, {
     method: 'PATCH',
   })
 }

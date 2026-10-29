@@ -7,7 +7,9 @@ import {
 import { Paginator } from '../../../components/paginator'
 import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { isManager } from '../../../utils/user'
-import type { EmployeeDTO, RoleDTO } from '../data-access/dto/Employees.dto'
+import type {
+  RoleDTO,
+} from '../data-access/dto/Employees.dto'
 import {
   getEmployees,
   getRoles,
@@ -20,10 +22,11 @@ import {
 import '../Employees.css'
 import { DeactivateEmployeeModal } from './deactivate-employee-modal'
 import { EmployeesFilter } from './filters/EmployeesFilter'
+import type { EmployeeDto } from '../../../types/employee.types'
 
 export function EmployeesFeature() {
   const { user, loading: loadingUser } = useCurrentUserContext()
-  const [employees, setEmployees] = useState<EmployeeDTO[]>([])
+  const [employees, setEmployees] = useState<EmployeeDto[]>([])
   const [roles, setRoles] = useState<RoleDTO[]>([])
   const [draft, setDraft] = useState<EmployeeFiltersVM>(
     INITIAL_EMPLOYEE_FILTERS,
@@ -37,7 +40,7 @@ export function EmployeesFeature() {
     () => ({ ...applied, fullName: urlFullName }),
     [applied, urlFullName],
   )
-  const [selected, setSelected] = useState<EmployeeDTO | null>(null)
+  const [selected, setSelected] = useState<EmployeeDto | null>(null)
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
   const [totalPages, setTotalPages] = useState(0)

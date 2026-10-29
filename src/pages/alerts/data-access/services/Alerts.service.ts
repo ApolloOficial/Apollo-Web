@@ -1,14 +1,14 @@
 import { request } from '../../../../services/http'
 import { ROLE } from '../../../../utils/user'
 import type {
-  EmployeeSummaryDto,
   MaintenanceRegisterDto,
-  MaintenanceTypeDto,
-  PageDto,
   ServiceOrderCreateDto,
   WarningDto,
 } from '../dto/Alerts.dto'
 import type { AlertsFiltersViewModel } from '../vm/Alerts.vm'
+import type { PageDto } from '../../../../types/common.types'
+import type { EmployeeDto } from '../../../../types/employee.types'
+import type { MaintenanceTypeDto } from '../../../../types/service-order.types'
 
 interface GetWarningsParams {
   filters: AlertsFiltersViewModel
@@ -63,7 +63,7 @@ export function getActiveTechnicians(companyUnitId?: string | null) {
     query.set('companyUnitId', companyUnitId)
   }
 
-  return request<PageDto<EmployeeSummaryDto>>(`/employees?${query}`)
+  return request<PageDto<EmployeeDto>>(`/employees?${query}`)
 }
 
 export function getMaintenanceTypes() {

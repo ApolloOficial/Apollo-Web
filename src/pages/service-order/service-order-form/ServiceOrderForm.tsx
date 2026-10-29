@@ -13,8 +13,6 @@ import { paths } from '../../../routes/paths'
 import errorImage from '../../../assets/images/relocation-error.png'
 import successImage from '../../../assets/images/relocation-success.png'
 import type {
-  EmployeeSummaryDto,
-  MaintenanceTypeDto,
   WarningDto,
 } from '../../alerts/data-access/dto/Alerts.dto'
 import {
@@ -24,6 +22,8 @@ import {
   postServiceOrder,
 } from '../../alerts/data-access/services/Alerts.service'
 import { severityLabels } from '../../alerts/data-access/vm/Alerts.vm'
+import type { EmployeeDto } from '../../../types/employee.types'
+import type { MaintenanceTypeDto } from '../../../types/service-order.types'
 
 type ModalState = 'success' | 'error' | null
 
@@ -41,7 +41,7 @@ export default function ServiceOrderForm() {
   const navigate = useNavigate()
 
   const [warning, setWarning] = useState<WarningDto | null>(null)
-  const [technicians, setTechnicians] = useState<EmployeeSummaryDto[]>([])
+  const [technicians, setTechnicians] = useState<EmployeeDto[]>([])
   const [maintenanceTypes, setMaintenanceTypes] = useState<
     MaintenanceTypeDto[]
   >([])

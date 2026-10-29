@@ -1,11 +1,3 @@
-export interface PageDto<T> {
-  content: T[]
-  totalElements: number
-  totalPages: number
-  size: number
-  number: number
-}
-
 export type WarningSeverity = 'BAIXA' | 'MEDIA' | 'ALTA' | 'CRITICA'
 
 export type WarningType =
@@ -34,22 +26,6 @@ export interface WarningDto {
   generationDt: string
   resolvedAt: string | null
   maintenanceId: number | null
-}
-
-export interface EmployeeSummaryDto {
-  id: string
-  fullName: string
-  email: string
-  role: string
-  companyUnitId: string
-  active: boolean
-}
-
-export interface MaintenanceTypeDto {
-  id: number
-  name: string
-  description: string
-  defaultIntervalDays: number
 }
 
 export interface ServiceOrderCreateDto {

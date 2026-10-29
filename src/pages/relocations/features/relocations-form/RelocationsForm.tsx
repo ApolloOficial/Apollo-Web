@@ -10,9 +10,7 @@ import { useCurrentUserContext } from '../../../../hooks/useCurrentUserContext'
 import type {
   CompanyDTO,
   CompanyUnitDTO,
-  PanelDTO,
   SegmentDTO,
-  StringDTO,
 } from '../../data-access/dto/Relocations.dto'
 import {
   getCompanies,
@@ -27,6 +25,8 @@ import {
   INITIAL_EXTERNAL_FORM,
   INITIAL_INTERNAL_FORM,
 } from '../../data-access/vm/Relocations.vm'
+import type { StringDto } from '../../../../types/string.types'
+import type { PanelDto } from '../../../../types/panel.types'
 
 function noop() {}
 
@@ -45,8 +45,8 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
   const [units, setUnits] = useState<CompanyUnitDTO[]>([])
   const [companies, setCompanies] = useState<CompanyDTO[]>([])
   const [segments, setSegments] = useState<SegmentDTO[]>([])
-  const [strings, setStrings] = useState<StringDTO[]>([])
-  const [panels, setPanels] = useState<PanelDTO[]>([])
+  const [strings, setStrings] = useState<StringDto[]>([])
+  const [panels, setPanels] = useState<PanelDto[]>([])
   const [internal, setInternal] = useState(INITIAL_INTERNAL_FORM)
   const [external, setExternal] = useState(INITIAL_EXTERNAL_FORM)
   const [loadingOptions, setLoadingOptions] = useState(true)

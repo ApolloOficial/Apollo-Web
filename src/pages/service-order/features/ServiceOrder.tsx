@@ -9,8 +9,6 @@ import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { Tag, type TagTone } from '../../../components/tag'
 import { formatDate } from '../../../utils/formatters'
 import type {
-  EmployeeSummaryDto,
-  MaintenanceTypeDto,
   ServiceOrderListItemDto,
   ServiceOrderStatus,
 } from '../data-access/dto/ServiceOrder.dto'
@@ -27,6 +25,8 @@ import {
   type ServiceOrderFiltersViewModel,
 } from '../data-access/vm/ServiceOrder.vm'
 import { ServiceOrderFilter } from './filters/ServiceOrderFilter'
+import type { EmployeeDto } from '../../../types/employee.types'
+import type { MaintenanceTypeDto } from '../../../types/service-order.types'
 
 function getEquipment(item: ServiceOrderListItemDto) {
   return (
@@ -69,7 +69,7 @@ export function ServiceOrderFeature() {
   const companyUnitId = user?.companyUnitId ?? null
   const [items, setItems] = useState<ServiceOrderListItemDto[]>([])
   const [orderIds, setOrderIds] = useState<number[]>([])
-  const [technicians, setTechnicians] = useState<EmployeeSummaryDto[]>([])
+  const [technicians, setTechnicians] = useState<EmployeeDto[]>([])
   const [maintenanceTypes, setMaintenanceTypes] = useState<
     MaintenanceTypeDto[]
   >([])

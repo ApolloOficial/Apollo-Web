@@ -105,5 +105,5 @@ export interface CurrentUserDto {
   companyId: number
   companyName: string | null
   companyUnitId: string | null
-  companyUnitName: string
+  companyUnitName: string | null
 }

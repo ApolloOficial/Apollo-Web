@@ -1,14 +1,16 @@
 import { request } from '../../../../services/http'
 import { ROLE } from '../../../../utils/user'
-import type { WarningDto } from '../../../alerts/data-access/dto/Alerts.dto'
 import type {
-  EmployeeSummaryDto,
-  MaintenanceTypeDto,
-  PageDto,
+  WarningDto,
+} from '../../../alerts/data-access/dto/Alerts.dto'
+import type {
   ServiceOrderDto,
   ServiceOrderListItemDto,
 } from '../dto/ServiceOrder.dto'
 import type { ServiceOrderFiltersViewModel } from '../vm/ServiceOrder.vm'
+import type { PageDto } from '../../../../types/common.types'
+import type { EmployeeDto } from '../../../../types/employee.types'
+import type { MaintenanceTypeDto } from '../../../../types/service-order.types'
 
 interface GetServiceOrdersParams {
   filters: ServiceOrderFiltersViewModel
@@ -128,5 +130,5 @@ export function getActiveTechnicians(companyUnitId?: string | null) {
     query.set('companyUnitId', companyUnitId)
   }
 
-  return request<PageDto<EmployeeSummaryDto>>(`/employees?${query}`)
+  return request<PageDto<EmployeeDto>>(`/employees?${query}`)
 }

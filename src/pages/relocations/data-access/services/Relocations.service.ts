@@ -7,13 +7,13 @@ import type {
   CreateInternalRelocationDTO,
   ExternalRelocationDTO,
   InternalRelocationDTO,
-  PageDTO,
-  PanelDTO,
   RelocationStatus,
   ReviewRelocationDTO,
   SegmentDTO,
-  StringDTO,
 } from '../dto/Relocations.dto'
+import type { PageDto } from '../../../../types/common.types'
+import type { StringDto } from '../../../../types/string.types'
+import type { PanelDto } from '../../../../types/panel.types'
 
 interface ListParams {
   status: RelocationStatus | AllFilterValue
@@ -37,19 +37,19 @@ function queryOf({ status, page, size }: ListParams) {
 }
 
 export function getMyInternalRelocations(params: ListParams) {
-  return request<PageDTO<InternalRelocationDTO>>(
+  return request<PageDto<InternalRelocationDTO>>(
     `/relocations/internal/mine?${queryOf(params)}`,
   )
 }
 
 export function getIncomingInternalRelocations(params: ListParams) {
-  return request<PageDTO<InternalRelocationDTO>>(
+  return request<PageDto<InternalRelocationDTO>>(
     `/relocations/internal/incoming?${queryOf(params)}`,
   )
 }
 
 export function getExternalRelocations(params: ListParams) {
-  return request<PageDTO<ExternalRelocationDTO>>(
+  return request<PageDto<ExternalRelocationDTO>>(
     `/relocations/external?${queryOf(params)}`,
   )
 }
@@ -97,17 +97,17 @@ export function reviewExternalRelocation(
 }
 
 export function getCompanyUnits() {
-  return request<PageDTO<CompanyUnitDTO>>(
+  return request<PageDto<CompanyUnitDTO>>(
     '/company-units?page=0&size=100&active=true',
   )
 }
 
 export function getCompanies() {
-  return request<PageDTO<CompanyDTO>>('/companies?page=0&size=100')
+  return request<PageDto<CompanyDTO>>('/companies?page=0&size=100')
 }
 
 export function getSegments() {
-  return request<PageDTO<SegmentDTO>>('/segments?page=0&size=100')
+  return request<PageDto<SegmentDTO>>('/segments?page=0&size=100')
 }
 
 export function getStrings(unitId: string) {
@@ -117,7 +117,7 @@ export function getStrings(unitId: string) {
     size: '100',
   })
 
-  return request<PageDTO<StringDTO>>(`/strings?${query}`)
+  return request<PageDto<StringDto>>(`/strings?${query}`)
 }
 
 export function getPanels(unitId: string) {
@@ -127,5 +127,5 @@ export function getPanels(unitId: string) {
     size: '100',
   })
 
-  return request<PageDTO<PanelDTO>>(`/panels?${query}`)
+  return request<PageDto<PanelDto>>(`/panels?${query}`)
 }
