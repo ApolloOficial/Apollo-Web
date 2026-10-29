@@ -7,7 +7,9 @@ import {
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
 import { Tag } from '../../../components/tag'
+import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { paths } from '../../../routes/paths'
+import { isOperator as isOperatorRole } from '../../../utils/user'
 import type {
   ExternalRelocationDTO,
   InternalRelocationDTO,
@@ -64,6 +66,8 @@ export function RelocationsFeature({
   audience: RelocationsAudience
   initialFilters?: RelocationFiltersVM
 }) {
+  const { user } = useCurrentUserContext()
+  const canRequestRelocation = isOperatorRole(user?.role)
   const [items, setItems] = useState<RelocationListItemVM[]>([])
   const [draft, setDraft] = useState<RelocationFiltersVM>(
     initialFilters ?? INITIAL_RELOCATION_FILTERS,
@@ -246,7 +250,7 @@ export function RelocationsFeature({
           <p>Confira as movimentações das placas da sua filial.</p>
         </div>
 
-        {audience === 'operator' && (
+        {canRequestRelocation && (
           <Link
             className="relocations-page__request"
             to={paths.relocationCreate}

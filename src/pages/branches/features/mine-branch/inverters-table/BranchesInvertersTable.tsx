@@ -2,8 +2,10 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Paginator } from '../../../../../components/paginator'
 import { useApiResource } from '../../../../../hooks/useApiResource'
+import { useCurrentUserContext } from '../../../../../hooks/useCurrentUserContext'
 import { paths } from '../../../../../routes/paths'
 import { formatLastReading } from '../../../../../utils/formatters'
+import { isOperator } from '../../../../../utils/user'
 import {
   getInverters,
   getLastReadings,
@@ -17,6 +19,8 @@ interface Props {
 }
 
 export function BranchesInvertersTable({ unitId }: Props) {
+  const { user } = useCurrentUserContext()
+  const canRegisterInverter = isOperator(user?.role)
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
 
@@ -50,12 +54,14 @@ export function BranchesInvertersTable({ unitId }: Props) {
       <div className="branches-section__header">
         <h3 className="branches-section__title">Inversores</h3>
 
-        <Link
-          className="branches-section__action"
-          to={paths.branchInverterCreate}
-        >
-          Cadastrar inversor
-        </Link>
+        {canRegisterInverter && (
+          <Link
+            className="branches-section__action"
+            to={paths.branchInverterCreate}
+          >
+            Cadastrar inversor
+          </Link>
+        )}
       </div>
 
       {error && (

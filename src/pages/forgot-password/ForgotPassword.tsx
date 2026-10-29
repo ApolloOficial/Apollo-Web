@@ -4,6 +4,7 @@ import { AuthPage } from '../../components/auth-page'
 import { Button, ButtonLink } from '../../components/button'
 import { MailIcon } from '../../components/icons/mail-icon'
 import { SimpleInput } from '../../components/inputs/simple-input'
+import { SlideSwitch } from '../../components/slide-switch'
 import { StatusMessage } from '../../components/status-message'
 import { paths } from '../../routes/paths'
 import {
@@ -73,13 +74,7 @@ export default function ForgotPassword() {
     }
   }
 
-  if (challenge) {
-    return (
-      <VerifyCode challenge={challenge} onRestart={() => setChallenge(null)} />
-    )
-  }
-
-  return (
+  const emailStep = (
     <AuthPage
       title="Esqueci minha senha"
       subtitle="Informe seu e-mail e enviaremos um código de verificação para redefinir sua senha."
@@ -118,5 +113,18 @@ export default function ForgotPassword() {
         )}
       </form>
     </AuthPage>
+  )
+
+  return (
+    <SlideSwitch transitionKey={challenge ? 'code' : 'email'}>
+      {challenge ? (
+        <VerifyCode
+          challenge={challenge}
+          onRestart={() => setChallenge(null)}
+        />
+      ) : (
+        emailStep
+      )}
+    </SlideSwitch>
   )
 }

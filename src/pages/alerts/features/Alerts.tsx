@@ -6,7 +6,9 @@ import {
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
 import { Tag, type TagTone } from '../../../components/tag'
+import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { formatDate } from '../../../utils/formatters'
+import { isOperator } from '../../../utils/user'
 import type { WarningDto } from '../data-access/dto/Alerts.dto'
 import { getWarnings } from '../data-access/services/Alerts.service'
 import {
@@ -34,6 +36,8 @@ const severityTones: Record<WarningDto['severity'], TagTone> = {
 }
 
 export function AlertsFeature({ audience, initialFilters }: Props) {
+  const { user } = useCurrentUserContext()
+  const canOpenServiceOrder = isOperator(user?.role)
   const [warnings, setWarnings] = useState<WarningDto[]>([])
   const [draft, setDraft] = useState<AlertsFiltersViewModel>(
     initialFilters ?? INITIAL_ALERT_FILTERS,
@@ -230,7 +234,7 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
                   </span>
                 </Link>
 
-                {audience === 'operator' && (
+                {audience === 'operator' && canOpenServiceOrder && (
                   <div className="alerts-table__action">
                     <Link
                       className="alerts-open-order"
