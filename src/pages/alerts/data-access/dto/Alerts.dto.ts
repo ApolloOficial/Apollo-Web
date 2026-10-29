@@ -1,3 +1,5 @@
+import type { ServiceOrderDto } from '../../../service-order/data-access/dto/ServiceOrder.dto'
+
 export type WarningSeverity = 'BAIXA' | 'MEDIA' | 'ALTA' | 'CRITICA'
 
 export type WarningType =
@@ -34,14 +36,4 @@ export interface ServiceOrderCreateDto {
   dueDate: string | null
 }
 
-export interface MaintenanceRegisterDto {
-  id: number
-  warningId: number
-  priority: WarningSeverity
-  maintenanceTypeId: number
-  maintenanceTypeName: string
-  technicianId: string
-  technicianName: string
-  maintenanceStatus: string
-  dueDate: string | null
-}
+export type MaintenanceRegisterDto = ServiceOrderDto

@@ -24,6 +24,7 @@ export interface ServiceOrderDto {
   overdue: boolean
   openingDt: string
   dueDate: string | null
+  startedAt: string | null
   concludedAt: string | null
   cancelledAt: string | null
   cancellationReason: string | null
