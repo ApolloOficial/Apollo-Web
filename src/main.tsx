@@ -8,6 +8,7 @@ import '@fontsource/manrope/700.css'
 import './index.css'
 import './styles/list-page.css'
 import App from './App'
+import './styles/motion.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

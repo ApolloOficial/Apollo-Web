@@ -1,0 +1,185 @@
+@keyframes motion-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes motion-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes motion-pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-0.375rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes motion-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes motion-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.layout__content > * {
+  animation: motion-fade-in-up var(--duration-slow) var(--ease-out) backwards;
+}
+
+.list-table > [class*='table__row'] {
+  animation: motion-fade-in-up var(--duration-base) var(--ease-out) backwards;
+}
+
+.list-table > [class*='table__row']:nth-child(2) {
+  animation-delay: 50ms;
+}
+
+.list-table > [class*='table__row']:nth-child(3) {
+  animation-delay: 100ms;
+}
+
+.list-table > [class*='table__row']:nth-child(4) {
+  animation-delay: 150ms;
+}
+
+.list-table > [class*='table__row']:nth-child(5) {
+  animation-delay: 200ms;
+}
+
+.list-table > [class*='table__row']:nth-child(n + 6) {
+  animation-delay: 250ms;
+}
+
+.button,
+.sidebar__link,
+.sidebar__sublink,
+.header__action,
+.header__menu-item,
+.header__user,
+.simple-input__field,
+.select-input__trigger,
+.select-input__option,
+.combobox input,
+.combobox__options button,
+.textarea-input__control,
+.paginator__button,
+[role='tab'],
+.paginator__size-select,
+.date-picker__trigger,
+.feedback-modal__actions button,
+.filter-bar > button,
+[class*='table__row'] {
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.button:not(:disabled):hover,
+.filter-bar > button:not(:disabled):hover,
+.feedback-modal__actions button:not(:disabled):hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 12%);
+}
+
+.button:not(:disabled):active,
+.filter-bar > button:not(:disabled):active,
+.feedback-modal__actions button:not(:disabled):active {
+  transform: translateY(0) scale(0.98);
+  box-shadow: none;
+}
+
+.tabs-indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  border-radius: 999px;
+  background: var(--color-secondary);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.tabs-indicator--animated {
+  transition:
+    transform var(--duration-indicator) var(--ease-out),
+    width var(--duration-indicator) var(--ease-out),
+    opacity var(--duration-base) var(--ease-out);
+}
+
+[role='tablist'] {
+  position: relative;
+}
+
+.header__chevron {
+  transition: transform var(--duration-base) var(--ease-out);
+}
+
+.feedback-modal__overlay {
+  animation: motion-fade-in var(--duration-base) var(--ease-out) backwards;
+}
+
+.feedback-modal {
+  animation: motion-modal-in var(--duration-base) var(--ease-out) backwards;
+}
+
+.notifications,
+.header__menu {
+  transform-origin: top right;
+  animation: motion-pop-in var(--duration-fast) var(--ease-out) backwards;
+}
+
+.select-input__options,
+.combobox__options,
+.date-picker__popover {
+  transform-origin: top center;
+  animation: motion-pop-in var(--duration-fast) var(--ease-out) backwards;
+}
+
+.spinner {
+  animation:
+    motion-fade-in var(--duration-base) var(--ease-out) 200ms backwards,
+    spinner-rotate 1.2s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

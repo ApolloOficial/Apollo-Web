@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useTabIndicator } from '../../../hooks/useTabIndicator'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   AppliedFilters,
@@ -24,7 +25,7 @@ import {
   type RelocationListItemVM,
 } from '../data-access/vm/Relocations.vm'
 import { RelocationsFilters } from './filters/RelocationsFilters'
-import { Spinner } from '../../../components/spinner'
+import { TableSkeleton } from '../../../components/table-skeleton'
 
 export type RelocationsAudience = 'operator' | 'manager'
 type ManagerTab = 'others' | 'my-unit'
@@ -196,6 +197,7 @@ export function RelocationsFeature({
         { key: 'my-unit', label: 'Minha filial' },
       ]
   const activeTab = isOperator ? operatorTab : tab
+  const { ref: tabsRef, indicatorProps } = useTabIndicator(activeTab)
 
   function selectTab(key: string) {
     setPage(0)
@@ -271,10 +273,12 @@ export function RelocationsFeature({
       />
 
       <div
+        ref={tabsRef}
         className="relocations-tabs"
         role="tablist"
         aria-label="Visualização de realocações"
       >
+        <span {...indicatorProps} />
         {tabs.map(({ key, label }) => (
           <button
             key={key}
@@ -339,11 +343,7 @@ export function RelocationsFeature({
               </Link>
             ))}
 
-          {loading && (
-            <p className="relocations-table__state">
-              <Spinner />
-            </p>
-          )}
+          {loading && <TableSkeleton />}
 
           {!loading && !error && visible.length === 0 && (
             <p className="relocations-table__state">

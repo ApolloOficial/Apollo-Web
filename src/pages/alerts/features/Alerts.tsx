@@ -17,7 +17,7 @@ import {
   type AlertsFiltersViewModel,
 } from '../data-access/vm/Alerts.vm'
 import { AlertsFilters } from './filters/AlertsFilters'
-import { Spinner } from '../../../components/spinner'
+import { TableSkeleton } from '../../../components/table-skeleton'
 
 export type AlertsAudience = 'operator' | 'manager'
 
@@ -184,11 +184,7 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
           {audience === 'operator' && <span />}
         </div>
 
-        {loading && (
-          <p className="alerts-table__state">
-            <Spinner />
-          </p>
-        )}
+        {loading && <TableSkeleton />}
 
         {!loading &&
           warnings.map((warning) => {
