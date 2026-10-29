@@ -12,6 +12,9 @@ export interface LoginResponseDto {
 export interface ApiErrorDto {
   status: number
   message: string
+  code?: string | null
+  error?: string | null
+  traceId?: string | null
 }
 
 export interface LoginFormViewModel {

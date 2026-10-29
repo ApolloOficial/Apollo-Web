@@ -1,3 +1,5 @@
+import type { ApiErrorDto } from '../types/auth.types'
+import { translateApiMessage } from '../utils/api-messages'
 import { clearSession, getSession } from '../utils/session'
 
 export const UNAUTHORIZED_EVENT = 'apollo:unauthorized'
@@ -12,11 +14,20 @@ const BASE_URL = (
 
 export class ApiError extends Error {
   readonly status: number
+  readonly code: string | null
+  readonly traceId: string | null
 
-  constructor(message: string, status: number) {
+  constructor(
+    message: string,
+    status: number,
+    code: string | null = null,
+    traceId: string | null = null,
+  ) {
     super(message)
     this.name = 'ApiError'
     this.status = status
+    this.code = code
+    this.traceId = traceId
   }
 }
 
@@ -56,8 +67,11 @@ export async function request<TResponse>(
       window.dispatchEvent(new Event(UNAUTHORIZED_EVENT))
     }
 
-    const message = await extractErrorMessage(response, expiredSession)
-    throw new ApiError(message, response.status)
+    const { message, code, traceId } = await extractError(
+      response,
+      expiredSession,
+    )
+    throw new ApiError(message, response.status, code, traceId)
   }
 
   const text = await response.text()
@@ -77,18 +91,41 @@ export async function request<TResponse>(
   }
 }
 
-async function extractErrorMessage(
+interface ExtractedError {
+  message: string
+  code: string | null
+  traceId: string | null
+}
+
+async function extractError(
   response: Response,
   expiredSession: boolean,
-): Promise<string> {
-  if (expiredSession) return SESSION_EXPIRED_MESSAGE
-  if (response.status === 403) return FORBIDDEN_MESSAGE
+): Promise<ExtractedError> {
+  const fallback = `Erro ${response.status}: ${response.statusText}`
+
+  if (expiredSession) {
+    return { message: SESSION_EXPIRED_MESSAGE, code: null, traceId: null }
+  }
+
+  if (response.status === 403) {
+    return { message: FORBIDDEN_MESSAGE, code: null, traceId: null }
+  }
 
   try {
-    const body = await response.json()
-    if (body?.message) return body.message
+    const body = (await response.json()) as Partial<ApiErrorDto> | null
+    const code = body?.code ?? null
+    const traceId = body?.traceId ?? null
+
+    if (body?.message) {
+      return {
+        message: translateApiMessage(body.message, code),
+        code,
+        traceId,
+      }
+    }
+
+    return { message: fallback, code, traceId }
   } catch {
-    return `Erro ${response.status}: ${response.statusText}`
+    return { message: fallback, code: null, traceId: null }
   }
-  return `Erro ${response.status}: ${response.statusText}`
 }
