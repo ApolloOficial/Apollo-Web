@@ -8,7 +8,6 @@ import { ChevronRightIcon } from '../icons/chevron-right-icon'
 import { LogoutIcon } from '../icons/logout-icon'
 import { NotificationsPanel } from '../notifications'
 import { useNotifications } from '../../hooks/useNotifications'
-import { Spinner } from '../spinner'
 import './Header.css'
 
 export function Header({ user, loading = false, onLogout }: HeaderProps) {
@@ -127,7 +126,7 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
 
           <span className="header__user-info">
             <span className="header__user-name">
-              {loading ? <Spinner /> : (user?.fullName ?? 'Usuário')}
+              {user?.fullName ?? (loading ? '' : 'Usuário')}
             </span>
             {user && (
               <span className="header__user-company">{user.companyName}</span>
