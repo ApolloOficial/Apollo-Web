@@ -4,6 +4,7 @@ import { useApiResource } from '../../../../hooks/useApiResource'
 import { formatCnpj } from '../../../../utils/formatters'
 import { getBranches } from '../../data-access/services/Branches.service'
 import type { BranchFiltersVM } from '../../data-access/vm/Branches.vm'
+import { Spinner } from '../../../../components/spinner'
 
 interface Props {
   filters: BranchFiltersVM
@@ -58,7 +59,11 @@ export function BranchesAllBranches({ filters }: Props) {
             </article>
           ))}
 
-        {loading && <p className="branches-table__state">Carregando...</p>}
+        {loading && (
+          <p className="branches-table__state">
+            <Spinner />
+          </p>
+        )}
 
         {!loading && !error && branches.length === 0 && (
           <p className="branches-table__state">Nenhuma filial encontrada.</p>

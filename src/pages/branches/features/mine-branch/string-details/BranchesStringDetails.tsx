@@ -17,6 +17,7 @@ import {
   toStringStatusVM,
 } from '../../../data-access/vm/Branches.vm'
 import { BranchesStatusChip } from '../../status-chip/BranchesStatusChip'
+import { Spinner } from '../../../../../components/spinner'
 
 export function BranchesStringDetails() {
   const { id } = useParams()
@@ -81,7 +82,9 @@ export function BranchesStringDetails() {
       )}
 
       {id && stringResource.loading && (
-        <p className="branches-table__state">Carregando...</p>
+        <p className="branches-table__state">
+          <Spinner />
+        </p>
       )}
 
       {!stringResource.loading && item && status && (
@@ -153,7 +156,9 @@ export function BranchesStringDetails() {
             ))}
 
           {panelsResource.loading && (
-            <p className="branches-table__state">Carregando...</p>
+            <p className="branches-table__state">
+              <Spinner />
+            </p>
           )}
 
           {!panelsResource.loading &&

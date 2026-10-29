@@ -12,6 +12,7 @@ import {
   priorityLabels,
   serviceOrderStatusLabels,
 } from '../../data-access/vm/ServiceOrder.vm'
+import { Spinner } from '../../../../components/spinner'
 
 interface HistoryItem {
   title: string
@@ -129,7 +130,11 @@ export function ServiceOrderDetailsFeature() {
   }, [order])
 
   if (loading) {
-    return <p className="service-order-details__state">Carregando...</p>
+    return (
+      <p className="service-order-details__state">
+        <Spinner />
+      </p>
+    )
   }
 
   if (!order || !warning) {

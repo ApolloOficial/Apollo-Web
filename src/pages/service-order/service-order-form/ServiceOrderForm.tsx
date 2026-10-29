@@ -22,6 +22,7 @@ import {
 import { severityLabels } from '../../alerts/data-access/vm/Alerts.vm'
 import type { EmployeeDto } from '../../../types/employee.types'
 import type { MaintenanceTypeDto } from '../../../types/service-order.types'
+import { Spinner } from '../../../components/spinner'
 
 type ModalState = 'success' | 'error' | null
 
@@ -144,7 +145,11 @@ export default function ServiceOrderForm() {
   ]
 
   if (loading) {
-    return <p>Carregando...</p>
+    return (
+      <p>
+        <Spinner />
+      </p>
+    )
   }
 
   if (!warning) {
@@ -231,8 +236,8 @@ export default function ServiceOrderForm() {
           )}
 
           <FormActions>
-            <Button type="submit" fullWidth disabled={submitting}>
-              {submitting ? 'Cadastrando...' : 'Cadastrar'}
+            <Button type="submit" fullWidth loading={submitting}>
+              Cadastrar
             </Button>
           </FormActions>
         </form>

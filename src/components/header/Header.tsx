@@ -126,7 +126,7 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
 
           <span className="header__user-info">
             <span className="header__user-name">
-              {loading ? 'Carregando...' : (user?.fullName ?? 'Usuário')}
+              {user?.fullName ?? (loading ? '' : 'Usuário')}
             </span>
             {user && (
               <span className="header__user-company">{user.companyName}</span>

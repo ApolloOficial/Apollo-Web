@@ -12,6 +12,7 @@ import {
   reviewInternalRelocation,
 } from '../data-access/services/Relocations.service'
 import { relocationStatusLabels } from '../data-access/vm/Relocations.vm'
+import { Spinner } from '../../../components/spinner'
 import '../Relocations.css'
 
 type Data =
@@ -83,7 +84,12 @@ export default function RelocationDetails({
     }
   }
 
-  if (loading) return <p>Carregando...</p>
+  if (loading)
+    return (
+      <p>
+        <Spinner />
+      </p>
+    )
   if (!data)
     return (
       <p className="relocations-error" role="alert">

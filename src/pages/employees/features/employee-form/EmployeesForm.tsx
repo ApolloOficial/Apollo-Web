@@ -142,8 +142,8 @@ export function EmployeesForm({ onSuccess }: Props) {
       )}
 
       <FormActions>
-        <Button type="submit" fullWidth disabled={submitting}>
-          {submitting ? 'Cadastrando...' : 'Cadastrar'}
+        <Button type="submit" fullWidth loading={submitting}>
+          Cadastrar
         </Button>
       </FormActions>
     </form>

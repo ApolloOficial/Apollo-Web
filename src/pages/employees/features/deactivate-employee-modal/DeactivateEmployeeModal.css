@@ -44,6 +44,10 @@
 }
 
 .deactivate-modal__actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   min-height: 3rem;
   border-radius: 999px;
   font-weight: var(--font-weight-bold);
@@ -67,6 +71,11 @@
   background: var(--color-disabled-soft);
   color: var(--color-disabled-text);
   cursor: wait;
+}
+
+.deactivate-modal__confirm:disabled {
+  border-color: transparent;
+  background: transparent;
 }
 
 .sr-only {

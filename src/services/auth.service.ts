@@ -13,9 +13,16 @@ import type {
 } from '../types/auth.types'
 import { request } from './http'
 
+let currentUserRequest: Promise<CurrentUserDto> | null = null
+
+function resetCurrentUser() {
+  currentUserRequest = null
+}
+
 export async function login(
   payload: LoginPayloadDto,
 ): Promise<LoginResponseDto> {
+  resetCurrentUser()
   return request<LoginResponseDto>('/auth/login', {
     method: 'POST',
     body: payload,
@@ -25,14 +32,23 @@ export async function login(
 export async function changePassword(
   payload: ChangePasswordPayloadDto,
 ): Promise<void> {
+  resetCurrentUser()
   return request<void>('/auth/password', {
     method: 'PATCH',
     body: payload,
   })
 }
 
-export async function getCurrentUser(): Promise<CurrentUserDto> {
-  return request<CurrentUserDto>('/auth/me')
+export function getCurrentUser(): Promise<CurrentUserDto> {
+  if (!currentUserRequest) {
+    currentUserRequest = request<CurrentUserDto>('/auth/me').catch(
+      (error: unknown) => {
+        resetCurrentUser()
+        throw error
+      },
+    )
+  }
+  return currentUserRequest
 }
 
 export async function startPasswordRecovery(

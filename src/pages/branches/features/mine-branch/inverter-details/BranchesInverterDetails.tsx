@@ -16,6 +16,7 @@ import {
   getStrings,
 } from '../../../data-access/services/Branches.service'
 import { toInverterStatusVM } from '../../../data-access/vm/Branches.vm'
+import { Spinner } from '../../../../../components/spinner'
 
 export function BranchesInverterDetails() {
   const { id } = useParams()
@@ -91,7 +92,9 @@ export function BranchesInverterDetails() {
       )}
 
       {id && inverterResource.loading && (
-        <p className="branches-table__state">Carregando...</p>
+        <p className="branches-table__state">
+          <Spinner />
+        </p>
       )}
 
       {!inverterResource.loading && inverter && status && (
@@ -167,7 +170,9 @@ export function BranchesInverterDetails() {
             ))}
 
           {entriesResource.loading && (
-            <p className="branches-table__state">Carregando...</p>
+            <p className="branches-table__state">
+              <Spinner />
+            </p>
           )}
 
           {!entriesResource.loading &&

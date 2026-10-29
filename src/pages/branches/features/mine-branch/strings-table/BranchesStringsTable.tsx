@@ -6,6 +6,7 @@ import { formatKwp } from '../../../../../utils/formatters'
 import { getStrings } from '../../../data-access/services/Branches.service'
 import { toStringStatusVM } from '../../../data-access/vm/Branches.vm'
 import { BranchesStatusChip } from '../../status-chip/BranchesStatusChip'
+import { Spinner } from '../../../../../components/spinner'
 
 interface Props {
   unitId: string
@@ -57,7 +58,11 @@ export function BranchesStringsTable({ unitId }: Props) {
             </Link>
           ))}
 
-        {loading && <p className="branches-table__state">Carregando...</p>}
+        {loading && (
+          <p className="branches-table__state">
+            <Spinner />
+          </p>
+        )}
 
         {!loading && !error && strings.length === 0 && (
           <p className="branches-table__state">

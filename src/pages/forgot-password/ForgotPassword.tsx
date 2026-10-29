@@ -104,9 +104,10 @@ export default function ForgotPassword() {
           <Button
             type="submit"
             fullWidth
-            disabled={!canSubmit || status.loading}
+            disabled={!canSubmit}
+            loading={status.loading}
           >
-            {status.loading ? 'Enviando...' : 'Enviar'}
+            Enviar
           </Button>
           <ButtonLink to={paths.login} variant="secondary" fullWidth>
             Voltar para login

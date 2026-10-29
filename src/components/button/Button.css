@@ -11,6 +11,7 @@
   font-weight: var(--font-weight-bold);
   line-height: normal;
   text-decoration: none;
+  gap: 0.625rem;
   cursor: pointer;
 }
 
@@ -34,4 +35,22 @@
   background: var(--color-disabled-soft);
   color: var(--color-disabled-text);
   cursor: not-allowed;
+}
+
+.button--loading,
+.button--loading:disabled {
+  position: relative;
+  border-color: transparent;
+  background: transparent;
+  cursor: progress;
+}
+
+.button--loading .button__label {
+  visibility: hidden;
+}
+
+.button--loading .spinner {
+  position: absolute;
+  inset: 0;
+  margin: auto;
 }

@@ -126,20 +126,24 @@ export function VerifyCode({ challenge, onRestart }: VerifyCodeProps) {
           invalid={Boolean(status.error)}
         />
         <div className="verify-code__actions">
-          <Button type="submit" fullWidth disabled={!canSubmit || busy}>
-            {status.loading ? 'Verificando...' : 'Confirmar código'}
+          <Button
+            type="submit"
+            fullWidth
+            disabled={!canSubmit || busy}
+            loading={status.loading}
+          >
+            Confirmar código
           </Button>
           <Button
             variant="secondary"
             fullWidth
             disabled={secondsLeft > 0 || busy}
+            loading={status.resending}
             onClick={handleResend}
           >
             {secondsLeft > 0
               ? `Reenviar código em ${secondsLeft}s`
-              : status.resending
-                ? 'Reenviando...'
-                : 'Reenviar código'}
+              : 'Reenviar código'}
           </Button>
           <Button variant="secondary" fullWidth onClick={onRestart}>
             Usar outro e-mail

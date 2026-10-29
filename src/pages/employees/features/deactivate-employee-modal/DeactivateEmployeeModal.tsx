@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react'
+import { Spinner } from '../../../../components/spinner'
 import illustration from '../../../../assets/images/employee-deactivate.png'
 
 interface Props {
@@ -65,7 +66,7 @@ export function DeactivateEmployeeModal({
             disabled={submitting}
             onClick={onConfirm}
           >
-            {submitting ? 'Desligando...' : 'Confirmar'}
+            {submitting ? <Spinner /> : 'Confirmar'}
           </button>
         </div>
       </section>

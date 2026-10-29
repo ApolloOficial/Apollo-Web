@@ -21,6 +21,7 @@ import '../Employees.css'
 import { DeactivateEmployeeModal } from './deactivate-employee-modal'
 import { EmployeesFilter } from './filters/EmployeesFilter'
 import type { EmployeeDto } from '../../../types/employee.types'
+import { Spinner } from '../../../components/spinner'
 
 export function EmployeesFeature() {
   const { user, loading: loadingUser } = useCurrentUserContext()
@@ -270,7 +271,11 @@ export function EmployeesFeature() {
             </article>
           ))}
 
-        {loading && <p className="employees-table__state">Carregando...</p>}
+        {loading && (
+          <p className="employees-table__state">
+            <Spinner />
+          </p>
+        )}
 
         {!loading && employees.length === 0 && (
           <p className="employees-table__state">

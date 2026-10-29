@@ -9,6 +9,7 @@ export interface ButtonProps {
   type?: 'button' | 'submit'
   variant?: ButtonVariant
   disabled?: boolean
+  loading?: boolean
   fullWidth?: boolean
   onClick?: () => void
 }
