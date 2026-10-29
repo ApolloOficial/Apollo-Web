@@ -9,6 +9,10 @@ import {
   getRoles,
   postEmployee,
 } from '../../data-access/services/Employees.service'
+import {
+  isValidPassword,
+  PASSWORD_RULES_MESSAGE,
+} from '../../../../utils/validators'
 import { isManager } from '../../../../utils/user'
 import type { RoleDTO } from '../../data-access/dto/Employees.dto'
 import {
@@ -57,6 +61,8 @@ export function EmployeesForm({ onSuccess }: Props) {
     if (!selectedRole) return setError('Selecione um cargo existente na lista.')
     if (!companyUnitId)
       return setError(userError ?? 'A filial do gerente não foi encontrada.')
+    if (!isValidPassword(form.temporaryPassword))
+      return setError(PASSWORD_RULES_MESSAGE)
     setSubmitting(true)
     try {
       await postEmployee({
