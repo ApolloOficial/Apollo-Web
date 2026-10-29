@@ -1,7 +1,11 @@
-import { Outlet } from 'react-router-dom'
+import { useLocation, useOutlet } from 'react-router-dom'
+import { SlideSwitch } from '../slide-switch'
 import './AuthLayout.css'
 
 export function AuthLayout() {
+  const outlet = useOutlet()
+  const { pathname } = useLocation()
+
   return (
     <div className="auth-layout">
       <aside className="auth-layout__panel">
@@ -22,7 +26,7 @@ export function AuthLayout() {
         </div>
       </aside>
       <main className="auth-layout__content">
-        <Outlet />
+        <SlideSwitch transitionKey={pathname}>{outlet}</SlideSwitch>
       </main>
     </div>
   )

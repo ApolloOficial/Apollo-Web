@@ -1,0 +1,74 @@
+.slide-switch {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-self: stretch;
+  width: 100%;
+  overflow-x: clip;
+}
+
+.slide-switch__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-self: stretch;
+}
+
+.slide-switch--leaving .slide-switch__content {
+  pointer-events: none;
+  animation: slide-switch-out 220ms var(--ease-out) forwards;
+}
+
+.slide-switch--entering .slide-switch__content {
+  animation: slide-switch-in 320ms var(--ease-out) backwards;
+}
+
+.slide-switch__bar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(28.625rem, 100%);
+  height: 0.125rem;
+  overflow: hidden;
+  background: var(--color-primary-light);
+  transform: translateX(-50%);
+}
+
+.slide-switch__bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: var(--color-primary-dark);
+  animation: slide-switch-bar 900ms var(--ease-out) infinite;
+}
+
+@keyframes slide-switch-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-2.5rem);
+  }
+}
+
+@keyframes slide-switch-in {
+  from {
+    opacity: 0;
+    transform: translateX(2.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-switch-bar {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(230%);
+  }
+}

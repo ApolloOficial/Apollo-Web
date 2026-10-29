@@ -7,7 +7,9 @@ import {
   statusLabels,
   typeLabels,
 } from '../data-access/vm/Alerts.vm'
+import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { formatDate } from '../../../utils/formatters'
+import { isOperator } from '../../../utils/user'
 import { Spinner } from '../../../components/spinner'
 import '../Alerts.css'
 
@@ -17,6 +19,7 @@ interface Props {
 
 export default function AlertDetails({ audience = 'operator' }: Props) {
   const { id } = useParams()
+  const { user } = useCurrentUserContext()
   const [warning, setWarning] = useState<WarningDto | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -65,6 +68,7 @@ export default function AlertDetails({ audience = 'operator' }: Props) {
 
   const canOpenServiceOrder =
     audience === 'operator' &&
+    isOperator(user?.role) &&
     warning.status === 'ATIVO' &&
     warning.maintenanceId === null
 
