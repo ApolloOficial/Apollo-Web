@@ -18,3 +18,12 @@ export interface PanelDto {
   installedPanels: number | null
   purchasedPanels: number | null
 }
+
+export interface PanelModelDto {
+  id: number
+  manufacturer: string
+  model: string
+  pmaxW: number
+  efficiencyPct: number
+  warrantyYears: number
+}

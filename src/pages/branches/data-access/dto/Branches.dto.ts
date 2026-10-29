@@ -59,5 +59,20 @@ export interface CreateInverterDTO {
   code: string
   serialNumber: string
   installedAt: string
-  strings: []
+  strings: CreateStringDto[]
+}
+
+export interface CreatePanelDto {
+  serialNumber: string
+  barcode: string
+}
+
+export interface CreateStringDto {
+  mpptNumber: number
+  entryNumber: number
+  panelModelId: number
+  invoiceNumber: string
+  acquisitionDt: string
+  unitCost: number | null
+  panels: CreatePanelDto[]
 }

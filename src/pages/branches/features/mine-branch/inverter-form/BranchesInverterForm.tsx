@@ -16,6 +16,7 @@ import type { StepStatus } from '../../../../../types/ui.types'
 import { formatKw, todayIso } from '../../../../../utils/formatters'
 import {
   getInverterModels,
+  getPanelModels,
   postInverter,
 } from '../../../data-access/services/Branches.service'
 import {
@@ -25,6 +26,13 @@ import {
   type InverterFormVM,
   type InverterStepVM,
 } from '../../../data-access/vm/Branches.vm'
+import {
+  createEmptyInverterString,
+  toCreateStrings,
+  validateInverterStrings,
+  type InverterStringVM,
+} from '../../../data-access/vm/InverterStrings.vm'
+import { BranchesInverterStrings } from './strings-step/BranchesInverterStrings'
 import { BranchesInverterSungrowConnection } from './sungrow-connection/BranchesInverterSungrowConnection'
 
 function sameText(a: string, b: string) {
@@ -39,6 +47,13 @@ export function BranchesInverterForm() {
     getInverterModels,
     'Não foi possível carregar os modelos de inversor.',
   )
+  const panelModelsResource = useApiResource(
+    getPanelModels,
+    'Não foi possível carregar os modelos de placa.',
+  )
+  const [strings, setStrings] = useState<InverterStringVM[]>([
+    createEmptyInverterString(),
+  ])
   const [form, setForm] = useState<InverterFormVM>(INITIAL_INVERTER_FORM)
   const [step, setStep] = useState<InverterStepVM>(1)
   const [formError, setFormError] = useState('')
@@ -74,6 +89,7 @@ export function BranchesInverterForm() {
       sameText(model.brand, form.manufacturer) &&
       sameText(model.model, form.model),
   )
+  const panelModels = panelModelsResource.data?.content ?? []
   const entriesCount = selectedModel
     ? selectedModel.mpptCount * selectedModel.stringsPerMppt
     : null
@@ -121,13 +137,49 @@ export function BranchesInverterForm() {
     setStep(1)
   }
 
-  function editConnection() {
+  function editStrings() {
     setFormError('')
     setStep(2)
   }
 
+  function editConnection() {
+    setFormError('')
+    setStep(3)
+  }
+
+  function submitStrings(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+
+    if (!selectedModel) return
+
+    const message = validateInverterStrings(
+      strings,
+      selectedModel,
+      panelModels,
+    )
+
+    if (message) {
+      setFormError(message)
+      return
+    }
+
+    setFormError('')
+    setStep(3)
+  }
+
   async function submit() {
     if (!selectedModel) return
+
+    const message = validateInverterStrings(
+      strings,
+      selectedModel,
+      panelModels,
+    )
+
+    if (message) {
+      setFormError(message)
+      return
+    }
 
     setSubmitting(true)
     setFormError('')
@@ -138,7 +190,7 @@ export function BranchesInverterForm() {
         code: form.code.trim(),
         serialNumber: form.serialNumber.trim(),
         installedAt: todayIso(),
-        strings: [],
+        strings: toCreateStrings(strings, panelModels),
       })
       setSuccessOpen(true)
     } catch (cause) {
@@ -166,7 +218,7 @@ export function BranchesInverterForm() {
           { label: 'Cadastrar novo inversor' },
         ]}
         title="Cadastre um novo inversor"
-        description="Preencha os dados do inversor. Depois, cadastre as strings escolhendo este inversor como destino."
+        description="Preencha os dados do inversor e informe ao menos uma string com suas placas."
       >
         {modelsResource.error && (
           <p className="branches-page__error" role="alert">
@@ -256,27 +308,67 @@ export function BranchesInverterForm() {
 
           <Step
             number={2}
-            title="Conexão com a Sungrow"
+            title="Strings e placas"
             status={statusOf(2)}
-            onEdit={editConnection}
+            onEdit={editStrings}
           >
             {step === 2 && (
+              <form className="branches-inverter-form" onSubmit={submitStrings}>
+                <BranchesInverterStrings
+                  strings={strings}
+                  panelModels={panelModels}
+                  maxStrings={entriesCount}
+                  onChange={setStrings}
+                />
+
+                {panelModelsResource.error && (
+                  <p className="branches-page__error" role="alert">
+                    {panelModelsResource.error}
+                  </p>
+                )}
+
+                {formError && (
+                  <p className="branches-page__error" role="alert">
+                    {formError}
+                  </p>
+                )}
+
+                <FormActions>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    disabled={panelModelsResource.loading}
+                  >
+                    Continuar
+                  </Button>
+                </FormActions>
+              </form>
+            )}
+          </Step>
+
+          <Step
+            number={3}
+            title="Conexão com a Sungrow"
+            status={statusOf(3)}
+            onEdit={editConnection}
+          >
+            {step === 3 && (
               <div className="branches-inverter-source">
                 {sungrowConnection}
 
                 <FormActions>
-                  <Button fullWidth onClick={() => setStep(3)}>
+                  <Button fullWidth onClick={() => setStep(4)}>
                     Continuar
                   </Button>
                 </FormActions>
               </div>
             )}
 
-            {step === 3 && sungrowConnection}
+            {step === 4 && sungrowConnection}
           </Step>
 
-          <Step number={3} title="Revisão" status={statusOf(3)}>
-            {step === 3 && (
+          <Step number={4} title="Revisão" status={statusOf(4)}>
+            {step === 4 && (
               <>
                 <dl className="branches-info branches-info--review">
                   <div>
@@ -294,6 +386,10 @@ export function BranchesInverterForm() {
                   <div>
                     <dt>Número de série</dt>
                     <dd>{form.serialNumber.trim()}</dd>
+                  </div>
+                  <div>
+                    <dt>Strings</dt>
+                    <dd>{strings.length}</dd>
                   </div>
                   <div>
                     <dt>Fonte de dados</dt>
@@ -334,7 +430,7 @@ export function BranchesInverterForm() {
         <FeedbackModal
           image={successImage}
           title={'Inversor cadastrado\ncom sucesso!'}
-          description="Agora cadastre as strings escolhendo este inversor como destino."
+          description="As strings e as placas informadas foram cadastradas junto com o inversor."
           primaryAction={{
             label: 'Ver inversores',
             onClick: () => navigate(listPath),

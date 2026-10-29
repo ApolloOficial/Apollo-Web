@@ -17,7 +17,7 @@ export const INITIAL_BRANCH_FILTERS: BranchFiltersVM = {
   city: '',
 }
 
-export type InverterStepVM = 1 | 2 | 3
+export type InverterStepVM = 1 | 2 | 3 | 4
 
 export interface InverterFormVM {
   code: string

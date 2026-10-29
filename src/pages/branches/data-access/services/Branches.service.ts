@@ -8,7 +8,10 @@ import type {
 import type { BranchFiltersVM } from '../vm/Branches.vm'
 import type { PageDto } from '../../../../types/common.types'
 import type { StringDto } from '../../../../types/string.types'
-import type { PanelDto } from '../../../../types/panel.types'
+import type {
+  PanelDto,
+  PanelModelDto,
+} from '../../../../types/panel.types'
 
 interface StringsParams {
   unitId: string
@@ -117,6 +120,10 @@ export function getInverter(id: string) {
 
 export function getInverterModels() {
   return request<PageDto<InverterModelDTO>>('/inverter-models?page=0&size=100')
+}
+
+export function getPanelModels() {
+  return request<PageDto<PanelModelDto>>('/panel-models?page=0&size=100')
 }
 
 export function postInverter(payload: CreateInverterDTO) {
