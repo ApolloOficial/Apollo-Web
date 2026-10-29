@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   AppliedFilters,
   type AppliedFilter,
@@ -28,8 +28,14 @@ export function EmployeesFeature() {
   const [draft, setDraft] = useState<EmployeeFiltersVM>(
     INITIAL_EMPLOYEE_FILTERS,
   )
-  const [filters, setFilters] = useState<EmployeeFiltersVM>(
+  const [applied, setApplied] = useState<EmployeeFiltersVM>(
     INITIAL_EMPLOYEE_FILTERS,
+  )
+  const [searchParams, setSearchParams] = useSearchParams()
+  const urlFullName = searchParams.get('name') ?? ''
+  const filters = useMemo<EmployeeFiltersVM>(
+    () => ({ ...applied, fullName: urlFullName }),
+    [applied, urlFullName],
   )
   const [selected, setSelected] = useState<EmployeeDTO | null>(null)
   const [page, setPage] = useState(0)
@@ -89,6 +95,14 @@ export function EmployeesFeature() {
   const appliedFilters = useMemo<AppliedFilter[]>(() => {
     const result: AppliedFilter[] = []
 
+    if (filters.fullName) {
+      result.push({
+        key: 'fullName',
+        label: 'Nome',
+        value: filters.fullName,
+      })
+    }
+
     if (filters.email) {
       result.push({
         key: 'email',
@@ -121,29 +135,43 @@ export function EmployeesFeature() {
     return result
   }, [filters, roles])
 
+  function clearUrlFullName() {
+    if (!searchParams.has('name')) return
+
+    const next = new URLSearchParams(searchParams)
+
+    next.delete('name')
+    setSearchParams(next, { replace: true })
+  }
+
   function removeAppliedFilter(key: string) {
     setPage(0)
 
+    if (key === 'fullName') {
+      clearUrlFullName()
+    }
+
     if (key === 'email') {
       setDraft((current) => ({ ...current, email: '' }))
-      setFilters((current) => ({ ...current, email: '' }))
+      setApplied((current) => ({ ...current, email: '' }))
     }
 
     if (key === 'role') {
       setDraft((current) => ({ ...current, role: '' }))
-      setFilters((current) => ({ ...current, role: '' }))
+      setApplied((current) => ({ ...current, role: '' }))
     }
 
     if (key === 'isActive') {
       setDraft((current) => ({ ...current, isActive: '' }))
-      setFilters((current) => ({ ...current, isActive: '' }))
+      setApplied((current) => ({ ...current, isActive: '' }))
     }
   }
 
   function clearAppliedFilters() {
     setPage(0)
+    clearUrlFullName()
     setDraft(INITIAL_EMPLOYEE_FILTERS)
-    setFilters(INITIAL_EMPLOYEE_FILTERS)
+    setApplied(INITIAL_EMPLOYEE_FILTERS)
   }
 
   async function confirmDeactivation() {
@@ -195,7 +223,8 @@ export function EmployeesFeature() {
         onChange={setDraft}
         onApply={() => {
           setPage(0)
-          setFilters(draft)
+          clearUrlFullName()
+          setApplied(draft)
         }}
       />
 

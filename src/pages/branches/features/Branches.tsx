@@ -23,11 +23,15 @@ function uniqueSorted(values: string[]) {
 export function BranchesFeature() {
   const { user, loading: userLoading } = useLayoutContext()
   const [searchParams, setSearchParams] = useSearchParams()
-  const tab: BranchesTabVM =
-    searchParams.get('tab') === 'mine' ? 'mine' : 'all'
+  const tab: BranchesTabVM = searchParams.get('tab') === 'mine' ? 'mine' : 'all'
   const [draft, setDraft] = useState<BranchFiltersVM>(INITIAL_BRANCH_FILTERS)
-  const [filters, setFilters] = useState<BranchFiltersVM>(
+  const [applied, setApplied] = useState<BranchFiltersVM>(
     INITIAL_BRANCH_FILTERS,
+  )
+  const urlName = searchParams.get('name') ?? ''
+  const filters = useMemo<BranchFiltersVM>(
+    () => (urlName ? { ...applied, name: urlName } : applied),
+    [applied, urlName],
   )
   const [nameOptions, setNameOptions] = useState<string[]>([])
   const [cityOptions, setCityOptions] = useState<string[]>([])
@@ -64,16 +68,27 @@ export function BranchesFeature() {
     setSearchParams(next === 'mine' ? { tab: 'mine' } : {}, { replace: true })
   }
 
+  function clearUrlName() {
+    if (!searchParams.has('name')) return
+
+    const next = new URLSearchParams(searchParams)
+
+    next.delete('name')
+    setSearchParams(next, { replace: true })
+  }
+
   function removeAppliedFilter(key: string) {
     if (key === 'name' || key === 'city') {
+      if (key === 'name') clearUrlName()
       setDraft((current) => ({ ...current, [key]: '' }))
-      setFilters((current) => ({ ...current, [key]: '' }))
+      setApplied((current) => ({ ...current, [key]: '' }))
     }
   }
 
   function clearAppliedFilters() {
+    clearUrlName()
     setDraft(INITIAL_BRANCH_FILTERS)
-    setFilters(INITIAL_BRANCH_FILTERS)
+    setApplied(INITIAL_BRANCH_FILTERS)
   }
 
   return (
@@ -90,8 +105,8 @@ export function BranchesFeature() {
       <header className="branches-page__heading">
         <h1>Filiais</h1>
         <p>
-          Unidades da empresa com sistemas fotovoltaicos. Cadastre novas
-          filiais ou acompanhe as existentes.
+          Unidades da empresa com sistemas fotovoltaicos. Cadastre novas filiais
+          ou acompanhe as existentes.
         </p>
       </header>
 
@@ -103,7 +118,8 @@ export function BranchesFeature() {
             cityOptions={cityOptions}
             onChange={setDraft}
             onApply={() => {
-              setFilters({
+              clearUrlName()
+              setApplied({
                 name: draft.name.trim(),
                 city: draft.city.trim(),
               })

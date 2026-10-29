@@ -24,6 +24,10 @@ export function getEmployees(
     query.set('companyUnitId', companyUnitId)
   }
 
+  if (filters.fullName.trim()) {
+    query.set('fullName', filters.fullName.trim())
+  }
+
   if (filters.email.trim()) {
     query.set('email', filters.email.trim())
   }
