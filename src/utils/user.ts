@@ -47,6 +47,10 @@ export function isManager(role: string | null | undefined): boolean {
   return role != null && normalizeRole(role) === ROLE.MANAGER
 }
 
+export function isTechnician(role: string | null | undefined): boolean {
+  return role != null && normalizeRole(role) === ROLE.TECHNICIAN
+}
+
 export function isOperator(role: string | null | undefined): boolean {
   return role != null && normalizeRole(role) === ROLE.OPERATOR
 }
