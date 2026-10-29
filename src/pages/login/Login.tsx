@@ -103,8 +103,13 @@ export default function Login() {
           />
           <TextLink to={paths.forgotPassword}>Esqueceu sua senha?</TextLink>
         </div>
-        <Button type="submit" fullWidth disabled={!canSubmit || status.loading}>
-          {status.loading ? 'Entrando...' : 'Começar'}
+        <Button
+          type="submit"
+          fullWidth
+          disabled={!canSubmit}
+          loading={status.loading}
+        >
+          Começar
         </Button>
         {status.error && (
           <StatusMessage tone="alert">{status.error}</StatusMessage>

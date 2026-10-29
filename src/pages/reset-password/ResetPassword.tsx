@@ -117,8 +117,13 @@ export default function ResetPassword() {
             )
           )}
         </div>
-        <Button type="submit" fullWidth disabled={!canSubmit || status.loading}>
-          {status.loading ? 'Redefinindo...' : 'Redefinir senha'}
+        <Button
+          type="submit"
+          fullWidth
+          disabled={!canSubmit}
+          loading={status.loading}
+        >
+          Redefinir senha
         </Button>
       </form>
     </AuthPage>

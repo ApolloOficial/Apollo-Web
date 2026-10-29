@@ -406,10 +406,10 @@ export function BranchesInverterForm() {
                 <FormActions>
                   <Button
                     fullWidth
-                    disabled={submitting}
+                    loading={submitting}
                     onClick={() => void submit()}
                   >
-                    {submitting ? 'Cadastrando...' : 'Cadastrar'}
+                    Cadastrar
                   </Button>
                 </FormActions>
               </>

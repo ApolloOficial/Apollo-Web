@@ -24,6 +24,7 @@ import {
   type RelocationListItemVM,
 } from '../data-access/vm/Relocations.vm'
 import { RelocationsFilters } from './filters/RelocationsFilters'
+import { Spinner } from '../../../components/spinner'
 
 export type RelocationsAudience = 'operator' | 'manager'
 type ManagerTab = 'others' | 'my-unit'
@@ -338,7 +339,11 @@ export function RelocationsFeature({
               </Link>
             ))}
 
-          {loading && <p className="relocations-table__state">Carregando...</p>}
+          {loading && (
+            <p className="relocations-table__state">
+              <Spinner />
+            </p>
+          )}
 
           {!loading && !error && visible.length === 0 && (
             <p className="relocations-table__state">

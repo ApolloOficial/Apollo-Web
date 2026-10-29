@@ -116,8 +116,13 @@ export default function FirstAccess() {
               : undefined
           }
         />
-        <Button type="submit" fullWidth disabled={!canSubmit || status.loading}>
-          {status.loading ? 'Atualizando...' : 'Atualizar senha'}
+        <Button
+          type="submit"
+          fullWidth
+          disabled={!canSubmit}
+          loading={status.loading}
+        >
+          Atualizar senha
         </Button>
         {status.error && (
           <StatusMessage tone="alert">{status.error}</StatusMessage>

@@ -8,6 +8,7 @@ import {
   typeLabels,
 } from '../data-access/vm/Alerts.vm'
 import { formatDate } from '../../../utils/formatters'
+import { Spinner } from '../../../components/spinner'
 import '../Alerts.css'
 
 interface Props {
@@ -47,7 +48,11 @@ export default function AlertDetails({ audience = 'operator' }: Props) {
   useEffect(() => void loadWarning(), [loadWarning])
 
   if (loading) {
-    return <p className="alerts-details__state">Carregando...</p>
+    return (
+      <p className="alerts-details__state">
+        <Spinner />
+      </p>
+    )
   }
 
   if (!warning) {

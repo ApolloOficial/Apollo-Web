@@ -59,7 +59,7 @@ export async function listNotifications(
 ): Promise<ServiceResult<NotificationItem[]>> {
   try {
     const data = await request<NotificationDto[]>(
-      `/api/v1/notifications?page=0&size=${size}`,
+      `/notifications?page=0&size=${size}`,
     )
     return { ok: true, data: (data ?? []).map(toNotificationItem) }
   } catch (cause) {
@@ -72,9 +72,7 @@ export async function listNotifications(
 
 export async function getUnreadCount(): Promise<ServiceResult<number>> {
   try {
-    const data = await request<UnreadCountDto>(
-      '/api/v1/notifications/unread-count',
-    )
+    const data = await request<UnreadCountDto>('/notifications/unread-count')
     return { ok: true, data: data?.unread ?? 0 }
   } catch (cause) {
     return {
@@ -88,7 +86,7 @@ export async function markNotificationRead(
   id: string,
 ): Promise<ServiceResult<null>> {
   try {
-    await request<void>(`/api/v1/notifications/${id}/read`, {
+    await request<void>(`/notifications/${id}/read`, {
       method: 'PATCH',
     })
     return { ok: true, data: null }
@@ -102,7 +100,7 @@ export async function markNotificationRead(
 
 export async function markAllNotificationsRead(): Promise<ServiceResult<null>> {
   try {
-    await request<{ updated: number }>('/api/v1/notifications/read-all', {
+    await request<{ updated: number }>('/notifications/read-all', {
       method: 'PATCH',
     })
     return { ok: true, data: null }

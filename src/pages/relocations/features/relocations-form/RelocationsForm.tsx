@@ -331,9 +331,10 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
         <Button
           type="submit"
           fullWidth
-          disabled={optionsLoading || submitting || !me || Boolean(shownError)}
+          disabled={optionsLoading || !me || Boolean(shownError)}
+          loading={submitting}
         >
-          {submitting ? 'Solicitando...' : 'Solicitar'}
+          Solicitar
         </Button>
       </FormActions>
     </form>

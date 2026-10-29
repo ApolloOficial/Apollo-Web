@@ -10,6 +10,7 @@ import {
 } from '../../../data-access/services/Branches.service'
 import { toInverterStatusVM } from '../../../data-access/vm/Branches.vm'
 import { BranchesStatusChip } from '../../status-chip/BranchesStatusChip'
+import { Spinner } from '../../../../../components/spinner'
 
 interface Props {
   unitId: string
@@ -89,7 +90,11 @@ export function BranchesInvertersTable({ unitId }: Props) {
             </Link>
           ))}
 
-        {loading && <p className="branches-table__state">Carregando...</p>}
+        {loading && (
+          <p className="branches-table__state">
+            <Spinner />
+          </p>
+        )}
 
         {!loading && !error && inverters.length === 0 && (
           <p className="branches-table__state">

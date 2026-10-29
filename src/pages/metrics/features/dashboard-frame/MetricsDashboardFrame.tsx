@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Spinner } from '../../../../components/spinner'
 
 interface Props {
   embedUrl: string
@@ -21,7 +22,11 @@ export function MetricsDashboardFrame({ embedUrl, title }: Props) {
 
   return (
     <div className="metrics-frame" aria-busy={loading}>
-      {loading && <p className="metrics-frame__loading">Carregando...</p>}
+      {loading && (
+        <p className="metrics-frame__loading">
+          <Spinner />
+        </p>
+      )}
 
       <iframe
         className="metrics-frame__iframe"

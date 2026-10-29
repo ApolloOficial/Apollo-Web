@@ -6,6 +6,7 @@ import {
   getBranch,
 } from '../../data-access/services/Branches.service'
 import { BranchesInvertersTable } from './inverters-table/BranchesInvertersTable'
+import { Spinner } from '../../../../components/spinner'
 
 interface Props {
   unitId: string | null
@@ -31,7 +32,11 @@ export function BranchesMineBranch({ unitId, userLoading }: Props) {
   )
 
   if (userLoading) {
-    return <p className="branches-table__state">Carregando...</p>
+    return (
+      <p className="branches-table__state">
+        <Spinner />
+      </p>
+    )
   }
 
   if (!unitId) {
@@ -53,7 +58,11 @@ export function BranchesMineBranch({ unitId, userLoading }: Props) {
         </p>
       )}
 
-      {branch.loading && <p className="branches-table__state">Carregando...</p>}
+      {branch.loading && (
+        <p className="branches-table__state">
+          <Spinner />
+        </p>
+      )}
 
       {!branch.loading && data && address && (
         <>

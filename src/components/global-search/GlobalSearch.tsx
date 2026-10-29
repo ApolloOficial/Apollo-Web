@@ -8,6 +8,7 @@ import type { CurrentUserDto } from '../../types/auth.types'
 import type { SearchCategory, SearchResultDto } from '../../types/search.types'
 import { isManager } from '../../utils/user'
 import { SearchInput } from '../inputs/search-input'
+import { Spinner } from '../spinner'
 import './GlobalSearch.css'
 
 interface GlobalSearchProps {
@@ -171,7 +172,11 @@ export function GlobalSearch({
 
       {showPanel && (
         <div className="global-search__panel" aria-busy={loading}>
-          {loading && <p className="global-search__status">Buscando...</p>}
+          {loading && (
+            <p className="global-search__status">
+              <Spinner />
+            </p>
+          )}
 
           {error && (
             <p className="global-search__status global-search__status--error">
