@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { generatePath, useNavigate } from 'react-router-dom'
+import { useCurrentUserContext } from '../../hooks/useCurrentUserContext'
 import { useSearchSuggestions } from '../../hooks/useSearchSuggestions'
 import { paths } from '../../routes/paths'
-import type { SearchCategory } from '../../types/search.types'
+import { getPanelById } from '../../services/panels.service'
+import type { CurrentUserDto } from '../../types/auth.types'
+import type { SearchCategory, SearchResultDto } from '../../types/search.types'
+import { isManager } from '../../utils/user'
 import { SearchInput } from '../inputs/search-input'
 import './GlobalSearch.css'
 
@@ -13,22 +17,71 @@ interface GlobalSearchProps {
 interface SearchGroup {
   key: SearchCategory
   label: string
-  getPath: (id: string) => string
+  resolvePath: (
+    item: SearchResultDto,
+    user: CurrentUserDto | null,
+  ) => string | Promise<string>
+}
+
+const SUBTITLE_LABELS: Record<string, string> = {
+  Employee: 'Funcionário',
+  'Company Unit': 'Filial',
+  Inverter: 'Inversor',
+  Panel: 'Placa',
+  'Internal Relocation': 'Realocação interna',
+  'External Relocation': 'Realocação externa',
+}
+
+function getSubtitleLabel(subtitle: string) {
+  return SUBTITLE_LABELS[subtitle] ?? subtitle
+}
+
+function withNameFilter(path: string, name: string) {
+  return `${path}?${new URLSearchParams({ name })}`
 }
 
 const SEARCH_GROUPS: SearchGroup[] = [
-  { key: 'employees', label: 'Funcionários', getPath: () => paths.employees },
-  { key: 'companyUnits', label: 'Filiais', getPath: () => paths.branches },
+  {
+    key: 'employees',
+    label: 'Funcionários',
+    resolvePath: (item) => withNameFilter(paths.employees, item.title),
+  },
+  {
+    key: 'companyUnits',
+    label: 'Filiais',
+    resolvePath: (item, user) =>
+      item.id === user?.companyUnitId
+        ? `${paths.branches}?tab=mine`
+        : withNameFilter(paths.branches, item.title),
+  },
   {
     key: 'inverters',
     label: 'Inversores',
-    getPath: (id) => generatePath(paths.branchInverterDetails, { id }),
+    resolvePath: (item) =>
+      generatePath(paths.branchInverterDetails, { id: item.id }),
   },
-  { key: 'panels', label: 'Placas', getPath: () => paths.branches },
+  {
+    key: 'panels',
+    label: 'Placas',
+    resolvePath: async (item) => {
+      const panel = await getPanelById(item.id)
+
+      return generatePath(paths.branchStringDetails, { id: panel.stringId })
+    },
+  },
   {
     key: 'relocations',
     label: 'Realocações',
-    getPath: () => paths.relocations,
+    resolvePath: (item, user) =>
+      generatePath(
+        isManager(user?.role)
+          ? paths.relocationManagerDetails
+          : paths.relocationDetails,
+        {
+          type: /^external/i.test(item.subtitle) ? 'external' : 'internal',
+          id: item.id,
+        },
+      ),
   },
 ]
 
@@ -36,9 +89,11 @@ export function GlobalSearch({
   placeholder = 'Busque por projetos, equipes e muito mais.',
 }: GlobalSearchProps) {
   const navigate = useNavigate()
+  const { user } = useCurrentUserContext()
   const containerRef = useRef<HTMLDivElement>(null)
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
+  const [selectionError, setSelectionError] = useState('')
   const { enabled, loading, data, error } = useSearchSuggestions(query)
 
   useEffect(() => {
@@ -66,23 +121,40 @@ export function GlobalSearch({
     }
   }, [open])
 
-  const sections = SEARCH_GROUPS.map((group) => ({
-    ...group,
-    items: data?.[group.key] ?? [],
-  })).filter((section) => section.items.length > 0)
+  const sections = SEARCH_GROUPS.filter(
+    (group) => group.key !== 'employees' || isManager(user?.role),
+  )
+    .map((group) => ({
+      ...group,
+      items: data?.[group.key] ?? [],
+    }))
+    .filter((section) => section.items.length > 0)
 
   const showPanel = open && enabled
   const empty = !loading && !error && sections.length === 0
 
   function handleChange(value: string) {
     setQuery(value)
+    setSelectionError('')
     setOpen(true)
   }
 
-  function handleSelect(path: string) {
-    setOpen(false)
-    setQuery('')
-    navigate(path)
+  async function handleSelect(group: SearchGroup, item: SearchResultDto) {
+    setSelectionError('')
+
+    try {
+      const path = await group.resolvePath(item, user)
+
+      setOpen(false)
+      setQuery('')
+      navigate(path)
+    } catch (cause) {
+      setSelectionError(
+        cause instanceof Error
+          ? cause.message
+          : 'Não foi possível abrir o resultado.',
+      )
+    }
   }
 
   return (
@@ -107,6 +179,12 @@ export function GlobalSearch({
             </p>
           )}
 
+          {selectionError && (
+            <p className="global-search__status global-search__status--error">
+              {selectionError}
+            </p>
+          )}
+
           {empty && (
             <p className="global-search__status">
               Nenhum resultado encontrado.
@@ -123,14 +201,14 @@ export function GlobalSearch({
                       <button
                         className="global-search__item"
                         type="button"
-                        onClick={() => handleSelect(section.getPath(item.id))}
+                        onClick={() => void handleSelect(section, item)}
                       >
                         <span className="global-search__item-title">
                           {item.title}
                         </span>
                         {item.subtitle && (
                           <span className="global-search__item-subtitle">
-                            {item.subtitle}
+                            {getSubtitleLabel(item.subtitle)}
                           </span>
                         )}
                       </button>
