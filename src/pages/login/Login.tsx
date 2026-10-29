@@ -10,10 +10,14 @@ import { PasswordInput } from '../../components/inputs/password-input'
 import { SimpleInput } from '../../components/inputs/simple-input'
 import { TextLink } from '../../components/text-link'
 import { paths } from '../../routes/paths'
-import { login } from '../../services/auth.service'
-import { saveSession } from '../../utils/session'
+import { getCurrentUser, login } from '../../services/auth.service'
+import { clearSession, saveSession } from '../../utils/session'
+import { isTechnician } from '../../utils/user'
 import type { LoginFormViewModel } from '../../types/auth.types'
 import './Login.css'
+
+const TECHNICIAN_BLOCKED_MESSAGE =
+  'Você não tem acesso ao painel web. Use o aplicativo mobile do Apollo.'
 
 const initialForm: LoginFormViewModel = {
   email: '',
@@ -40,12 +44,22 @@ export default function Login() {
 
     try {
       const { token, tokenType, firstAccess } = await login({
-        email: form.email,
+        email: form.email.trim(),
         password: form.password,
       })
       saveSession({ token, tokenType })
+
+      const currentUser = await getCurrentUser()
+
+      if (isTechnician(currentUser.role)) {
+        clearSession()
+        setStatus({ loading: false, error: TECHNICIAN_BLOCKED_MESSAGE })
+        return
+      }
+
       navigate(firstAccess ? paths.updatePassword : paths.home)
     } catch (err) {
+      clearSession()
       setStatus({ loading: false, error: (err as Error).message })
       return
     }

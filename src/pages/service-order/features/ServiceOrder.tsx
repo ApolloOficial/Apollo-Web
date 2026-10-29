@@ -5,10 +5,10 @@ import {
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
+import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { Tag, type TagTone } from '../../../components/tag'
+import { formatDate } from '../../../utils/formatters'
 import type {
-  EmployeeSummaryDto,
-  MaintenanceTypeDto,
   ServiceOrderListItemDto,
   ServiceOrderStatus,
 } from '../data-access/dto/ServiceOrder.dto'
@@ -25,12 +25,8 @@ import {
   type ServiceOrderFiltersViewModel,
 } from '../data-access/vm/ServiceOrder.vm'
 import { ServiceOrderFilter } from './filters/ServiceOrderFilter'
-
-function formatDate(value: string | null) {
-  if (!value) return '—'
-
-  return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
-}
+import type { EmployeeDto } from '../../../types/employee.types'
+import type { MaintenanceTypeDto } from '../../../types/service-order.types'
 
 function getEquipment(item: ServiceOrderListItemDto) {
   return (
@@ -69,9 +65,11 @@ function getVisualStatus(item: ServiceOrderListItemDto) {
 }
 
 export function ServiceOrderFeature() {
+  const { user, loading: loadingUser } = useCurrentUserContext()
+  const companyUnitId = user?.companyUnitId ?? null
   const [items, setItems] = useState<ServiceOrderListItemDto[]>([])
   const [orderIds, setOrderIds] = useState<number[]>([])
-  const [technicians, setTechnicians] = useState<EmployeeSummaryDto[]>([])
+  const [technicians, setTechnicians] = useState<EmployeeDto[]>([])
   const [maintenanceTypes, setMaintenanceTypes] = useState<
     MaintenanceTypeDto[]
   >([])
@@ -90,8 +88,10 @@ export function ServiceOrderFeature() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    if (loadingUser) return
+
     Promise.all([
-      getActiveTechnicians(),
+      getActiveTechnicians(companyUnitId),
       getMaintenanceTypes(),
       getServiceOrderIds(),
     ])
@@ -105,7 +105,7 @@ export function ServiceOrderFeature() {
         setMaintenanceTypes([])
         setOrderIds([])
       })
-  }, [])
+  }, [loadingUser, companyUnitId])
 
   const loadOrders = useCallback(async () => {
     setLoading(true)

@@ -1,25 +1,6 @@
-export interface PageDTO<T> {
-  content: T[]
-  totalElements: number
-  totalPages: number
-  size: number
-  number: number
-  first: boolean
-  last: boolean
-}
 export type RelocationStatus =
   'PENDENTE' | 'APROVADA' | 'REJEITADA' | 'CONCLUIDA'
 export type RelocationType = 'INTERNAL' | 'EXTERNAL'
-export interface MeDTO {
-  userId: string
-  fullName: string
-  email: string
-  role: string
-  companyId: number
-  companyName: string
-  companyUnitId: string
-  companyUnitName: string
-}
 export interface CompanyUnitDTO {
   id: string
   name: string
@@ -33,19 +14,6 @@ export interface SegmentDTO {
   id: number
   name: string
   description: string | null
-}
-export interface StringDTO {
-  id: string
-  code: string
-  companyUnitId: string
-}
-export interface PanelDTO {
-  id: number
-  stringId: string
-  stringCode: string
-  companyUnitId: string
-  serialNumber: string
-  barcode: string
 }
 export interface InternalRelocationDTO {
   id: number

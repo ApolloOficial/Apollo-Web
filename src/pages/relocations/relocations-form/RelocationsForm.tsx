@@ -1,11 +1,11 @@
 import { useCallback, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { FeedbackModal } from '../../../components/feedback-modal'
+import { FormLayout } from '../../../components/form-layout'
 import errorImage from '../../../assets/images/relocation-error.png'
 import successImage from '../../../assets/images/relocation-success.png'
 import { paths } from '../../../routes/paths'
 import { RelocationsForm as FormFeature } from '../features/relocations-form/RelocationsForm'
-import '../Relocations.css'
 
 export default function RelocationsForm() {
   const navigate = useNavigate()
@@ -14,23 +14,22 @@ export default function RelocationsForm() {
   const handleError = useCallback((message: string) => setError(message), [])
 
   return (
-    <section className="relocation-form-page">
-      <nav className="relocations-breadcrumb">
-        <Link to={paths.home}>Início</Link>
-        <span>›</span>
-        <Link to={paths.relocations}>Realocações</Link>
-        <span>›</span>
-        <strong>Solicitar realocação</strong>
-      </nav>
-      <h1>Solicitar realocação</h1>
-      <p>
-        Preencha todos os dados da realocação. Após a conclusão,
-        <br />o gerente será notificado para validação.
-      </p>
-      <FormFeature
-        onSuccess={() => setSuccessOpen(true)}
-        onError={handleError}
-      />
+    <>
+      <FormLayout
+        breadcrumb={[
+          { label: 'Início', to: paths.home },
+          { label: 'Realocações', to: paths.relocations },
+          { label: 'Solicitar realocação' },
+        ]}
+        title="Solicitar realocação"
+        description="Preencha todos os dados da realocação. Após a conclusão, o gerente será notificado para validação."
+      >
+        <FormFeature
+          onSuccess={() => setSuccessOpen(true)}
+          onError={handleError}
+        />
+      </FormLayout>
+
       {successOpen && (
         <FeedbackModal
           image={successImage}
@@ -60,6 +59,6 @@ export default function RelocationsForm() {
           onClose={() => setError('')}
         />
       )}
-    </section>
+    </>
   )
 }

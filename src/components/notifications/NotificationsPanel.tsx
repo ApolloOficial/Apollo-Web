@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react'
 import { useNavigate } from 'react-router-dom'
 import type { NotificationItem } from '../../types/notification.types'
-import { notificationVisuals } from './notification.config'
+import { getNotificationVisual } from './notification.config'
 import './NotificationsPanel.css'
 
 interface NotificationsPanelProps {
@@ -36,7 +36,7 @@ export function NotificationsPanel({
       ) : (
         <ul className="notifications__list">
           {items.map((item) => {
-            const visual = notificationVisuals[item.type]
+            const visual = getNotificationVisual(item.type)
             return (
               <li key={item.id}>
                 <button

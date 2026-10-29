@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   AppliedFilters,
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
-import type { EmployeeDTO, RoleDTO } from '../data-access/dto/Employees.dto'
+import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
+import { isManager } from '../../../utils/user'
+import type { RoleDTO } from '../data-access/dto/Employees.dto'
 import {
   getEmployees,
   getRoles,
@@ -18,17 +20,25 @@ import {
 import '../Employees.css'
 import { DeactivateEmployeeModal } from './deactivate-employee-modal'
 import { EmployeesFilter } from './filters/EmployeesFilter'
+import type { EmployeeDto } from '../../../types/employee.types'
 
 export function EmployeesFeature() {
-  const [employees, setEmployees] = useState<EmployeeDTO[]>([])
+  const { user, loading: loadingUser } = useCurrentUserContext()
+  const [employees, setEmployees] = useState<EmployeeDto[]>([])
   const [roles, setRoles] = useState<RoleDTO[]>([])
   const [draft, setDraft] = useState<EmployeeFiltersVM>(
     INITIAL_EMPLOYEE_FILTERS,
   )
-  const [filters, setFilters] = useState<EmployeeFiltersVM>(
+  const [applied, setApplied] = useState<EmployeeFiltersVM>(
     INITIAL_EMPLOYEE_FILTERS,
   )
-  const [selected, setSelected] = useState<EmployeeDTO | null>(null)
+  const [searchParams, setSearchParams] = useSearchParams()
+  const urlFullName = searchParams.get('name') ?? ''
+  const filters = useMemo<EmployeeFiltersVM>(
+    () => ({ ...applied, fullName: urlFullName }),
+    [applied, urlFullName],
+  )
+  const [selected, setSelected] = useState<EmployeeDto | null>(null)
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
   const [totalPages, setTotalPages] = useState(0)
@@ -36,12 +46,17 @@ export function EmployeesFeature() {
   const [deactivating, setDeactivating] = useState(false)
   const [error, setError] = useState('')
 
+  const companyUnitId = user?.companyUnitId ?? null
+  const currentUserId = user?.userId ?? null
+
   const loadEmployees = useCallback(async () => {
+    if (loadingUser) return
+
     setLoading(true)
     setError('')
 
     try {
-      const result = await getEmployees(filters, page, size)
+      const result = await getEmployees(filters, page, size, companyUnitId)
 
       setEmployees(result.content)
       setTotalPages(result.totalPages)
@@ -54,7 +69,7 @@ export function EmployeesFeature() {
     } finally {
       setLoading(false)
     }
-  }, [filters, page, size])
+  }, [filters, page, size, loadingUser, companyUnitId])
 
   useEffect(() => {
     void (async () => {
@@ -66,9 +81,7 @@ export function EmployeesFeature() {
   useEffect(() => {
     void getRoles()
       .then(({ content }) => {
-        setRoles(
-          content.filter((role) => role.name.toUpperCase() !== 'GERENTE'),
-        )
+        setRoles(content.filter((role) => !isManager(role.name)))
       })
       .catch(() => setRoles([]))
   }, [])
@@ -80,6 +93,14 @@ export function EmployeesFeature() {
 
   const appliedFilters = useMemo<AppliedFilter[]>(() => {
     const result: AppliedFilter[] = []
+
+    if (filters.fullName) {
+      result.push({
+        key: 'fullName',
+        label: 'Nome',
+        value: filters.fullName,
+      })
+    }
 
     if (filters.email) {
       result.push({
@@ -113,29 +134,43 @@ export function EmployeesFeature() {
     return result
   }, [filters, roles])
 
+  function clearUrlFullName() {
+    if (!searchParams.has('name')) return
+
+    const next = new URLSearchParams(searchParams)
+
+    next.delete('name')
+    setSearchParams(next, { replace: true })
+  }
+
   function removeAppliedFilter(key: string) {
     setPage(0)
 
+    if (key === 'fullName') {
+      clearUrlFullName()
+    }
+
     if (key === 'email') {
       setDraft((current) => ({ ...current, email: '' }))
-      setFilters((current) => ({ ...current, email: '' }))
+      setApplied((current) => ({ ...current, email: '' }))
     }
 
     if (key === 'role') {
       setDraft((current) => ({ ...current, role: '' }))
-      setFilters((current) => ({ ...current, role: '' }))
+      setApplied((current) => ({ ...current, role: '' }))
     }
 
     if (key === 'isActive') {
       setDraft((current) => ({ ...current, isActive: '' }))
-      setFilters((current) => ({ ...current, isActive: '' }))
+      setApplied((current) => ({ ...current, isActive: '' }))
     }
   }
 
   function clearAppliedFilters() {
     setPage(0)
+    clearUrlFullName()
     setDraft(INITIAL_EMPLOYEE_FILTERS)
-    setFilters(INITIAL_EMPLOYEE_FILTERS)
+    setApplied(INITIAL_EMPLOYEE_FILTERS)
   }
 
   async function confirmDeactivation() {
@@ -187,7 +222,8 @@ export function EmployeesFeature() {
         onChange={setDraft}
         onApply={() => {
           setPage(0)
-          setFilters(draft)
+          clearUrlFullName()
+          setApplied(draft)
         }}
       />
 
@@ -220,13 +256,17 @@ export function EmployeesFeature() {
               <span>{employee.role}</span>
               <span>{employee.active ? 'Sim' : 'Não'}</span>
 
-              <button
-                type="button"
-                disabled={!employee.active}
-                onClick={() => setSelected(employee)}
-              >
-                {employee.active ? 'Desligar' : 'Desligado'}
-              </button>
+              {employee.id !== currentUserId && !isManager(employee.role) ? (
+                <button
+                  type="button"
+                  disabled={!employee.active}
+                  onClick={() => setSelected(employee)}
+                >
+                  {employee.active ? 'Desligar' : 'Desligado'}
+                </button>
+              ) : (
+                <span />
+              )}
             </article>
           ))}
 

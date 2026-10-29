@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import type { HeaderProps } from '../../types/ui.types'
 import { getInitials } from '../../utils/user'
@@ -7,28 +7,8 @@ import { BellIcon } from '../icons/bell-icon'
 import { ChevronRightIcon } from '../icons/chevron-right-icon'
 import { LogoutIcon } from '../icons/logout-icon'
 import { NotificationsPanel } from '../notifications'
-import { getMockNotifications } from '../notifications/notifications.mock'
-import type { NotificationItem } from '../../types/notification.types'
+import { useNotifications } from '../../hooks/useNotifications'
 import './Header.css'
-
-const READ_IDS_KEY = 'apollo:notifications:read'
-
-function loadReadIds(): string[] {
-  try {
-    const raw = window.sessionStorage.getItem(READ_IDS_KEY)
-    return raw ? (JSON.parse(raw) as string[]) : []
-  } catch {
-    return []
-  }
-}
-
-function saveReadIds(ids: string[]) {
-  try {
-    window.sessionStorage.setItem(READ_IDS_KEY, JSON.stringify(ids))
-  } catch {
-    return
-  }
-}
 
 export function Header({ user, loading = false, onLogout }: HeaderProps) {
   const { pathname } = useLocation()
@@ -37,15 +17,11 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
   const [search, setSearch] = useState('')
   const notificationsRef = useRef<HTMLDivElement>(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
-  const [readIds, setReadIds] = useState<string[]>(loadReadIds)
-
-  const notifications = useMemo<NotificationItem[]>(
-    () =>
-      getMockNotifications(user?.role).map((n) =>
-        readIds.includes(n.id) ? { ...n, read: true } : n,
-      ),
-    [user?.role, readIds],
-  )
+  const {
+    items: notifications,
+    hasUnread,
+    markAsRead,
+  } = useNotifications(user !== null)
 
   useEffect(() => {
     if (!notificationsOpen) return
@@ -71,17 +47,6 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [notificationsOpen])
-
-  function markAsRead(item: NotificationItem) {
-    setReadIds((current) => {
-      if (current.includes(item.id)) return current
-      const next = [...current, item.id]
-      saveReadIds(next)
-      return next
-    })
-  }
-
-  const hasUnread = notifications.some((n) => !n.read)
 
   useEffect(() => {
     if (!menuOpen) return

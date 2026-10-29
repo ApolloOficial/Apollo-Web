@@ -13,6 +13,12 @@ export function SimpleInput({
   endAdornment,
   error,
   invalid,
+  required,
+  disabled,
+  maxLength,
+  minLength,
+  readOnly,
+  inputMode,
 }: SimpleInputProps) {
   const errorId = `${id}-error`
   const isInvalid = Boolean(error || invalid)
@@ -25,6 +31,7 @@ export function SimpleInput({
       <div
         className="simple-input__field"
         data-invalid={isInvalid ? 'true' : undefined}
+        data-readonly={readOnly ? 'true' : undefined}
       >
         {icon && <span className="simple-input__icon">{icon}</span>}
         <input
@@ -34,6 +41,12 @@ export function SimpleInput({
           value={value}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          required={required}
+          disabled={disabled}
+          maxLength={maxLength}
+          minLength={minLength}
+          readOnly={readOnly}
+          inputMode={inputMode}
           aria-invalid={isInvalid ? true : undefined}
           aria-describedby={error ? errorId : undefined}
           onChange={(event) => onChange(event.target.value)}

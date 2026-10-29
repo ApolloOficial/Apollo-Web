@@ -1,13 +1,14 @@
 import { request } from '../../../../services/http'
 import type {
   BranchDTO,
+  CreateInverterDTO,
   InverterDTO,
   InverterModelDTO,
-  PageDTO,
-  PanelDTO,
-  StringDTO,
 } from '../dto/Branches.dto'
 import type { BranchFiltersVM } from '../vm/Branches.vm'
+import type { PageDto } from '../../../../types/common.types'
+import type { StringDto } from '../../../../types/string.types'
+import type { PanelDto, PanelModelDto } from '../../../../types/panel.types'
 
 interface StringsParams {
   unitId: string
@@ -38,7 +39,7 @@ export function getBranches(
     query.set('city', filters.city.trim())
   }
 
-  return request<PageDTO<BranchDTO>>(`/company-units?${query}`)
+  return request<PageDto<BranchDTO>>(`/company-units?${query}`)
 }
 
 export function getBranch(id: string) {
@@ -68,11 +69,11 @@ export function getStrings({
     query.set('inverterCode', inverterCode)
   }
 
-  return request<PageDTO<StringDTO>>(`/strings?${query}`)
+  return request<PageDto<StringDto>>(`/strings?${query}`)
 }
 
 export function getString(id: string) {
-  return request<StringDTO>(`/strings/${id}`)
+  return request<StringDto>(`/strings/${id}`)
 }
 
 export async function getActiveStringsCount(unitId: string) {
@@ -95,7 +96,7 @@ export function getPanels(stringId: string, page: number, size: number) {
     direction: 'ASC',
   })
 
-  return request<PageDTO<PanelDTO>>(`/panels?${query}`)
+  return request<PageDto<PanelDto>>(`/panels?${query}`)
 }
 
 export function getInverters(unitId: string, page: number, size: number) {
@@ -107,7 +108,7 @@ export function getInverters(unitId: string, page: number, size: number) {
     direction: 'ASC',
   })
 
-  return request<PageDTO<InverterDTO>>(`/inverters?${query}`)
+  return request<PageDto<InverterDTO>>(`/inverters?${query}`)
 }
 
 export function getInverter(id: string) {
@@ -115,7 +116,18 @@ export function getInverter(id: string) {
 }
 
 export function getInverterModels() {
-  return request<PageDTO<InverterModelDTO>>('/inverter-models?page=0&size=100')
+  return request<PageDto<InverterModelDTO>>('/inverter-models?page=0&size=100')
+}
+
+export function getPanelModels() {
+  return request<PageDto<PanelModelDto>>('/panel-models?page=0&size=100')
+}
+
+export function postInverter(payload: CreateInverterDTO) {
+  return request<InverterDTO>('/inverters', {
+    method: 'POST',
+    body: payload,
+  })
 }
 
 export async function getLastReading(unitId: string, inverterCode: string) {
@@ -146,10 +158,7 @@ export async function getLastReadings(inverters: InverterDTO[]) {
     inverters.map((inverter, index) => {
       const result = results[index]
 
-      return [
-        inverter.id,
-        result.status === 'fulfilled' ? result.value : null,
-      ]
+      return [inverter.id, result.status === 'fulfilled' ? result.value : null]
     }),
   ) as Record<string, string | null>
 }

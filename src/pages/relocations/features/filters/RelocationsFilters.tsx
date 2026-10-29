@@ -15,8 +15,12 @@ export function RelocationsFilters({
   onApply,
 }: Props) {
   return (
-    <div
+    <form
       className={`filter-bar relocations-filters${hideType ? ' relocations-filters--compact' : ''}`}
+      onSubmit={(event) => {
+        event.preventDefault()
+        onApply()
+      }}
     >
       <SelectInput
         placeholder="Status"
@@ -54,9 +58,7 @@ export function RelocationsFilters({
         />
       )}
 
-      <button type="button" onClick={onApply}>
-        Aplicar filtro
-      </button>
-    </div>
+      <button type="submit">Aplicar filtro</button>
+    </form>
   )
 }

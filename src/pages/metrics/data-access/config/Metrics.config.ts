@@ -1,7 +1,4 @@
-import type {
-  MetricsDashboardType,
-  MetricsDashboardVM,
-} from '../vm/Metrics.vm'
+import type { MetricsDashboardType, MetricsDashboardVM } from '../vm/Metrics.vm'
 
 /**
  * Aceita apenas links https válidos. Qualquer outro valor (vazio, texto solto,

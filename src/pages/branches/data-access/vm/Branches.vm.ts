@@ -17,6 +17,26 @@ export const INITIAL_BRANCH_FILTERS: BranchFiltersVM = {
   city: '',
 }
 
+export type InverterStepVM = 1 | 2 | 3 | 4
+
+export interface InverterFormVM {
+  code: string
+  manufacturer: string
+  model: string
+  serialNumber: string
+}
+
+export const INITIAL_INVERTER_FORM: InverterFormVM = {
+  code: '',
+  manufacturer: '',
+  model: '',
+  serialNumber: '',
+}
+
+export const SUPPORTED_INVERTER_BRANDS = ['Sungrow']
+
+export const INVERTER_DATA_SOURCE = 'Sungrow · API iSolarCloud'
+
 const STRING_STATUS: Record<string, StatusVM> = {
   ATIVA: { label: 'Ativo', tone: 'success' },
   MANUTENCAO: { label: 'Em manutenção', tone: 'alert' },

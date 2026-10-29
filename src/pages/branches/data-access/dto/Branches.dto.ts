@@ -1,13 +1,3 @@
-export interface PageDTO<T> {
-  content: T[]
-  totalElements: number
-  totalPages: number
-  size: number
-  number: number
-  first: boolean
-  last: boolean
-}
-
 export interface AddressDTO {
   id: number
   streetName: string
@@ -40,46 +30,6 @@ export interface BranchDTO {
   openServiceOrdersCount?: number | null
 }
 
-export interface StringDTO {
-  id: string
-  companyUnitId: string
-  code: string
-  inverterCode: string
-  mpptNumber: number
-  entryNumber: number
-  invoiceNumber: string
-  manufacturer: string
-  model: string
-  purchasedQty: number
-  installedPanels: number
-  nominalPowerKwp: number | null
-  status: string
-  healthScore: number | null
-  healthCalculatedAt: string | null
-  panelsOperational: number
-  panelsInMaintenance: number
-  panelsInStock: number
-  activeWarnings: number
-  lastMeasurementAt: string | null
-}
-
-export interface PanelDTO {
-  id: number
-  stringId: string
-  stringCode: string
-  inverterCode: string
-  companyUnitId: string
-  serialNumber: string
-  barcode: string
-  manufacturer: string
-  model: string
-  operatingStats: string
-  installationDt: string | null
-  activatedAt: string | null
-  stringHealthScore: number | null
-  activeWarnings: number
-}
-
 export interface InverterDTO {
   id: string
   companyUnitId: string
@@ -102,4 +52,27 @@ export interface InverterModelDTO {
   mpptCount: number
   stringsPerMppt: number
   stringCurrentMonitoring: boolean
+}
+
+export interface CreateInverterDTO {
+  inverterModelId: number
+  code: string
+  serialNumber: string
+  installedAt: string
+  strings: CreateStringDto[]
+}
+
+export interface CreatePanelDto {
+  serialNumber: string
+  barcode: string
+}
+
+export interface CreateStringDto {
+  mpptNumber: number
+  entryNumber: number
+  panelModelId: number
+  invoiceNumber: string
+  acquisitionDt: string
+  unitCost: number | null
+  panels: CreatePanelDto[]
 }

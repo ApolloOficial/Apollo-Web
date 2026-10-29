@@ -1,13 +1,14 @@
 import { request } from '../../../../services/http'
+import { ROLE } from '../../../../utils/user'
 import type { WarningDto } from '../../../alerts/data-access/dto/Alerts.dto'
 import type {
-  EmployeeSummaryDto,
-  MaintenanceTypeDto,
-  PageDto,
   ServiceOrderDto,
   ServiceOrderListItemDto,
 } from '../dto/ServiceOrder.dto'
 import type { ServiceOrderFiltersViewModel } from '../vm/ServiceOrder.vm'
+import type { PageDto } from '../../../../types/common.types'
+import type { EmployeeDto } from '../../../../types/employee.types'
+import type { MaintenanceTypeDto } from '../../../../types/service-order.types'
 
 interface GetServiceOrdersParams {
   filters: ServiceOrderFiltersViewModel
@@ -73,16 +74,22 @@ export async function getServiceOrders({
     `/maintenance-registers?${query}`,
   )
 
-  const content = await Promise.all(
-    ordersPage.content.map(async (order) => {
-      const warning = await getServiceOrderWarning(order.warningId)
-
-      return {
-        order,
-        warning,
-      }
-    }),
+  const warningIds = [
+    ...new Set(ordersPage.content.map((order) => order.warningId)),
+  ]
+  const warnings = new Map(
+    await Promise.all(
+      warningIds.map(
+        async (id) => [id, await getServiceOrderWarning(id)] as const,
+      ),
+    ),
   )
+
+  const content = ordersPage.content.flatMap((order) => {
+    const warning = warnings.get(order.warningId)
+
+    return warning ? [{ order, warning }] : []
+  })
 
   return {
     ...ordersPage,
@@ -113,9 +120,9 @@ export function getMaintenanceTypes() {
   return request<MaintenanceTypeDto[]>('/maintenance-types')
 }
 
-export function getActiveTechnicians() {
+export function getActiveTechnicians(companyUnitId?: string | null) {
   const query = new URLSearchParams({
-    role: 'TECNICO',
+    role: ROLE.TECHNICIAN,
     isActive: 'true',
     page: '0',
     size: '100',
@@ -123,5 +130,9 @@ export function getActiveTechnicians() {
     direction: 'ASC',
   })
 
-  return request<PageDto<EmployeeSummaryDto>>(`/employees?${query}`)
+  if (companyUnitId) {
+    query.set('companyUnitId', companyUnitId)
+  }
+
+  return request<PageDto<EmployeeDto>>(`/employees?${query}`)
 }

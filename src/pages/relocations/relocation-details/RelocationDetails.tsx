@@ -11,9 +11,7 @@ import {
   reviewExternalRelocation,
   reviewInternalRelocation,
 } from '../data-access/services/Relocations.service'
-import {
-  relocationStatusLabels,
-} from '../data-access/vm/Relocations.vm'
+import { relocationStatusLabels } from '../data-access/vm/Relocations.vm'
 import '../Relocations.css'
 
 type Data =

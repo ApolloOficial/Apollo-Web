@@ -32,6 +32,16 @@
   border-color: var(--color-error);
 }
 
+/* Campo preenchido pelo sistema, sem edição. */
+.simple-input__field[data-readonly='true'] {
+  background: color-mix(in srgb, var(--color-secondary-light) 20%, transparent);
+}
+
+.simple-input__field[data-readonly='true'] .simple-input__control {
+  color: var(--color-text);
+  font-weight: var(--font-weight-bold);
+}
+
 .simple-input__icon {
   display: inline-flex;
   flex: none;
@@ -56,6 +66,10 @@
 
 .simple-input__control:focus-visible {
   outline: none;
+}
+
+.simple-input__control:disabled {
+  cursor: not-allowed;
 }
 
 .simple-input__control::placeholder {

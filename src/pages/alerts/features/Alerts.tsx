@@ -6,6 +6,7 @@ import {
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
 import { Tag, type TagTone } from '../../../components/tag'
+import { formatDate } from '../../../utils/formatters'
 import type { WarningDto } from '../data-access/dto/Alerts.dto'
 import { getWarnings } from '../data-access/services/Alerts.service'
 import {
@@ -24,8 +25,11 @@ interface Props {
   initialFilters?: AlertsFiltersViewModel
 }
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
+const severityTones: Record<WarningDto['severity'], TagTone> = {
+  BAIXA: 'info',
+  MEDIA: 'caution',
+  ALTA: 'alert',
+  CRITICA: 'error',
 }
 
 export function AlertsFeature({ audience, initialFilters }: Props) {
@@ -188,11 +192,6 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
                 ? `/alerts/manager/${warning.id}`
                 : `/alerts/${warning.id}`
 
-            const canOpenServiceOrder =
-              audience === 'operator' &&
-              warning.status === 'ATIVO' &&
-              warning.maintenanceId === null
-
             return (
               <article
                 className={
@@ -232,14 +231,12 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
 
                 {audience === 'operator' && (
                   <div className="alerts-table__action">
-                    {canOpenServiceOrder && (
-                      <Link
-                        className="alerts-open-order"
-                        to={`/alerts/${warning.id}/service-order`}
-                      >
-                        Abrir OS
-                      </Link>
-                    )}
+                    <Link
+                      className="alerts-open-order"
+                      to={`/alerts/${warning.id}/service-order`}
+                    >
+                      Abrir OS
+                    </Link>
                   </div>
                 )}
               </article>

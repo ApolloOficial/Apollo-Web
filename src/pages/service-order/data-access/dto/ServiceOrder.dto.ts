@@ -7,14 +7,6 @@ import type {
 export type ServiceOrderStatus =
   'ABERTA' | 'EM_ANDAMENTO' | 'CONCLUIDA' | 'CANCELADA'
 
-export interface PageDto<T> {
-  content: T[]
-  totalElements: number
-  totalPages: number
-  size: number
-  number: number
-}
-
 export interface ServiceOrderDto {
   id: number
   parentMaintenanceId: number | null
@@ -32,6 +24,7 @@ export interface ServiceOrderDto {
   overdue: boolean
   openingDt: string
   dueDate: string | null
+  startedAt: string | null
   concludedAt: string | null
   cancelledAt: string | null
   cancellationReason: string | null
@@ -44,20 +37,4 @@ export interface ServiceOrderDto {
 export interface ServiceOrderListItemDto {
   order: ServiceOrderDto
   warning: WarningDto
-}
-
-export interface MaintenanceTypeDto {
-  id: number
-  name: string
-  description: string
-  defaultIntervalDays: number
-}
-
-export interface EmployeeSummaryDto {
-  id: string
-  fullName: string
-  email: string
-  role: string
-  companyUnitId: string
-  active: boolean
 }

@@ -1,13 +1,14 @@
 import { request } from '../../../../services/http'
+import { ROLE } from '../../../../utils/user'
 import type {
-  EmployeeSummaryDto,
   MaintenanceRegisterDto,
-  MaintenanceTypeDto,
-  PageDto,
   ServiceOrderCreateDto,
   WarningDto,
 } from '../dto/Alerts.dto'
 import type { AlertsFiltersViewModel } from '../vm/Alerts.vm'
+import type { PageDto } from '../../../../types/common.types'
+import type { EmployeeDto } from '../../../../types/employee.types'
+import type { MaintenanceTypeDto } from '../../../../types/service-order.types'
 
 interface GetWarningsParams {
   filters: AlertsFiltersViewModel
@@ -48,9 +49,9 @@ export function getWarning(id: number) {
   return request<WarningDto>(`/warnings/${id}`)
 }
 
-export function getActiveTechnicians() {
+export function getActiveTechnicians(companyUnitId?: string | null) {
   const query = new URLSearchParams({
-    role: 'TECNICO',
+    role: ROLE.TECHNICIAN,
     isActive: 'true',
     page: '0',
     size: '100',
@@ -58,7 +59,11 @@ export function getActiveTechnicians() {
     direction: 'ASC',
   })
 
-  return request<PageDto<EmployeeSummaryDto>>(`/employees?${query}`)
+  if (companyUnitId) {
+    query.set('companyUnitId', companyUnitId)
+  }
+
+  return request<PageDto<EmployeeDto>>(`/employees?${query}`)
 }
 
 export function getMaintenanceTypes() {

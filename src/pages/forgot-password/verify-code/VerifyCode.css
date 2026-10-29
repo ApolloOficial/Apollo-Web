@@ -1,0 +1,13 @@
+.verify-code__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.09375rem;
+  margin-top: 2.4375rem;
+}
+
+.verify-code__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8125rem;
+  margin-top: 1.9375rem;
+}
