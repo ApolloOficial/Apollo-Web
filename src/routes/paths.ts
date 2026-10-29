@@ -19,7 +19,12 @@ export const paths = {
   relocationDetails: '/relocations/:type/:id',
   relocationManagerDetails: '/relocations/manager/:type/:id',
   branches: '/branches',
+  branchStringDetails: '/branches/strings/:id',
+  branchInverterDetails: '/branches/inverters/:id',
+  branchInverterCreate: '/branches/inverters/new',
   employees: '/employees',
   employeeCreate: '/employees/new',
   metrics: '/metrics',
+  metricsCorporate: '/metrics/corporate',
+  metricsSolar: '/metrics/solar',
 } as const

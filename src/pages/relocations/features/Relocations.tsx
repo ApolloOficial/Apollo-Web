@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   AppliedFilters,
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
+import { Tag } from '../../../components/tag'
 import { paths } from '../../../routes/paths'
 import type {
   ExternalRelocationDTO,
@@ -13,11 +14,12 @@ import type {
 import {
   getExternalRelocations,
   getIncomingInternalRelocations,
-  getMe,
   getMyInternalRelocations,
 } from '../data-access/services/Relocations.service'
 import {
   INITIAL_RELOCATION_FILTERS,
+  relocationStatusLabels as statusLabels,
+  relocationStatusTones,
   type RelocationFiltersVM,
   type RelocationListItemVM,
 } from '../data-access/vm/Relocations.vm'
@@ -25,13 +27,7 @@ import { RelocationsFilters } from './filters/RelocationsFilters'
 
 export type RelocationsAudience = 'operator' | 'manager'
 type ManagerTab = 'others' | 'my-unit'
-
-const statusLabels = {
-  PENDENTE: 'Pendente',
-  APROVADA: 'Aprovada',
-  REJEITADA: 'Rejeitada',
-  CONCLUIDA: 'Concluída',
-}
+type OperatorTab = 'external' | 'internal'
 
 function toInternal(item: InternalRelocationDTO): RelocationListItemVM {
   return {
@@ -74,37 +70,37 @@ export function RelocationsFeature({
     initialFilters ?? INITIAL_RELOCATION_FILTERS,
   )
   const [tab, setTab] = useState<ManagerTab>('others')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const operatorTab: OperatorTab =
+    searchParams.get('tab') === 'internal' ? 'internal' : 'external'
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+
+  const isOperator = audience === 'operator'
 
   const load = useCallback(async () => {
     setLoading(true)
     setError('')
 
     try {
-      if (audience === 'operator') {
-        const [me, internal, external] = await Promise.all([
-          getMe(),
-          getMyInternalRelocations({
-            status: filters.status,
-            page: 0,
-            size: 100,
-          }),
-          getExternalRelocations({
-            status: filters.status,
-            page: 0,
-            size: 100,
-          }),
-        ])
+      if (isOperator && operatorTab === 'internal') {
+        const result = await getMyInternalRelocations({
+          status: filters.status,
+          page: 0,
+          size: 100,
+        })
 
-        setItems([
-          ...internal.content.map(toInternal),
-          ...external.content
-            .filter((item) => item.requestedById === me.userId)
-            .map(toExternal),
-        ])
+        setItems(result.content.map(toInternal))
+      } else if (isOperator) {
+        const result = await getExternalRelocations({
+          status: filters.status,
+          page: 0,
+          size: 100,
+        })
+
+        setItems(result.content.map(toExternal))
       } else if (tab === 'my-unit') {
         const result = await getIncomingInternalRelocations({
           status: filters.status,
@@ -131,7 +127,7 @@ export function RelocationsFeature({
     } finally {
       setLoading(false)
     }
-  }, [audience, filters, tab])
+  }, [isOperator, operatorTab, filters, tab])
 
   useEffect(() => {
     void (async () => {
@@ -155,6 +151,13 @@ export function RelocationsFeature({
   )
 
   const totalPages = Math.ceil(filtered.length / size)
+
+  // Colunas conforme o protótipo: "Minha filial" mostra o revisor no lugar da origem.
+  const layout = isOperator
+    ? 'operator'
+    : tab === 'my-unit'
+      ? 'unit'
+      : 'default'
 
   const visible = useMemo(
     () => filtered.slice(page * size, page * size + size),
@@ -182,6 +185,30 @@ export function RelocationsFeature({
 
     return result
   }, [filters])
+  const tabs = isOperator
+    ? [
+        { key: 'external', label: 'Externas' },
+        { key: 'internal', label: 'Internas' },
+      ]
+    : [
+        { key: 'others', label: 'Outros' },
+        { key: 'my-unit', label: 'Minha filial' },
+      ]
+  const activeTab = isOperator ? operatorTab : tab
+
+  function selectTab(key: string) {
+    setPage(0)
+
+    if (isOperator) {
+      setSearchParams(key === 'internal' ? { tab: 'internal' } : {}, {
+        replace: true,
+      })
+      return
+    }
+
+    setTab(key as ManagerTab)
+  }
+
   function removeAppliedFilter(key: string) {
     setPage(0)
 
@@ -203,8 +230,8 @@ export function RelocationsFeature({
   }
 
   return (
-    <section className="relocations-page">
-      <nav className="relocations-breadcrumb">
+    <section className="relocations-page list-page">
+      <nav className="relocations-breadcrumb" aria-label="Navegação estrutural">
         <Link to={paths.home}>Início</Link>
         <span>›</span>
         <strong>Realocações</strong>
@@ -227,6 +254,7 @@ export function RelocationsFeature({
       </header>
 
       <RelocationsFilters
+        hideType={isOperator}
         value={draft}
         onChange={setDraft}
         onApply={() => {
@@ -241,95 +269,95 @@ export function RelocationsFeature({
         onClear={clearAppliedFilters}
       />
 
-      {audience === 'manager' && (
-        <div className="relocations-tabs" role="tablist">
+      <div
+        className="relocations-tabs"
+        role="tablist"
+        aria-label="Visualização de realocações"
+      >
+        {tabs.map(({ key, label }) => (
           <button
+            key={key}
             type="button"
             role="tab"
-            aria-selected={tab === 'others'}
-            className={tab === 'others' ? 'active' : ''}
-            onClick={() => {
-              setPage(0)
-              setTab('others')
-            }}
+            id={`relocations-tab-${key}`}
+            aria-selected={activeTab === key}
+            aria-controls="relocations-panel"
+            onClick={() => selectTab(key)}
           >
-            Outros
+            {label}
           </button>
-
-          <button
-            type="button"
-            role="tab"
-            aria-selected={tab === 'my-unit'}
-            className={tab === 'my-unit' ? 'active' : ''}
-            onClick={() => {
-              setPage(0)
-              setTab('my-unit')
-            }}
-          >
-            Minha filial
-          </button>
-        </div>
-      )}
-
-      {error && (
-        <p className="relocations-error" role="alert">
-          {error}
-        </p>
-      )}
-
-      <div className="relocations-table" aria-busy={loading}>
-        <div className="relocations-table__header">
-          <strong>ID</strong>
-          <strong>Tipo</strong>
-          <strong>Origem</strong>
-          <strong>Destino</strong>
-          <strong>Solicitante</strong>
-          <strong>Status</strong>
-        </div>
-
-        {!loading &&
-          visible.map((item) => (
-            <Link
-              className="relocations-table__row"
-              key={`${item.type}-${item.id}`}
-              to={
-                audience === 'manager'
-                  ? `/relocations/manager/${item.type.toLowerCase()}/${item.id}`
-                  : `/relocations/${item.type.toLowerCase()}/${item.id}`
-              }
-            >
-              <span>RLC{String(item.id).padStart(6, '0')}</span>
-              <span>{item.typeLabel}</span>
-              <span>{item.origin}</span>
-              <span>{item.destination}</span>
-              <span>{item.requester}</span>
-              <span
-                className={`relocation-status ${item.status.toLowerCase()}`}
-              >
-                {statusLabels[item.status]}
-              </span>
-            </Link>
-          ))}
-
-        {loading && <p className="relocations-table__state">Carregando...</p>}
-
-        {!loading && visible.length === 0 && (
-          <p className="relocations-table__state">
-            Nenhuma realocação encontrada.
-          </p>
-        )}
+        ))}
       </div>
 
-      <Paginator
-        page={page}
-        totalPages={totalPages}
-        size={size}
-        onPageChange={setPage}
-        onSizeChange={(value) => {
-          setPage(0)
-          setSize(value)
-        }}
-      />
+      <div
+        id="relocations-panel"
+        className="list-panel"
+        role="tabpanel"
+        aria-labelledby={`relocations-tab-${activeTab}`}
+      >
+        {error && (
+          <p className="relocations-error" role="alert">
+            {error}
+          </p>
+        )}
+
+        <div className="relocations-table list-table" aria-busy={loading}>
+          <div
+            className={`relocations-table__header relocations-table__header--${layout}`}
+          >
+            <strong>ID</strong>
+            {!isOperator && <strong>Tipo</strong>}
+            {layout !== 'unit' && <strong>Origem</strong>}
+            <strong>Destino</strong>
+            <strong>Solicitante</strong>
+            {layout === 'unit' && <strong>Revisor</strong>}
+            <strong>Status</strong>
+          </div>
+
+          {!loading &&
+            visible.map((item) => (
+              <Link
+                className={`relocations-table__row relocations-table__row--${layout}`}
+                key={`${item.type}-${item.id}`}
+                to={
+                  audience === 'manager'
+                    ? `/relocations/manager/${item.type.toLowerCase()}/${item.id}`
+                    : `/relocations/${item.type.toLowerCase()}/${item.id}`
+                }
+              >
+                <span>RLC{String(item.id).padStart(6, '0')}</span>
+                {!isOperator && <span>{item.typeLabel}</span>}
+                {layout !== 'unit' && <span>{item.origin}</span>}
+                <span>{item.destination}</span>
+                <span>{item.requester}</span>
+                {layout === 'unit' && <span>{item.reviewer}</span>}
+                <Tag
+                  label={statusLabels[item.status]}
+                  tone={relocationStatusTones[item.status]}
+                />
+              </Link>
+            ))}
+
+          {loading && <p className="relocations-table__state">Carregando...</p>}
+
+          {!loading && !error && visible.length === 0 && (
+            <p className="relocations-table__state">
+              Nenhuma realocação encontrada.
+            </p>
+          )}
+        </div>
+
+        <Paginator
+          page={page}
+          totalPages={totalPages}
+          size={size}
+          onPageChange={setPage}
+          onSizeChange={(value) => {
+            setPage(0)
+            setSize(value)
+          }}
+        />
+      </div>
     </section>
   )
 }

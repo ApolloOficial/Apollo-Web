@@ -1,7 +1,6 @@
 .service-orders-page,
 .service-order-details {
   width: 100%;
-  max-width: 75rem;
 }
 
 .service-orders-breadcrumb {
@@ -28,9 +27,9 @@
 
 .service-orders-filters {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 13.5rem));
+  grid-template-columns: repeat(4, minmax(0, 15rem));
   gap: 1rem 1.5rem;
-  align-items: end;
+  align-items: center;
   margin: 1rem 0 2rem;
 }
 
@@ -77,22 +76,6 @@
 .service-orders-filters__apply {
   grid-column: 4;
   grid-row: 2;
-  width: fit-content;
-  min-width: 8.5rem;
-  min-height: 3.25rem;
-  padding: 0.75rem 2rem;
-  border: 0;
-  border-radius: 999px;
-  background: var(--color-secondary);
-  color: var(--color-on-brand);
-  font-weight: var(--font-weight-bold);
-  cursor: pointer;
-}
-
-.service-orders-filters__apply:disabled {
-  background: var(--color-disabled-soft);
-  color: var(--color-disabled-text);
-  cursor: default;
 }
 
 .service-orders-table__header,
@@ -135,44 +118,6 @@
 
 .service-orders-table__row:focus-visible {
   border-color: var(--color-focus);
-}
-
-.service-order-status {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 1.75rem;
-  padding: 0.25rem 0.75rem;
-  border-radius: 0.5rem;
-  font-size: var(--text-body-3);
-  font-weight: var(--font-weight-bold);
-  text-align: center;
-}
-
-.service-order-status--aberta {
-  background: color-mix(in srgb, var(--color-info-light) 35%, transparent);
-  color: var(--color-info-dark);
-}
-
-.service-order-status--em_andamento {
-  border: 1px solid var(--color-disabled);
-  background: var(--color-background);
-  color: var(--color-text-muted);
-}
-
-.service-order-status--concluida {
-  background: color-mix(in srgb, var(--color-success-light) 35%, transparent);
-  color: var(--color-success-dark);
-}
-
-.service-order-status--cancelada {
-  background: var(--color-disabled-soft);
-  color: var(--color-text-muted);
-}
-
-.service-order-status--overdue {
-  background: color-mix(in srgb, var(--color-error-light) 30%, transparent);
-  color: var(--color-error);
 }
 
 .service-orders-table__state,

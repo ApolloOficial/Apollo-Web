@@ -6,6 +6,7 @@ import '@fontsource/plus-jakarta-sans/700.css'
 import '@fontsource/manrope/400.css'
 import '@fontsource/manrope/700.css'
 import './index.css'
+import './styles/list-page.css'
 import App from './App'
 
 createRoot(document.getElementById('root')!).render(

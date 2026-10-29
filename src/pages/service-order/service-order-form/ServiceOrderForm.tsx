@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { Button } from '../../../components/button'
 import { FeedbackModal } from '../../../components/feedback-modal'
+import { FormActions } from '../../../components/form-actions'
+import { FormLayout } from '../../../components/form-layout'
 import { Combobox } from '../../../components/inputs/combobox'
 import { DatePicker } from '../../../components/inputs/date-picker'
 import { SelectInput } from '../../../components/inputs/select-input'
+import { SimpleInput } from '../../../components/inputs/simple-input'
+import { TextareaInput } from '../../../components/inputs/textarea-input'
+import { paths } from '../../../routes/paths'
 import errorImage from '../../../assets/images/relocation-error.png'
 import successImage from '../../../assets/images/relocation-success.png'
-import type {
-  EmployeeSummaryDto,
-  MaintenanceTypeDto,
-  WarningDto,
-} from '../../alerts/data-access/dto/Alerts.dto'
+import type { WarningDto } from '../../alerts/data-access/dto/Alerts.dto'
 import {
   getActiveTechnicians,
   getMaintenanceTypes,
@@ -18,9 +20,12 @@ import {
   postServiceOrder,
 } from '../../alerts/data-access/services/Alerts.service'
 import { severityLabels } from '../../alerts/data-access/vm/Alerts.vm'
-import '../../alerts/Alerts.css'
+import type { EmployeeDto } from '../../../types/employee.types'
+import type { MaintenanceTypeDto } from '../../../types/service-order.types'
 
 type ModalState = 'success' | 'error' | null
+
+function noop() {}
 
 function todayIso() {
   const now = new Date()
@@ -34,7 +39,7 @@ export default function ServiceOrderForm() {
   const navigate = useNavigate()
 
   const [warning, setWarning] = useState<WarningDto | null>(null)
-  const [technicians, setTechnicians] = useState<EmployeeSummaryDto[]>([])
+  const [technicians, setTechnicians] = useState<EmployeeDto[]>([])
   const [maintenanceTypes, setMaintenanceTypes] = useState<
     MaintenanceTypeDto[]
   >([])
@@ -62,12 +67,11 @@ export default function ServiceOrderForm() {
       }
 
       try {
-        const [warningResult, techniciansResult, typesResult] =
-          await Promise.all([
-            getWarning(Number(id)),
-            getActiveTechnicians(),
-            getMaintenanceTypes(),
-          ])
+        const warningResult = await getWarning(Number(id))
+        const [techniciansResult, typesResult] = await Promise.all([
+          getActiveTechnicians(warningResult.companyUnitId),
+          getMaintenanceTypes(),
+        ])
 
         if (!active) return
 
@@ -133,106 +137,106 @@ export default function ServiceOrderForm() {
     }
   }
 
+  const breadcrumb = [
+    { label: 'Início', to: paths.home },
+    { label: 'Alertas', to: paths.alerts },
+    { label: 'Registrar OS' },
+  ]
+
   if (loading) {
-    return <p className="service-order-state">Carregando...</p>
+    return <p>Carregando...</p>
   }
 
   if (!warning) {
     return (
-      <p className="alerts-error" role="alert">
-        {error}
-      </p>
+      <FormLayout breadcrumb={breadcrumb} title="Registrar Ordem de Serviço">
+        <p className="form-layout__error" role="alert">
+          {error}
+        </p>
+      </FormLayout>
     )
   }
 
   return (
-    <main className="service-order-page">
-      <nav className="alerts-breadcrumb" aria-label="Navegação estrutural">
-        <a href="/">Início</a>
-        <span>›</span>
-        <a href="/alerts">Alertas</a>
-        <span>›</span>
-        <strong>Registrar OS</strong>
-      </nav>
-
-      <h1>Registrar Ordem de Serviço</h1>
-      <p>Preencha todos os dados.</p>
-
-      <form className="service-order-form" onSubmit={handleSubmit}>
-        <label>
-          String
-          <input
-            className="prefilled"
+    <>
+      <FormLayout
+        breadcrumb={breadcrumb}
+        title="Registrar Ordem de Serviço"
+        description="Preencha todos os dados."
+      >
+        <form className="form-layout__form" onSubmit={handleSubmit}>
+          <SimpleInput
+            id="service-order-string"
+            label="String"
             value={warning.stringCode ?? warning.inverterCode ?? '—'}
             readOnly
+            onChange={noop}
           />
-        </label>
 
-        <label>
-          Placa
-          <input
-            className="prefilled"
+          <SimpleInput
+            id="service-order-panel"
+            label="Placa"
             value={warning.panelSerial ?? 'Todas as placas'}
             readOnly
+            onChange={noop}
           />
-        </label>
 
-        <label>
-          Prioridade
-          <input
-            className="prefilled"
+          <SimpleInput
+            id="service-order-priority"
+            label="Prioridade"
             value={severityLabels[warning.severity]}
             readOnly
+            onChange={noop}
           />
-        </label>
 
-        <SelectInput
-          label="Tipo de manutenção"
-          placeholder="Selecione o tipo de manutenção"
-          value={maintenanceTypeId}
-          options={maintenanceTypes.map((type) => ({
-            value: String(type.id),
-            label: type.name,
-          }))}
-          onChange={setMaintenanceTypeId}
-        />
+          <SelectInput
+            label="Tipo de manutenção"
+            placeholder="Selecione o tipo de manutenção"
+            value={maintenanceTypeId}
+            options={maintenanceTypes.map((type) => ({
+              value: String(type.id),
+              label: type.name,
+            }))}
+            onChange={setMaintenanceTypeId}
+          />
 
-        <Combobox
-          label="Técnico responsável"
-          placeholder="Digite o nome do técnico responsável"
-          value={technicianName}
-          options={technicianOptions}
-          required
-          onChange={setTechnicianName}
-        />
+          <Combobox
+            label="Técnico responsável"
+            placeholder="Digite o nome do técnico responsável"
+            value={technicianName}
+            options={technicianOptions}
+            required
+            onChange={setTechnicianName}
+          />
 
-        <DatePicker
-          label="Prazo de conclusão"
-          value={dueDate}
-          min={todayIso()}
-          required
-          onChange={setDueDate}
-        />
+          <DatePicker
+            label="Prazo de conclusão"
+            value={dueDate}
+            min={todayIso()}
+            required
+            onChange={setDueDate}
+          />
 
-        <label>
-          Descrição
-          <textarea className="prefilled" value={warning.message} readOnly />
-        </label>
+          <TextareaInput
+            id="service-order-description"
+            label="Descrição"
+            value={warning.message}
+            readOnly
+          />
 
-        {error && (
-          <p className="alerts-error" role="alert">
-            {error}
-          </p>
-        )}
+          {error && (
+            <p className="form-layout__error" role="alert">
+              {error}
+            </p>
+          )}
 
-        <button
-          className="service-order-form__submit"
-          type="submit"
-          disabled={submitting}
-        >
-          {submitting ? 'Cadastrando...' : 'Cadastrar'}
-        </button>
-      </form>
+          <FormActions>
+            <Button type="submit" fullWidth disabled={submitting}>
+              {submitting ? 'Cadastrando...' : 'Cadastrar'}
+            </Button>
+          </FormActions>
+        </form>
+      </FormLayout>
 
       {modal === 'success' && (
         <FeedbackModal
@@ -241,9 +245,9 @@ export default function ServiceOrderForm() {
           description="A ordem de serviço já está disponível para acompanhamento."
           primaryAction={{
             label: 'Voltar para alertas',
-            onClick: () => navigate('/alerts'),
+            onClick: () => navigate(paths.alerts),
           }}
-          onClose={() => navigate('/alerts')}
+          onClose={() => navigate(paths.alerts)}
         />
       )}
 
@@ -260,6 +264,6 @@ export default function ServiceOrderForm() {
           onClose={() => setModal(null)}
         />
       )}
-    </main>
+    </>
   )
 }

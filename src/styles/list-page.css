@@ -1,0 +1,128 @@
+/*
+ * Padrão das telas de listagem.
+ *
+ * Uso: a raiz da página recebe `list-page` e a tabela (cabeçalho das colunas + linhas)
+ * recebe `list-table`. Título, descrição e filtros ficam fixos; só a tabela rola, com o
+ * paginador sempre visível embaixo.
+ *
+ * Quando a tabela fica dentro de um wrapper (ex.: painel de abas), o wrapper recebe
+ * `list-panel` e vira o filho flexível da página. Se o painel tem várias tabelas
+ * empilhadas, ele também recebe `list-panel--scroll` e rola por inteiro.
+ */
+
+@media (min-width: 721px) {
+  .list-page {
+    display: flex;
+    flex-direction: column;
+    /* 100dvh - header da aplicação (6rem) - padding vertical do conteúdo (3rem) */
+    height: calc(100dvh - 9rem);
+  }
+
+  .list-page > *,
+  .list-panel > * {
+    flex-shrink: 0;
+  }
+
+  .list-panel {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .list-page > .list-table,
+  .list-panel > .list-table {
+    flex: 1 1 0;
+    min-height: 0;
+    overflow-y: auto;
+  }
+
+  /* Painel com várias tabelas empilhadas: o painel inteiro rola. */
+  .list-panel--scroll {
+    overflow-y: auto;
+  }
+}
+
+/* Cabeçalho da tela */
+.list-page > nav {
+  margin-bottom: 2rem;
+}
+
+.list-page > header h1 {
+  font-size: var(--text-display-2);
+}
+
+.list-page > header p {
+  font-size: var(--text-body-1);
+}
+
+/* Cabeçalho das colunas: fixo no topo da área que rola.
+   +1px no recuo lateral: a linha tem borda de 1px e precisa alinhar com o título. */
+.list-table > :first-child {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding-inline: calc(1rem + 1px);
+  background: var(--color-background);
+}
+
+/* Linhas */
+.list-table > [class*='table__row'] {
+  min-height: 5.5rem;
+  margin-bottom: 0.625rem;
+}
+
+/* Sem destaque ao passar o mouse; o foco do teclado continua visível. */
+.list-table > [class*='table__row']:hover {
+  border-color: var(--color-disabled);
+  background: transparent;
+}
+
+/* Barra de rolagem da tabela: thumb laranja e setas redondas */
+.list-table::-webkit-scrollbar,
+.list-panel--scroll::-webkit-scrollbar {
+  width: 1.75rem;
+}
+
+.list-table::-webkit-scrollbar-track,
+.list-panel--scroll::-webkit-scrollbar-track {
+  background: linear-gradient(var(--color-disabled), var(--color-disabled))
+    center / 2px 100% no-repeat;
+}
+
+.list-table::-webkit-scrollbar-thumb,
+.list-panel--scroll::-webkit-scrollbar-thumb {
+  border: 0.5rem solid transparent;
+  border-radius: 999px;
+  background: var(--color-secondary);
+  background-clip: padding-box;
+}
+
+.list-table::-webkit-scrollbar-button:single-button,
+.list-panel--scroll::-webkit-scrollbar-button:single-button {
+  display: block;
+  width: 1.75rem;
+  height: 1.75rem;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 1.375rem;
+}
+
+.list-table::-webkit-scrollbar-button:single-button:vertical:decrement,
+.list-panel--scroll::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22' fill='none' stroke='%23ff672c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='10'/%3E%3Cpath d='M7.5 13l3.5-3.5 3.5 3.5'/%3E%3C/svg%3E");
+}
+
+.list-table::-webkit-scrollbar-button:single-button:vertical:increment,
+.list-panel--scroll::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 22' fill='none' stroke='%23ff672c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='10'/%3E%3Cpath d='M7.5 9l3.5 3.5L14.5 9'/%3E%3C/svg%3E");
+}
+
+/* Firefox não suporta os pseudo-elementos acima. */
+@supports not selector(::-webkit-scrollbar) {
+  .list-table,
+  .list-panel--scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-secondary) transparent;
+  }
+}

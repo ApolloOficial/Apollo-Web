@@ -3,6 +3,13 @@ import type {
   CurrentUserDto,
   LoginPayloadDto,
   LoginResponseDto,
+  OtpSendPayloadDto,
+  OtpSentResponseDto,
+  OtpVerifyPayloadDto,
+  OtpVerifyResponseDto,
+  PasswordResetPayloadDto,
+  RecoveryStartPayloadDto,
+  RecoveryStartResponseDto,
 } from '../types/auth.types'
 import { request } from './http'
 
@@ -26,4 +33,40 @@ export async function changePassword(
 
 export async function getCurrentUser(): Promise<CurrentUserDto> {
   return request<CurrentUserDto>('/auth/me')
+}
+
+export async function startPasswordRecovery(
+  payload: RecoveryStartPayloadDto,
+): Promise<RecoveryStartResponseDto> {
+  return request<RecoveryStartResponseDto>('/mobile/auth/recovery', {
+    method: 'POST',
+    body: payload,
+  })
+}
+
+export async function sendRecoveryCode(
+  payload: OtpSendPayloadDto,
+): Promise<OtpSentResponseDto> {
+  return request<OtpSentResponseDto>('/mobile/auth/otp/send', {
+    method: 'POST',
+    body: payload,
+  })
+}
+
+export async function verifyRecoveryCode(
+  payload: OtpVerifyPayloadDto,
+): Promise<OtpVerifyResponseDto> {
+  return request<OtpVerifyResponseDto>('/mobile/auth/otp/verify', {
+    method: 'POST',
+    body: payload,
+  })
+}
+
+export async function resetPassword(
+  payload: PasswordResetPayloadDto,
+): Promise<void> {
+  return request<void>('/mobile/auth/password/reset', {
+    method: 'POST',
+    body: payload,
+  })
 }

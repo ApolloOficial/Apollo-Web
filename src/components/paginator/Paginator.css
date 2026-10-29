@@ -34,8 +34,10 @@
   color: var(--color-text-muted);
 }
 
+/* Abre para cima: o paginador fica no rodape da tela. */
 .paginator__size-select .select-input__options {
-  top: calc(100% + 0.25rem);
+  top: auto;
+  bottom: calc(100% + 0.25rem);
   padding: 0.25rem;
   border-radius: 1rem;
 }

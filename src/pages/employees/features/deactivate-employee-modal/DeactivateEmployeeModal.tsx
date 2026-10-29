@@ -49,8 +49,7 @@ export function DeactivateEmployeeModal({
         </h2>
         <p>
           <span className="sr-only">Funcionário: {employeeName}. </span>
-          Ele fica sem acesso até você decidir reativar. Os dados dele continuam
-          salvos.
+          Ele fica sem acesso ao sistema. Os dados dele continuam salvos.
         </p>
         <div className="deactivate-modal__actions">
           <button

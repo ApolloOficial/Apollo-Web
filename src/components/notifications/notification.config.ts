@@ -8,6 +8,15 @@ interface NotificationVisual {
   tone: NotificationTone
 }
 
+const DEFAULT_VISUAL: NotificationVisual = {
+  icon: 'lucide:bell',
+  tone: 'info',
+}
+
+export function getNotificationVisual(type: string): NotificationVisual {
+  return notificationVisuals[type as NotificationType] ?? DEFAULT_VISUAL
+}
+
 export const notificationVisuals: Record<NotificationType, NotificationVisual> =
   {
     ALERT_ACTIVE: { icon: 'lucide:circle-alert', tone: 'alert' },

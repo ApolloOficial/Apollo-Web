@@ -8,6 +8,8 @@ import { PasswordInput } from '../../components/inputs/password-input'
 import { paths } from '../../routes/paths'
 import { changePassword } from '../../services/auth.service'
 import type { FirstAccessFormViewModel } from '../../types/auth.types'
+import { translateAuthMessage } from '../../utils/auth-messages'
+import { PASSWORD_RULES_MESSAGE, isValidPassword } from '../../utils/validators'
 import './FirstAccess.css'
 
 const initialForm: FirstAccessFormViewModel = {
@@ -28,14 +30,22 @@ export default function FirstAccess() {
   const navigate = useNavigate()
 
   const passwordsMatch = form.newPassword === form.confirmPassword
+  const newPasswordValid = isValidPassword(form.newPassword)
   const canSubmit =
     form.currentPassword !== '' &&
     form.newPassword !== '' &&
     form.confirmPassword !== '' &&
+    newPasswordValid &&
     passwordsMatch
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+
+    if (!newPasswordValid) {
+      setStatus({ loading: false, error: PASSWORD_RULES_MESSAGE })
+      return
+    }
+
     setStatus({ loading: true, error: null })
 
     try {
@@ -45,7 +55,10 @@ export default function FirstAccess() {
       })
       navigate(paths.home)
     } catch (err) {
-      setStatus({ loading: false, error: (err as Error).message })
+      setStatus({
+        loading: false,
+        error: translateAuthMessage((err as Error).message),
+      })
       return
     }
 
@@ -81,6 +94,11 @@ export default function FirstAccess() {
           value={form.newPassword}
           onChange={(newPassword) =>
             setForm((current) => ({ ...current, newPassword }))
+          }
+          error={
+            form.newPassword !== '' && !newPasswordValid
+              ? PASSWORD_RULES_MESSAGE
+              : undefined
           }
         />
         <PasswordInput

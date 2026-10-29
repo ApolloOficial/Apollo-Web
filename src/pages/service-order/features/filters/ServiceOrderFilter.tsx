@@ -1,15 +1,13 @@
 import { Combobox } from '../../../../components/inputs/combobox'
 import { SelectInput } from '../../../../components/inputs/select-input'
-import type {
-  EmployeeSummaryDto,
-  MaintenanceTypeDto,
-} from '../../data-access/dto/ServiceOrder.dto'
 import type { ServiceOrderFiltersViewModel } from '../../data-access/vm/ServiceOrder.vm'
+import type { EmployeeDto } from '../../../../types/employee.types'
+import type { MaintenanceTypeDto } from '../../../../types/service-order.types'
 
 interface Props {
   value: ServiceOrderFiltersViewModel
   orderIds: number[]
-  technicians: EmployeeSummaryDto[]
+  technicians: EmployeeDto[]
   maintenanceTypes: MaintenanceTypeDto[]
   onChange: (value: ServiceOrderFiltersViewModel) => void
   onApply: () => void
@@ -36,7 +34,7 @@ export function ServiceOrderFilter({
   }
 
   return (
-    <div className="service-orders-filters">
+    <div className="filter-bar service-orders-filters">
       <div className="service-orders-filters__field service-orders-filters__field--id">
         <Combobox
           placeholder="ID"

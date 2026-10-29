@@ -1,11 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
+import { Button } from '../../../../components/button'
+import { FormActions } from '../../../../components/form-actions'
 import { Combobox } from '../../../../components/inputs/combobox'
+import { SimpleInput } from '../../../../components/inputs/simple-input'
+import { useCurrentUserContext } from '../../../../hooks/useCurrentUserContext'
 import {
-  getMe,
   getRoles,
   postEmployee,
 } from '../../data-access/services/Employees.service'
+import {
+  isValidPassword,
+  PASSWORD_RULES_MESSAGE,
+} from '../../../../utils/validators'
+import { isManager } from '../../../../utils/user'
 import type { RoleDTO } from '../../data-access/dto/Employees.dto'
 import {
   INITIAL_EMPLOYEE_FORM,
@@ -19,20 +27,16 @@ interface Props {
 export function EmployeesForm({ onSuccess }: Props) {
   const [form, setForm] = useState<EmployeeFormVM>(INITIAL_EMPLOYEE_FORM)
   const [roles, setRoles] = useState<RoleDTO[]>([])
-  const [companyUnitId, setCompanyUnitId] = useState('')
+  // A filial vem do gerente autenticado e não aparece no formulário.
+  const { user, error: userError } = useCurrentUserContext()
+  const companyUnitId = user?.companyUnitId ?? ''
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
   useEffect(() => {
-    void Promise.all([getMe(), getRoles()])
-      .then(([me, rolesPage]) => {
-        // A filial vem do gerente autenticado e não aparece no formulário.
-        setCompanyUnitId(me.companyUnitId)
-        setRoles(
-          rolesPage.content.filter(
-            (role) => role.name.toUpperCase() !== 'GERENTE',
-          ),
-        )
+    void getRoles()
+      .then((rolesPage) => {
+        setRoles(rolesPage.content.filter((role) => !isManager(role.name)))
       })
       .catch((cause: unknown) =>
         setError(
@@ -56,7 +60,9 @@ export function EmployeesForm({ onSuccess }: Props) {
     setError('')
     if (!selectedRole) return setError('Selecione um cargo existente na lista.')
     if (!companyUnitId)
-      return setError('A filial do gerente não foi encontrada.')
+      return setError(userError ?? 'A filial do gerente não foi encontrada.')
+    if (!isValidPassword(form.temporaryPassword))
+      return setError(PASSWORD_RULES_MESSAGE)
     setSubmitting(true)
     try {
       await postEmployee({
@@ -78,44 +84,45 @@ export function EmployeesForm({ onSuccess }: Props) {
   }
 
   return (
-    <form className="employee-form" onSubmit={(event) => void submit(event)}>
-      <label>
-        Nome
-        <input
-          required
-          maxLength={120}
-          value={form.fullName}
-          placeholder="Digite o nome do funcionário"
-          onChange={(event) =>
-            setForm({ ...form, fullName: event.target.value })
-          }
-        />
-      </label>
-      <label>
-        E-mail
-        <input
-          required
-          type="email"
-          maxLength={120}
-          value={form.email}
-          placeholder="Digite o e-mail do funcionário"
-          onChange={(event) => setForm({ ...form, email: event.target.value })}
-        />
-      </label>
-      <label>
-        Senha temporária
-        <input
-          required
-          type="text"
-          minLength={8}
-          maxLength={72}
-          value={form.temporaryPassword}
-          placeholder="Digite a senha temporária"
-          onChange={(event) =>
-            setForm({ ...form, temporaryPassword: event.target.value })
-          }
-        />
-      </label>
+    <form
+      className="form-layout__form"
+      onSubmit={(event) => void submit(event)}
+    >
+      <SimpleInput
+        id="employee-name"
+        label="Nome"
+        placeholder="Digite o nome do funcionário"
+        value={form.fullName}
+        maxLength={120}
+        required
+        onChange={(fullName) => setForm({ ...form, fullName })}
+      />
+
+      <SimpleInput
+        id="employee-email"
+        label="E-mail"
+        type="email"
+        placeholder="Digite o e-mail do funcionário"
+        value={form.email}
+        maxLength={120}
+        required
+        onChange={(email) => setForm({ ...form, email })}
+      />
+
+      <SimpleInput
+        id="employee-temporary-password"
+        label="Senha temporária"
+        placeholder="Digite a senha temporária do funcionário"
+        value={form.temporaryPassword}
+        minLength={8}
+        maxLength={72}
+        autoComplete="off"
+        required
+        onChange={(temporaryPassword) =>
+          setForm({ ...form, temporaryPassword })
+        }
+      />
+
       <Combobox
         required
         label="Cargo"
@@ -127,18 +134,18 @@ export function EmployeesForm({ onSuccess }: Props) {
         }))}
         onChange={(roleName) => setForm({ ...form, roleName })}
       />
+
       {error && (
-        <p className="employees-page__error" role="alert">
+        <p className="form-layout__error" role="alert">
           {error}
         </p>
       )}
-      <button
-        className="employee-form__submit"
-        type="submit"
-        disabled={submitting}
-      >
-        {submitting ? 'Cadastrando...' : 'Cadastrar'}
-      </button>
+
+      <FormActions>
+        <Button type="submit" fullWidth disabled={submitting}>
+          {submitting ? 'Cadastrando...' : 'Cadastrar'}
+        </Button>
+      </FormActions>
     </form>
   )
 }

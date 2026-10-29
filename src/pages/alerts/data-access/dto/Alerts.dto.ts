@@ -1,10 +1,4 @@
-export interface PageDto<T> {
-  content: T[]
-  totalElements: number
-  totalPages: number
-  size: number
-  number: number
-}
+import type { ServiceOrderDto } from '../../../service-order/data-access/dto/ServiceOrder.dto'
 
 export type WarningSeverity = 'BAIXA' | 'MEDIA' | 'ALTA' | 'CRITICA'
 
@@ -36,36 +30,10 @@ export interface WarningDto {
   maintenanceId: number | null
 }
 
-export interface EmployeeSummaryDto {
-  id: string
-  fullName: string
-  email: string
-  role: string
-  companyUnitId: string
-  active: boolean
-}
-
-export interface MaintenanceTypeDto {
-  id: number
-  name: string
-  description: string
-  defaultIntervalDays: number
-}
-
 export interface ServiceOrderCreateDto {
   maintenanceTypeId: number
   technicianId: string
   dueDate: string | null
 }
 
-export interface MaintenanceRegisterDto {
-  id: number
-  warningId: number
-  priority: WarningSeverity
-  maintenanceTypeId: number
-  maintenanceTypeName: string
-  technicianId: string
-  technicianName: string
-  maintenanceStatus: string
-  dueDate: string | null
-}
+export type MaintenanceRegisterDto = ServiceOrderDto

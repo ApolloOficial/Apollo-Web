@@ -11,6 +11,7 @@ import {
   reviewExternalRelocation,
   reviewInternalRelocation,
 } from '../data-access/services/Relocations.service'
+import { relocationStatusLabels } from '../data-access/vm/Relocations.vm'
 import '../Relocations.css'
 
 type Data =
@@ -94,8 +95,7 @@ export default function RelocationDetails({
     'suggestedUnitName' in item
       ? item.suggestedUnitName
       : item.destinationCompanyName
-  const identification =
-    'stringCode' in item ? item.stringCode : item.panelSerial
+  const quantity = 'quantity' in item ? item.quantity : 1
 
   return (
     <section className="relocation-details">
@@ -116,16 +116,16 @@ export default function RelocationDetails({
           <dt>Solicitante</dt>
           <dd>{item.requestedByName}</dd>
         </div>
-        <div>
-          <dt>{data.type === 'INTERNAL' ? 'String' : 'Placa'}</dt>
-          <dd>{identification}</dd>
-        </div>
-        {'quantity' in item && (
+        {(data.type === 'INTERNAL' || item.reviewedByName) && (
           <div>
-            <dt>Qtd. de placas</dt>
-            <dd>{item.quantity}</dd>
+            <dt>Revisor</dt>
+            <dd>{item.reviewedByName ?? '—'}</dd>
           </div>
         )}
+        <div>
+          <dt>Qtd. de placas</dt>
+          <dd>{quantity}</dd>
+        </div>
         <div>
           <dt>Destino</dt>
           <dd>{destination}</dd>
@@ -133,15 +133,9 @@ export default function RelocationDetails({
         <div>
           <dt>Status</dt>
           <dd className={`status-text ${item.status.toLowerCase()}`}>
-            {item.status}
+            {relocationStatusLabels[item.status]}
           </dd>
         </div>
-        {item.reviewedByName && (
-          <div>
-            <dt>Revisor</dt>
-            <dd>{item.reviewedByName}</dd>
-          </div>
-        )}
       </dl>
       <section className="relocation-details__description">
         <h2>Descrição</h2>

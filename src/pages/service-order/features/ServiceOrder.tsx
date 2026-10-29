@@ -5,10 +5,12 @@ import {
   type AppliedFilter,
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
+import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
+import { Tag, type TagTone } from '../../../components/tag'
+import { formatDate } from '../../../utils/formatters'
 import type {
-  EmployeeSummaryDto,
-  MaintenanceTypeDto,
   ServiceOrderListItemDto,
+  ServiceOrderStatus,
 } from '../data-access/dto/ServiceOrder.dto'
 import {
   getActiveTechnicians,
@@ -23,12 +25,8 @@ import {
   type ServiceOrderFiltersViewModel,
 } from '../data-access/vm/ServiceOrder.vm'
 import { ServiceOrderFilter } from './filters/ServiceOrderFilter'
-
-function formatDate(value: string | null) {
-  if (!value) return '—'
-
-  return new Intl.DateTimeFormat('pt-BR').format(new Date(value))
-}
+import type { EmployeeDto } from '../../../types/employee.types'
+import type { MaintenanceTypeDto } from '../../../types/service-order.types'
 
 function getEquipment(item: ServiceOrderListItemDto) {
   return (
@@ -37,6 +35,13 @@ function getEquipment(item: ServiceOrderListItemDto) {
     item.warning.inverterCode ??
     '—'
   )
+}
+
+const serviceOrderStatusTones: Record<ServiceOrderStatus, TagTone> = {
+  ABERTA: 'info',
+  EM_ANDAMENTO: 'outline',
+  CONCLUIDA: 'success',
+  CANCELADA: 'muted',
 }
 
 function getVisualStatus(item: ServiceOrderListItemDto) {
@@ -49,20 +54,22 @@ function getVisualStatus(item: ServiceOrderListItemDto) {
   ) {
     return {
       label: 'Atrasada',
-      className: 'service-order-status--overdue',
+      tone: 'error' as TagTone,
     }
   }
 
   return {
     label: serviceOrderStatusLabels[order.maintenanceStatus],
-    className: `service-order-status--${order.maintenanceStatus.toLowerCase()}`,
+    tone: serviceOrderStatusTones[order.maintenanceStatus],
   }
 }
 
 export function ServiceOrderFeature() {
+  const { user, loading: loadingUser } = useCurrentUserContext()
+  const companyUnitId = user?.companyUnitId ?? null
   const [items, setItems] = useState<ServiceOrderListItemDto[]>([])
   const [orderIds, setOrderIds] = useState<number[]>([])
-  const [technicians, setTechnicians] = useState<EmployeeSummaryDto[]>([])
+  const [technicians, setTechnicians] = useState<EmployeeDto[]>([])
   const [maintenanceTypes, setMaintenanceTypes] = useState<
     MaintenanceTypeDto[]
   >([])
@@ -81,8 +88,10 @@ export function ServiceOrderFeature() {
   const [error, setError] = useState('')
 
   useEffect(() => {
+    if (loadingUser) return
+
     Promise.all([
-      getActiveTechnicians(),
+      getActiveTechnicians(companyUnitId),
       getMaintenanceTypes(),
       getServiceOrderIds(),
     ])
@@ -96,7 +105,7 @@ export function ServiceOrderFeature() {
         setMaintenanceTypes([])
         setOrderIds([])
       })
-  }, [])
+  }, [loadingUser, companyUnitId])
 
   const loadOrders = useCallback(async () => {
     setLoading(true)
@@ -268,7 +277,7 @@ export function ServiceOrderFeature() {
   }
 
   return (
-    <main className="service-orders-page">
+    <main className="service-orders-page list-page">
       <nav
         className="service-orders-breadcrumb"
         aria-label="Navegação estrutural"
@@ -307,7 +316,7 @@ export function ServiceOrderFeature() {
         </p>
       )}
 
-      <div className="service-orders-table" aria-busy={loading}>
+      <div className="service-orders-table list-table" aria-busy={loading}>
         <div className="service-orders-table__header">
           <strong>ID</strong>
           <strong>String / Inversor / Placa</strong>
@@ -344,11 +353,7 @@ export function ServiceOrderFeature() {
 
                 <span>{formatDate(item.order.dueDate)}</span>
 
-                <span
-                  className={`service-order-status ${visualStatus.className}`}
-                >
-                  {visualStatus.label}
-                </span>
+                <Tag label={visualStatus.label} tone={visualStatus.tone} />
               </Link>
             )
           })}

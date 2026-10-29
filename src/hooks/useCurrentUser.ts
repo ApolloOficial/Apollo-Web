@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { getCurrentUser } from '../services/auth.service'
 import type { CurrentUserDto } from '../types/auth.types'
 
-interface CurrentUserState {
+export interface CurrentUserState {
   user: CurrentUserDto | null
   loading: boolean
   error: string | null
