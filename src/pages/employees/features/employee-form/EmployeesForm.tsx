@@ -9,6 +9,7 @@ import {
   getRoles,
   postEmployee,
 } from '../../data-access/services/Employees.service'
+import { isManager } from '../../../../utils/user'
 import type { RoleDTO } from '../../data-access/dto/Employees.dto'
 import {
   INITIAL_EMPLOYEE_FORM,
@@ -31,11 +32,7 @@ export function EmployeesForm({ onSuccess }: Props) {
   useEffect(() => {
     void getRoles()
       .then((rolesPage) => {
-        setRoles(
-          rolesPage.content.filter(
-            (role) => role.name.toUpperCase() !== 'GERENTE',
-          ),
-        )
+        setRoles(rolesPage.content.filter((role) => !isManager(role.name)))
       })
       .catch((cause: unknown) =>
         setError(

@@ -1,4 +1,5 @@
 import { request } from '../../../../services/http'
+import { ROLE } from '../../../../utils/user'
 import type {
   EmployeeSummaryDto,
   MaintenanceRegisterDto,
@@ -50,7 +51,7 @@ export function getWarning(id: number) {
 
 export function getActiveTechnicians(companyUnitId?: string | null) {
   const query = new URLSearchParams({
-    role: 'TECNICO',
+    role: ROLE.TECHNICIAN,
     isActive: 'true',
     page: '0',
     size: '100',

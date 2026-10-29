@@ -6,6 +6,7 @@ import { SirenIcon } from '../components/icons/siren-icon'
 import { SolarPanelIcon } from '../components/icons/solar-panel-icon'
 import { UsersIcon } from '../components/icons/users-icon'
 import type { NavigationItem } from '../types/navigation.types'
+import { ROLE } from '../utils/user'
 import { paths } from './paths'
 
 export const navigationItems: NavigationItem[] = [
@@ -18,7 +19,7 @@ export const navigationItems: NavigationItem[] = [
     label: 'Funcionários',
     to: paths.employees,
     icon: UsersIcon,
-    roles: ['GERENTE'],
+    roles: [ROLE.MANAGER],
   },
   {
     label: 'Métricas',

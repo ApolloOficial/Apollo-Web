@@ -1,3 +1,10 @@
+export const ROLE = {
+  MANAGER: 'GERENTE',
+  OPERATOR: 'OPERADOR',
+  ANALYST: 'ANALISTA',
+  TECHNICIAN: 'TECNICO',
+} as const
+
 const ROLE_ALIASES: Record<string, string> = {
   MANAGER: 'GERENTE',
   OPERATOR: 'OPERADOR',
@@ -37,9 +44,9 @@ export function formatRole(role: string): string {
 }
 
 export function isManager(role: string | null | undefined): boolean {
-  return role != null && normalizeRole(role) === 'GERENTE'
+  return role != null && normalizeRole(role) === ROLE.MANAGER
 }
 
 export function isOperator(role: string | null | undefined): boolean {
-  return role != null && normalizeRole(role) === 'OPERADOR'
+  return role != null && normalizeRole(role) === ROLE.OPERATOR
 }

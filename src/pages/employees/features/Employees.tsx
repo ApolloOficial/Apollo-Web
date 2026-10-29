@@ -80,9 +80,7 @@ export function EmployeesFeature() {
   useEffect(() => {
     void getRoles()
       .then(({ content }) => {
-        setRoles(
-          content.filter((role) => role.name.toUpperCase() !== 'GERENTE'),
-        )
+        setRoles(content.filter((role) => !isManager(role.name)))
       })
       .catch(() => setRoles([]))
   }, [])

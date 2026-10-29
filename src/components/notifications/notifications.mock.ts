@@ -1,6 +1,6 @@
 import { paths } from '../../routes/paths'
 import type { NotificationItem } from '../../types/notification.types'
-import { normalizeRole } from '../../utils/user'
+import { isManager } from '../../utils/user'
 
 const managerNotifications: NotificationItem[] = [
   {
@@ -46,7 +46,5 @@ const operatorNotifications: NotificationItem[] = [
 
 export function getMockNotifications(role?: string): NotificationItem[] {
   if (!role) return []
-  return normalizeRole(role) === 'GERENTE'
-    ? managerNotifications
-    : operatorNotifications
+  return isManager(role) ? managerNotifications : operatorNotifications
 }
