@@ -61,7 +61,6 @@ export function AlertsFilters({ value, onChange, onApply }: Props) {
           { value: 'ALL', label: 'Todos' },
           { value: 'ATIVO', label: 'Ativo' },
           { value: 'RECONHECIDO', label: 'Reconhecido' },
-          { value: 'RESOLVIDO', label: 'Resolvido' },
         ]}
         onChange={(status) =>
           onChange({

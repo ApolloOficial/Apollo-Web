@@ -52,6 +52,9 @@ export function alertFiltersFromParams(
         ? (severity as WarningSeverity)
         : '',
     type: type && type in typeLabels ? (type as WarningType) : '',
-    status: status && status in statusLabels ? (status as WarningStatus) : '',
+    status:
+      status && status !== 'RESOLVIDO' && status in statusLabels
+        ? (status as WarningStatus)
+        : '',
   }
 }

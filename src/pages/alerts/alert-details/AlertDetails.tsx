@@ -69,8 +69,7 @@ export default function AlertDetails({ audience = 'operator' }: Props) {
   const canOpenServiceOrder =
     audience === 'operator' &&
     isOperator(user?.role) &&
-    warning.status === 'ATIVO' &&
-    warning.maintenanceId === null
+    warning.status === 'ATIVO'
 
   return (
     <main className="alerts-details">

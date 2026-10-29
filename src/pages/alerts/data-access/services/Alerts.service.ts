@@ -36,6 +36,8 @@ function createWarningsQuery({ filters, page, size }: GetWarningsParams) {
     query.set('status', filters.status)
   }
 
+  query.set('excludeResolved', 'true')
+
   return query
 }
 

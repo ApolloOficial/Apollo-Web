@@ -234,7 +234,9 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
                   </span>
                 </Link>
 
-                {audience === 'operator' && canOpenServiceOrder && (
+                {audience === 'operator' &&
+                  canOpenServiceOrder &&
+                  warning.status === 'ATIVO' && (
                   <div className="alerts-table__action">
                     <Link
                       className="alerts-open-order"
