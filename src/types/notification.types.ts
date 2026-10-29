@@ -21,12 +21,19 @@ export interface NotificationDto {
   createdAt: string
 }
 
+export interface UnreadCountDto {
+  unread: number
+}
+
 export interface NotificationItem {
   id: string
-  type: string
+  type: NotificationType
   title: string
   description: string
   time: string
   read: boolean
   to?: string
 }
+
+export type ServiceResult<T> =
+  { ok: true; data: T } | { ok: false; error: string }

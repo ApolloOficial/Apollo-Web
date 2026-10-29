@@ -57,15 +57,17 @@ function toExternal(item: ExternalRelocationDTO): RelocationListItemVM {
 
 export function RelocationsFeature({
   audience,
+  initialFilters,
 }: {
   audience: RelocationsAudience
+  initialFilters?: RelocationFiltersVM
 }) {
   const [items, setItems] = useState<RelocationListItemVM[]>([])
   const [draft, setDraft] = useState<RelocationFiltersVM>(
-    INITIAL_RELOCATION_FILTERS,
+    initialFilters ?? INITIAL_RELOCATION_FILTERS,
   )
   const [filters, setFilters] = useState<RelocationFiltersVM>(
-    INITIAL_RELOCATION_FILTERS,
+    initialFilters ?? INITIAL_RELOCATION_FILTERS,
   )
   const [tab, setTab] = useState<ManagerTab>('others')
   const [searchParams, setSearchParams] = useSearchParams()

@@ -41,13 +41,13 @@ export function NotificationsPanel({
               <li key={item.id}>
                 <button
                   type="button"
-                  className={`notifications__item${item.read ? '' : ' notifications__item--unread'}`}
+                  className={`notifications__item ${item.read ? 'notifications__item--read' : 'notifications__item--unread'}`}
                   onClick={() => handleClick(item)}
                 >
                   <span
                     className={`notifications__icon notifications__icon--${visual.tone}`}
                   >
-                    <Icon icon={visual.icon} width={22} height={22} />
+                    <Icon icon={visual.icon} width={28} height={28} />
                   </span>
                   <span className="notifications__content">
                     <span className="notifications__item-title">

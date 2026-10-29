@@ -64,3 +64,24 @@ export const INITIAL_EXTERNAL_FORM: ExternalRelocationFormVM = {
   panelLabel: '',
   justification: '',
 }
+
+const RELOCATION_STATUSES: RelocationStatus[] = [
+  'PENDENTE',
+  'APROVADA',
+  'REJEITADA',
+  'CONCLUIDA',
+]
+
+const RELOCATION_TYPES: RelocationType[] = ['INTERNAL', 'EXTERNAL']
+
+export function relocationFiltersFromParams(
+  params: URLSearchParams,
+): RelocationFiltersVM {
+  const status = params.get('status') as RelocationStatus | null
+  const type = params.get('type') as RelocationType | null
+
+  return {
+    status: status && RELOCATION_STATUSES.includes(status) ? status : '',
+    type: type && RELOCATION_TYPES.includes(type) ? type : '',
+  }
+}

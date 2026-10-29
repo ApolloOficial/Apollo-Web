@@ -2,42 +2,26 @@ import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import type { HeaderProps } from '../../types/ui.types'
 import { getInitials } from '../../utils/user'
-import { GlobalSearch } from '../global-search'
+import { SearchInput } from '../inputs/search-input'
 import { BellIcon } from '../icons/bell-icon'
 import { ChevronRightIcon } from '../icons/chevron-right-icon'
 import { LogoutIcon } from '../icons/logout-icon'
 import { NotificationsPanel } from '../notifications'
-import {
-  getNotifications,
-  markNotificationAsRead,
-} from '../../services/notifications.service'
-import { mapNotification } from '../notifications/notification.mapper'
-import type { NotificationItem } from '../../types/notification.types'
+import { useNotifications } from '../../hooks/useNotifications'
 import './Header.css'
 
 export function Header({ user, loading = false, onLogout }: HeaderProps) {
   const { pathname } = useLocation()
   const accountRef = useRef<HTMLDivElement>(null)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [search, setSearch] = useState('')
   const notificationsRef = useRef<HTMLDivElement>(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
-  const [notifications, setNotifications] = useState<NotificationItem[]>([])
-
-  useEffect(() => {
-    let active = true
-
-    getNotifications()
-      .then((items) => {
-        if (active) setNotifications(items.map(mapNotification))
-      })
-      .catch(() => {
-        if (active) setNotifications([])
-      })
-
-    return () => {
-      active = false
-    }
-  }, [user?.userId])
+  const {
+    items: notifications,
+    hasUnread,
+    markAsRead,
+  } = useNotifications(user !== null)
 
   useEffect(() => {
     if (!notificationsOpen) return
@@ -63,21 +47,6 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [notificationsOpen])
-
-  function markAsRead(item: NotificationItem) {
-    if (item.read) return
-
-    setNotifications((current) =>
-      current.map((n) => (n.id === item.id ? { ...n, read: true } : n)),
-    )
-    void markNotificationAsRead(item.id).catch(() => {
-      setNotifications((current) =>
-        current.map((n) => (n.id === item.id ? { ...n, read: false } : n)),
-      )
-    })
-  }
-
-  const hasUnread = notifications.some((n) => !n.read)
 
   useEffect(() => {
     if (!menuOpen) return
@@ -110,7 +79,11 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
     <header className="header">
       {pathname !== '/' && (
         <div className="header__search">
-          <GlobalSearch />
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            placeholder="Busque por projetos, equipes e muito mais."
+          />
         </div>
       )}
 
