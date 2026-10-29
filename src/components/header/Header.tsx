@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import type { HeaderProps } from '../../types/ui.types'
 import { getInitials } from '../../utils/user'
@@ -7,7 +7,11 @@ import { BellIcon } from '../icons/bell-icon'
 import { ChevronRightIcon } from '../icons/chevron-right-icon'
 import { LogoutIcon } from '../icons/logout-icon'
 import { NotificationsPanel } from '../notifications'
-import { getMockNotifications } from '../notifications/notifications.mock'
+import {
+  getNotifications,
+  markNotificationAsRead,
+} from '../../services/notifications.service'
+import { mapNotification } from '../notifications/notification.mapper'
 import type { NotificationItem } from '../../types/notification.types'
 import './Header.css'
 
@@ -17,16 +21,23 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false)
   const notificationsRef = useRef<HTMLDivElement>(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
-  const [readIds, setReadIds] = useState<string[]>([])
+  const [notifications, setNotifications] = useState<NotificationItem[]>([])
 
-  // Derivado do perfil, sem setState dentro de useEffect (regra react-hooks/set-state-in-effect)
-  const notifications = useMemo<NotificationItem[]>(
-    () =>
-      getMockNotifications(user?.role).map((n) =>
-        readIds.includes(n.id) ? { ...n, read: true } : n,
-      ),
-    [user?.role, readIds],
-  )
+  useEffect(() => {
+    let active = true
+
+    getNotifications()
+      .then((items) => {
+        if (active) setNotifications(items.map(mapNotification))
+      })
+      .catch(() => {
+        if (active) setNotifications([])
+      })
+
+    return () => {
+      active = false
+    }
+  }, [user?.userId])
 
   useEffect(() => {
     if (!notificationsOpen) return
@@ -54,9 +65,16 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
   }, [notificationsOpen])
 
   function markAsRead(item: NotificationItem) {
-    setReadIds((current) =>
-      current.includes(item.id) ? current : [...current, item.id],
+    if (item.read) return
+
+    setNotifications((current) =>
+      current.map((n) => (n.id === item.id ? { ...n, read: true } : n)),
     )
+    void markNotificationAsRead(item.id).catch(() => {
+      setNotifications((current) =>
+        current.map((n) => (n.id === item.id ? { ...n, read: false } : n)),
+      )
+    })
   }
 
   const hasUnread = notifications.some((n) => !n.read)

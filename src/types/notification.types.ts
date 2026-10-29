@@ -11,9 +11,19 @@ export type NotificationType =
 export type NotificationTone =
   'info' | 'success' | 'alert' | 'error' | 'neutral'
 
+export interface NotificationDto {
+  id: string
+  maintenanceId: number | null
+  type: string
+  title: string
+  body: string
+  read: boolean
+  createdAt: string
+}
+
 export interface NotificationItem {
   id: string
-  type: NotificationType
+  type: string
   title: string
   description: string
   time: string
