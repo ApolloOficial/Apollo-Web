@@ -237,15 +237,15 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
                 {audience === 'operator' &&
                   canOpenServiceOrder &&
                   warning.status === 'ATIVO' && (
-                  <div className="alerts-table__action">
-                    <Link
-                      className="alerts-open-order"
-                      to={`/alerts/${warning.id}/service-order`}
-                    >
-                      Abrir OS
-                    </Link>
-                  </div>
-                )}
+                    <div className="alerts-table__action">
+                      <Link
+                        className="alerts-open-order"
+                        to={`/alerts/${warning.id}/service-order`}
+                      >
+                        Abrir OS
+                      </Link>
+                    </div>
+                  )}
               </article>
             )
           })}
