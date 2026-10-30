@@ -29,6 +29,13 @@ export async function login(
   })
 }
 
+export async function checkWebAccess(email: string): Promise<void> {
+  return request<void>('/auth/web-access', {
+    method: 'POST',
+    body: { email },
+  })
+}
+
 export async function changePassword(
   payload: ChangePasswordPayloadDto,
 ): Promise<void> {

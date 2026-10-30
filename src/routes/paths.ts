@@ -4,6 +4,7 @@ export const paths = {
   forgotPassword: '/forgot-password',
   resetPassword: '/reset-password',
   updatePassword: '/first-access',
+  permissionDenied: '/permission-denied',
   home: '/',
   alerts: '/alerts',
   alertsManager: '/alerts/manager',
