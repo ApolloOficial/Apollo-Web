@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Navigate, useLocation } from 'react-router-dom'
+import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { AuthPage } from '../../components/auth-page'
 import { Button } from '../../components/button'
 import { PasswordInput } from '../../components/inputs/password-input'
@@ -13,7 +13,6 @@ import type {
 } from '../../types/auth.types'
 import { translateAuthMessage } from '../../utils/auth-messages'
 import { PASSWORD_RULES_MESSAGE, isValidPassword } from '../../utils/validators'
-import { PasswordResetSuccess } from './password-reset-success'
 import './ResetPassword.css'
 
 const initialForm: ResetPasswordFormValues = {
@@ -31,8 +30,8 @@ function getResetToken(state: unknown): string | null {
 
 export default function ResetPassword() {
   const { state } = useLocation()
+  const navigate = useNavigate()
   const [form, setForm] = useState<ResetPasswordFormValues>(initialForm)
-  const [isReset, setIsReset] = useState(false)
   const [status, setStatus] = useState<{
     loading: boolean
     error: string | null
@@ -41,7 +40,7 @@ export default function ResetPassword() {
     error: null,
   })
 
-  const resetToken = getResetToken(state)
+  const [resetToken] = useState(() => getResetToken(state))
   const newPasswordValid = isValidPassword(form.newPassword)
   const passwordsMatch = form.newPassword === form.confirmPassword
   const canSubmit =
@@ -59,7 +58,10 @@ export default function ResetPassword() {
 
     try {
       await resetPassword({ resetToken, newPassword: form.newPassword })
-      setIsReset(true)
+      navigate(paths.login, {
+        replace: true,
+        state: { passwordReset: true },
+      })
     } catch (err) {
       setStatus({
         loading: false,
@@ -69,8 +71,6 @@ export default function ResetPassword() {
   }
 
   if (!resetToken) return <Navigate to={paths.forgotPassword} replace />
-
-  if (isReset) return <PasswordResetSuccess />
 
   return (
     <AuthPage
