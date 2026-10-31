@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { AuthPage } from '../../components/auth-page'
 import { Button } from '../../components/button'
 import { StatusMessage } from '../../components/status-message'
@@ -37,6 +37,11 @@ export default function Login() {
     error: null,
   })
   const navigate = useNavigate()
+  const { state } = useLocation()
+  const passwordReset =
+    typeof state === 'object' &&
+    state !== null &&
+    (state as { passwordReset?: boolean }).passwordReset === true
 
   const canSubmit = form.email.trim() !== '' && form.password !== ''
 
@@ -119,8 +124,14 @@ export default function Login() {
         >
           Começar
         </Button>
-        {status.error && (
+        {status.error ? (
           <StatusMessage tone="alert">{status.error}</StatusMessage>
+        ) : (
+          passwordReset && (
+            <StatusMessage tone="success">
+              Senha redefinida com sucesso. Entre com a nova senha.
+            </StatusMessage>
+          )
         )}
       </form>
     </AuthPage>
