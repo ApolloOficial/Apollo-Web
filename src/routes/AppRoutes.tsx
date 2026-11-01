@@ -17,6 +17,7 @@ import ForgotPassword from '../pages/forgot-password'
 import Home from '../pages/home'
 import Login from '../pages/login'
 import Metrics from '../pages/metrics'
+import NotFound from '../pages/not-found'
 import PermissionDenied from '../pages/permission-denied'
 import ResetPassword from '../pages/reset-password'
 import Relocations from '../pages/relocations'
@@ -37,6 +38,7 @@ export function AppRoutes() {
         <Route path={paths.resetPassword} element={<ResetPassword />} />
         <Route path={paths.updatePassword} element={<FirstAccess />} />
         <Route path={paths.permissionDenied} element={<PermissionDenied />} />
+        <Route path="*" element={<NotFound />} />
       </Route>
 
       <Route element={<Layout />}>
