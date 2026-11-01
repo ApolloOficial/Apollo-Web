@@ -2,11 +2,13 @@ import type { PanelModelDto } from '../../../../types/panel.types'
 import type { InverterModelDTO, CreateStringDto } from '../dto/Branches.dto'
 
 export interface InverterPanelVM {
+  uid: string
   serialNumber: string
   barcode: string
 }
 
 export interface InverterStringVM {
+  uid: string
   mpptNumber: string
   entryNumber: string
   panelModel: string
@@ -16,20 +18,31 @@ export interface InverterStringVM {
   panels: InverterPanelVM[]
 }
 
-export const EMPTY_INVERTER_PANEL: InverterPanelVM = {
-  serialNumber: '',
-  barcode: '',
+let uidCounter = 0
+
+function createUid() {
+  uidCounter += 1
+  return `${Date.now().toString(36)}-${uidCounter}`
+}
+
+export function createEmptyInverterPanel(): InverterPanelVM {
+  return {
+    uid: createUid(),
+    serialNumber: '',
+    barcode: '',
+  }
 }
 
 export function createEmptyInverterString(): InverterStringVM {
   return {
+    uid: createUid(),
     mpptNumber: '',
     entryNumber: '',
     panelModel: '',
     invoiceNumber: '',
     acquisitionDt: '',
     unitCost: '',
-    panels: [{ ...EMPTY_INVERTER_PANEL }],
+    panels: [createEmptyInverterPanel()],
   }
 }
 

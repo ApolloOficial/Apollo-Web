@@ -4,7 +4,7 @@ import { DatePicker } from '../../../../../../components/inputs/date-picker'
 import { SimpleInput } from '../../../../../../components/inputs/simple-input'
 import type { PanelModelDto } from '../../../../../../types/panel.types'
 import {
-  EMPTY_INVERTER_PANEL,
+  createEmptyInverterPanel,
   createEmptyInverterString,
   panelModelLabel,
   type InverterStringVM,
@@ -46,7 +46,7 @@ export function BranchesInverterStrings({
   return (
     <div className="branches-inverter-strings">
       {strings.map((item, index) => (
-        <fieldset className="branches-inverter-strings__item" key={index}>
+        <fieldset className="branches-inverter-strings__item" key={item.uid}>
           <legend>String {index + 1}</legend>
 
           <SimpleInput
@@ -107,7 +107,7 @@ export function BranchesInverterStrings({
           />
 
           {item.panels.map((panel, panelIndex) => (
-            <div className="branches-inverter-strings__panel" key={panelIndex}>
+            <div className="branches-inverter-strings__panel" key={panel.uid}>
               <SimpleInput
                 id={`string-${index}-panel-${panelIndex}-serial`}
                 label={`Placa ${panelIndex + 1} · número de série`}
@@ -147,7 +147,7 @@ export function BranchesInverterStrings({
             variant="secondary"
             onClick={() =>
               updateString(index, {
-                panels: [...item.panels, { ...EMPTY_INVERTER_PANEL }],
+                panels: [...item.panels, createEmptyInverterPanel()],
               })
             }
           >
