@@ -26,6 +26,18 @@ import { Spinner } from '../../../components/spinner'
 
 type ModalState = 'success' | 'error' | null
 
+interface ServiceOrderFormState {
+  technicianName: string
+  maintenanceTypeId: string
+  dueDate: string
+}
+
+const INITIAL_FORM: ServiceOrderFormState = {
+  technicianName: '',
+  maintenanceTypeId: '',
+  dueDate: '',
+}
+
 function noop() {}
 
 function todayIso() {
@@ -45,13 +57,18 @@ export default function ServiceOrderForm() {
     MaintenanceTypeDto[]
   >([])
 
-  const [technicianName, setTechnicianName] = useState('')
-  const [maintenanceTypeId, setMaintenanceTypeId] = useState('')
-  const [dueDate, setDueDate] = useState('')
+  const [form, setForm] = useState<ServiceOrderFormState>(INITIAL_FORM)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [modal, setModal] = useState<ModalState>(null)
+
+  function updateField<K extends keyof ServiceOrderFormState>(
+    field: K,
+    value: ServiceOrderFormState[K],
+  ) {
+    setForm((current) => ({ ...current, [field]: value }))
+  }
 
   useEffect(() => {
     let active = true
@@ -109,13 +126,13 @@ export default function ServiceOrderForm() {
   )
 
   const selectedTechnician = technicians.find(
-    (technician) => technician.fullName === technicianName,
+    (technician) => technician.fullName === form.technicianName,
   )
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!warning || !selectedTechnician || !maintenanceTypeId) {
+    if (!warning || !selectedTechnician || !form.maintenanceTypeId) {
       setError('Preencha todos os campos obrigatórios.')
       return
     }
@@ -125,9 +142,9 @@ export default function ServiceOrderForm() {
 
     try {
       await postServiceOrder(warning.id, {
-        maintenanceTypeId: Number(maintenanceTypeId),
+        maintenanceTypeId: Number(form.maintenanceTypeId),
         technicianId: selectedTechnician.id,
-        dueDate: dueDate ? `${dueDate}T23:59:59` : null,
+        dueDate: form.dueDate ? `${form.dueDate}T23:59:59` : null,
       })
 
       setModal('success')
@@ -197,29 +214,29 @@ export default function ServiceOrderForm() {
           <SelectInput
             label="Tipo de manutenção"
             placeholder="Selecione o tipo de manutenção"
-            value={maintenanceTypeId}
+            value={form.maintenanceTypeId}
             options={maintenanceTypes.map((type) => ({
               value: String(type.id),
               label: type.name,
             }))}
-            onChange={setMaintenanceTypeId}
+            onChange={(value) => updateField('maintenanceTypeId', value)}
           />
 
           <Combobox
             label="Técnico responsável"
             placeholder="Digite o nome do técnico responsável"
-            value={technicianName}
+            value={form.technicianName}
             options={technicianOptions}
             required
-            onChange={setTechnicianName}
+            onChange={(value) => updateField('technicianName', value)}
           />
 
           <DatePicker
             label="Prazo de conclusão"
-            value={dueDate}
+            value={form.dueDate}
             min={todayIso()}
             required
-            onChange={setDueDate}
+            onChange={(value) => updateField('dueDate', value)}
           />
 
           <TextareaInput
