@@ -21,6 +21,9 @@ export interface InverterStringVM {
 let uidCounter = 0
 
 function createUid() {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+    return crypto.randomUUID()
+  }
   uidCounter += 1
   return `${Date.now().toString(36)}-${uidCounter}`
 }

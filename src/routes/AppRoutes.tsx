@@ -38,7 +38,6 @@ export function AppRoutes() {
         <Route path={paths.resetPassword} element={<ResetPassword />} />
         <Route path={paths.updatePassword} element={<FirstAccess />} />
         <Route path={paths.permissionDenied} element={<PermissionDenied />} />
-        <Route path="*" element={<NotFound />} />
       </Route>
 
       <Route element={<Layout />}>
@@ -130,6 +129,9 @@ export function AppRoutes() {
             />
           </Route>
         </Route>
+      </Route>
+      <Route element={<AuthLayout />}>
+        <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
   )
