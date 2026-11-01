@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AuthPage } from '../../components/auth-page'
@@ -37,11 +37,17 @@ export default function Login() {
     error: null,
   })
   const navigate = useNavigate()
-  const { state } = useLocation()
-  const passwordReset =
-    typeof state === 'object' &&
-    state !== null &&
-    (state as { passwordReset?: boolean }).passwordReset === true
+  const { state, pathname } = useLocation()
+  const [passwordReset] = useState(
+    () =>
+      typeof state === 'object' &&
+      state !== null &&
+      (state as { passwordReset?: boolean }).passwordReset === true,
+  )
+
+  useEffect(() => {
+    if (passwordReset) navigate(pathname, { replace: true, state: null })
+  }, [passwordReset, navigate, pathname])
 
   const canSubmit = form.email.trim() !== '' && form.password !== ''
 
