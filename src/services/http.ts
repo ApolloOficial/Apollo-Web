@@ -2,7 +2,9 @@ import type { ApiErrorDto } from '../types/auth.types'
 import { translateApiMessage } from '../utils/api-messages'
 import { clearSession, getSession } from '../utils/session'
 
-export const UNAUTHORIZED_EVENT = 'apollo:unauthorized'
+import { UNAUTHORIZED_EVENT } from '../utils/events'
+
+export { UNAUTHORIZED_EVENT }
 
 const SESSION_EXPIRED_MESSAGE = 'Sessão expirada. Faça login novamente.'
 const FORBIDDEN_MESSAGE = 'Sem permissão para realizar esta ação.'

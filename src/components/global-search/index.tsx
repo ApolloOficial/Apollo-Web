@@ -1,10 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
-import { generatePath, useNavigate } from 'react-router-dom'
 import { useCurrentUserContext } from '../../hooks/useCurrentUserContext'
+import { useGlobalSearchNavigation } from '../../hooks/useGlobalSearchNavigation'
 import { useSearchSuggestions } from '../../hooks/useSearchSuggestions'
-import { paths } from '../../routes/paths'
-import { getPanelById } from '../../services/panels.service'
-import type { CurrentUserDto } from '../../types/auth.types'
 import type { SearchCategory, SearchResultDto } from '../../types/search.types'
 import { isManager } from '../../utils/user'
 import { SearchInput } from '../inputs/search-input'
@@ -18,10 +15,6 @@ interface GlobalSearchProps {
 interface SearchGroup {
   key: SearchCategory
   label: string
-  resolvePath: (
-    item: SearchResultDto,
-    user: CurrentUserDto | null,
-  ) => string | Promise<string>
 }
 
 const SUBTITLE_LABELS: Record<string, string> = {
@@ -37,64 +30,27 @@ function getSubtitleLabel(subtitle: string) {
   return SUBTITLE_LABELS[subtitle] ?? subtitle
 }
 
-function withNameFilter(path: string, name: string) {
-  return `${path}?${new URLSearchParams({ name })}`
-}
-
 const SEARCH_GROUPS: SearchGroup[] = [
-  {
-    key: 'employees',
-    label: 'Funcionários',
-    resolvePath: (item) => withNameFilter(paths.employees, item.title),
-  },
-  {
-    key: 'companyUnits',
-    label: 'Filiais',
-    resolvePath: (item, user) =>
-      item.id === user?.companyUnitId
-        ? `${paths.branches}?tab=mine`
-        : withNameFilter(paths.branches, item.title),
-  },
-  {
-    key: 'inverters',
-    label: 'Inversores',
-    resolvePath: (item) =>
-      generatePath(paths.branchInverterDetails, { id: item.id }),
-  },
-  {
-    key: 'panels',
-    label: 'Placas',
-    resolvePath: async (item) => {
-      const panel = await getPanelById(item.id)
-
-      return generatePath(paths.branchStringDetails, { id: panel.stringId })
-    },
-  },
-  {
-    key: 'relocations',
-    label: 'Realocações',
-    resolvePath: (item, user) =>
-      generatePath(
-        isManager(user?.role)
-          ? paths.relocationManagerDetails
-          : paths.relocationDetails,
-        {
-          type: /^external/i.test(item.subtitle) ? 'external' : 'internal',
-          id: item.id,
-        },
-      ),
-  },
+  { key: 'employees', label: 'Funcionários' },
+  { key: 'companyUnits', label: 'Filiais' },
+  { key: 'inverters', label: 'Inversores' },
+  { key: 'panels', label: 'Placas' },
+  { key: 'relocations', label: 'Realocações' },
 ]
 
 export function GlobalSearch({
   placeholder = 'Busque por projetos, equipes e muito mais.',
 }: GlobalSearchProps) {
-  const navigate = useNavigate()
   const { user } = useCurrentUserContext()
+  const {
+    navigateToResult,
+    isResolving,
+    error: selectionError,
+    clearError,
+  } = useGlobalSearchNavigation()
   const containerRef = useRef<HTMLDivElement>(null)
   const [query, setQuery] = useState('')
   const [open, setOpen] = useState(false)
-  const [selectionError, setSelectionError] = useState('')
   const { enabled, loading, data, error } = useSearchSuggestions(query)
 
   useEffect(() => {
@@ -136,25 +92,16 @@ export function GlobalSearch({
 
   function handleChange(value: string) {
     setQuery(value)
-    setSelectionError('')
+    clearError()
     setOpen(true)
   }
 
-  async function handleSelect(group: SearchGroup, item: SearchResultDto) {
-    setSelectionError('')
+  async function handleSelect(category: SearchCategory, item: SearchResultDto) {
+    const navigated = await navigateToResult(category, item)
 
-    try {
-      const path = await group.resolvePath(item, user)
-
+    if (navigated) {
       setOpen(false)
       setQuery('')
-      navigate(path)
-    } catch (cause) {
-      setSelectionError(
-        cause instanceof Error
-          ? cause.message
-          : 'Não foi possível abrir o resultado.',
-      )
     }
   }
 
@@ -171,27 +118,39 @@ export function GlobalSearch({
       />
 
       {showPanel && (
-        <div className="global-search__panel" aria-busy={loading}>
-          {loading && (
-            <p className="global-search__status">
+        <div
+          className="global-search__panel"
+          aria-busy={loading || isResolving}
+        >
+          {(loading || isResolving) && (
+            <p className="global-search__status" role="status">
               <Spinner />
+              <span className="sr-only">
+                {isResolving ? 'Abrindo resultado' : 'Carregando resultados'}
+              </span>
             </p>
           )}
 
           {error && (
-            <p className="global-search__status global-search__status--error">
+            <p
+              className="global-search__status global-search__status--error"
+              role="alert"
+            >
               {error}
             </p>
           )}
 
           {selectionError && (
-            <p className="global-search__status global-search__status--error">
+            <p
+              className="global-search__status global-search__status--error"
+              role="alert"
+            >
               {selectionError}
             </p>
           )}
 
           {empty && (
-            <p className="global-search__status">
+            <p className="global-search__status" aria-live="polite">
               Nenhum resultado encontrado.
             </p>
           )}
@@ -206,7 +165,8 @@ export function GlobalSearch({
                       <button
                         className="global-search__item"
                         type="button"
-                        onClick={() => void handleSelect(section, item)}
+                        disabled={isResolving}
+                        onClick={() => void handleSelect(section.key, item)}
                       >
                         <span className="global-search__item-title">
                           {item.title}
