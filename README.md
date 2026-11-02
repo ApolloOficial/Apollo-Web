@@ -34,6 +34,10 @@ Navegador → página → hook/service → Apollo API
 
 O guia de frontend descreve a arquitetura, os módulos e as permissões com mais detalhes: [docs/WEB.md](docs/WEB.md).
 
+## Aplicação publicada
+
+Acesse em **https://LINK-DA-VERCEL**.
+
 ## Início rápido
 
 Requisitos: Node.js 20.19+ ou 22.12+ e a Apollo API disponível. O CI usa
@@ -75,9 +79,28 @@ As principais áreas do painel são:
 | `/service-orders`            | Abertura e acompanhamento de ordens de serviço |
 | `/relocations` e `/branches` | Realocações e dados da filial                  |
 | `/employees`                 | Administração de funcionários pelo Gerente     |
-| `/map` e `/metrics`          | Mapa das filiais e indicadores                 |
+| `/metrics`                   | Indicadores dos dashboards                     |
 
 As rotas privadas exigem sessão ativa. A matriz completa de acesso por perfil está em [docs/WEB.md](docs/WEB.md).
+
+## Publicação na Vercel
+
+O frontend roda em HTTPS e a Apollo API na EC2 roda em HTTP. Para o navegador
+não bloquear as chamadas (mixed content), elas passam pela própria Vercel: o
+navegador chama `/api/v1/...` no mesmo domínio e a função `api/[...path].ts`
+repassa a requisição para a API.
+
+1. Importe o repositório em **vercel.com > Add New > Project**.
+2. Em **Settings > Environment Variables**, crie:
+   - `VITE_API_URL`: `/api/v1`
+   - `API_ORIGIN`: `http://<endereco-da-api>:8080`
+   - `VITE_DATABRICKS_CORPORATE_URL`: URL do dashboard corporativo
+   - `VITE_DATABRICKS_SOLAR_URL`: URL do dashboard Métricas Solares
+3. Faça o deploy.
+
+O `vercel.json` redireciona qualquer rota para o `index.html`, então atualizar a
+página em `/alerts` ou abrir um endereço inexistente não gera erro 404 da
+hospedagem: a aplicação mostra a própria página de erro.
 
 ## Testes
 
