@@ -1,4 +1,10 @@
-const HOP_BY_HOP_HEADERS = ['host', 'connection', 'content-length']
+const STRIPPED_HEADERS = [
+  'host',
+  'connection',
+  'content-length',
+  'origin',
+  'referer',
+]
 
 async function handle(request: Request): Promise<Response> {
   const origin = process.env.API_ORIGIN
@@ -17,7 +23,7 @@ async function handle(request: Request): Promise<Response> {
   const target = `${origin.replace(/\/$/, '')}/api/${path}${query ? `?${query}` : ''}`
 
   const headers = new Headers(request.headers)
-  HOP_BY_HOP_HEADERS.forEach((name) => headers.delete(name))
+  STRIPPED_HEADERS.forEach((name) => headers.delete(name))
 
   const hasBody = !['GET', 'HEAD'].includes(request.method)
 
