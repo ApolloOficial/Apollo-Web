@@ -83,7 +83,7 @@ testes de teclado e acessibilidade foram feitos pela equipe em 01/11/2026.
 
 ### Publicação
 
-- **Onde está:** [apollo-sigma-ruby.vercel.app](https://apollo-sigma-ruby.vercel.app), com o link no [README](../README.md). A função [`api/[...path].ts`](../api/%5B...path%5D.ts) repassa as chamadas à API e o [vercel.json](../vercel.json) faz o F5 em rotas internas abrir o app.
+- **Onde está:** [apollo-sigma-ruby.vercel.app](https://apollo-sigma-ruby.vercel.app), com o link no [README](../README.md). A função [`api/proxy.ts`](../api/proxy.ts) repassa as chamadas à API e o [vercel.json](../vercel.json) faz o F5 em rotas internas abrir o app.
 - **Como verificar:** abrir o link em janela anônima, entrar, apertar F5 em `/alerts` e acessar `/abc`.
 - **Situação:** atendido.
 
