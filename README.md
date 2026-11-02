@@ -79,7 +79,7 @@ As principais áreas do painel são:
 | `/service-orders`            | Abertura e acompanhamento de ordens de serviço |
 | `/relocations` e `/branches` | Realocações e dados da filial                  |
 | `/employees`                 | Administração de funcionários pelo Gerente     |
-| `/metrics`                   | Indicadores dos dashboards                     |
+| `/metrics`                   | Dashboard de métricas solares                  |
 
 As rotas privadas exigem sessão ativa. A matriz completa de acesso por perfil está em [docs/WEB.md](docs/WEB.md).
 
@@ -94,8 +94,7 @@ repassa a requisição para a API.
 2. Em **Settings > Environment Variables**, crie:
    - `VITE_API_URL`: `/api/v1`
    - `API_ORIGIN`: `http://<endereco-da-api>:8080`
-   - `VITE_DATABRICKS_CORPORATE_URL`: URL do dashboard corporativo
-   - `VITE_DATABRICKS_SOLAR_URL`: URL do dashboard Métricas Solares
+   - `VITE_DATABRICKS_SOLAR_URL`: URL publicada (`/published`) do dashboard Métricas Solares, sem filtros; o Apollo Web acrescenta a empresa e a filial do usuário logado
 3. Faça o deploy.
 
 O `vercel.json` redireciona qualquer rota para o `index.html`, então atualizar a

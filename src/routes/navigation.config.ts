@@ -30,9 +30,5 @@ export const navigationItems: NavigationItem[] = [
     label: 'Métricas',
     to: paths.metrics,
     icon: ChartIcon,
-    children: [
-      { label: 'Corporativas', to: paths.metricsCorporate },
-      { label: 'Solares', to: paths.metricsSolar },
-    ],
   },
 ]

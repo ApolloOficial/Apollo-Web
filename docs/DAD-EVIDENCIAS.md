@@ -127,7 +127,7 @@ testes de teclado e acessibilidade foram feitos pela equipe em 01/11/2026.
 
 ### Proteção contra XSS
 
-- **Onde está:** não há `dangerouslySetInnerHTML`; o conteúdo dinâmico vai por `{variavel}` no JSX. Os links dos dashboards passam por [sanitizeEmbedUrl](../src/utils/validators/url.ts#L1) antes do [iframe](../src/pages/metrics/features/dashboard-frame/index.tsx#L31).
+- **Onde está:** não há `dangerouslySetInnerHTML`; o conteúdo dinâmico vai por `{variavel}` no JSX. Os links dos dashboards passam por [sanitizeEmbedUrl](../src/utils/validators/url.ts#L1) antes do [iframe](../src/pages/metrics/features/dashboard-frame/index.tsx#L53).
 - **Como verificar:** mostrar o código.
 - **Situação:** atendido.
 
