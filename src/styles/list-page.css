@@ -37,6 +37,14 @@
     overflow-y: auto;
   }
 
+  .list-page > .list-table:has(> .error-state),
+  .list-panel > .list-table:has(> .error-state) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    overflow: visible;
+  }
+
   /* Painel com várias tabelas empilhadas: o painel inteiro rola. */
   .list-panel--scroll {
     overflow-y: auto;
@@ -64,6 +72,10 @@
   z-index: 1;
   padding-inline: calc(1rem + 1px);
   background: var(--color-background);
+}
+
+.list-table:has(> .error-state) > :first-child {
+  display: none;
 }
 
 /* Linhas */
