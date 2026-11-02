@@ -87,16 +87,8 @@ export function AppRoutes() {
               element={<Alerts audience="operator" />}
             />
             <Route
-              path={paths.alertsManager}
-              element={<Alerts audience="manager" />}
-            />
-            <Route
               path={paths.alertDetails}
               element={<AlertDetails audience="operator" />}
-            />
-            <Route
-              path={paths.alertManagerDetails}
-              element={<AlertDetails audience="manager" />}
             />
             <Route path={paths.serviceOrders} element={<ServiceOrder />} />
             <Route
@@ -107,6 +99,14 @@ export function AppRoutes() {
             <Route element={<PrivateRoute roles={[ROLE.MANAGER]} />}>
               <Route path={paths.employees} element={<Employees />} />
               <Route path={paths.employeeCreate} element={<EmployeeForm />} />
+              <Route
+                path={paths.alertsManager}
+                element={<Alerts audience="manager" />}
+              />
+              <Route
+                path={paths.alertManagerDetails}
+                element={<AlertDetails audience="manager" />}
+              />
               <Route
                 path={paths.relocationManager}
                 element={<Relocations audience="manager" />}
