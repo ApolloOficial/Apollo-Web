@@ -1,6 +1,9 @@
 import type { TagTone } from '../../../../components/tag'
 import type { AllFilterValue } from '../../../../types/filter.types'
-import type { RelocationStatus, RelocationType } from '../dto/Relocations.dto'
+import type {
+  RelocationStatus,
+  RelocationType,
+} from '../../../../types/relocation.types'
 
 export const relocationStatusLabels: Record<RelocationStatus, string> = {
   PENDENTE: 'Pendente',

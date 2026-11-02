@@ -15,6 +15,27 @@
   padding: 1.5rem;
 }
 
+.layout__content:focus {
+  outline: none;
+}
+
+.layout__skip-link {
+  position: absolute;
+  z-index: 100;
+  top: 0.5rem;
+  left: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-weight: var(--font-weight-bold);
+  transform: translateY(-200%);
+}
+
+.layout__skip-link:focus-visible {
+  transform: none;
+}
+
 @media (max-width: 720px) {
   .layout {
     display: block;

@@ -1,14 +1,14 @@
-import { useContext } from 'react'
-import { CurrentUserContext } from '../contexts/current-user.context'
+import type { CurrentUserDto } from '../types/auth.types'
+import { useAuth } from './useAuth'
 
-export function useCurrentUserContext() {
-  const context = useContext(CurrentUserContext)
+export interface CurrentUserState {
+  user: CurrentUserDto | null
+  loading: boolean
+  error: string | null
+}
 
-  if (!context) {
-    throw new Error(
-      'useCurrentUserContext deve ser usado dentro de <CurrentUserProvider>.',
-    )
-  }
+export function useCurrentUserContext(): CurrentUserState {
+  const { user, isLoading, error } = useAuth()
 
-  return context
+  return { user, loading: isLoading, error }
 }
