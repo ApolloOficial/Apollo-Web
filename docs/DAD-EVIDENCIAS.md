@@ -1,200 +1,179 @@
-# Evidências DAD (Aplicações Dinâmicas Web)
+# Evidências de Aplicações Dinâmicas (Web)
 
-Roteiro para demonstrar os requisitos da disciplina. Cada item mostra onde está no
-código, como demonstrar e o estado. Os testes manuais de teclado e acessibilidade
-foram feitos pela equipe em 01/11/2026 e passaram.
+Este documento reúne os requisitos da disciplina e mostra, para cada um, onde ele
+está no código e como apresentar. Os links levam direto ao arquivo e à linha. Os
+testes de teclado e acessibilidade foram feitos pela equipe em 01/11/2026.
 
-## Mínimos
+- **Aplicação publicada:** [apollo-sigma-ruby.vercel.app](https://apollo-sigma-ruby.vercel.app)
+- **Repositório:** [github.com/ApolloOficial/Apollo-Web](https://github.com/ApolloOficial/Apollo-Web)
 
-### Só `.ts` e `.tsx` em `src/`
+## Requisitos mínimos
 
-- **Evidência:** `find src -name "*.js*"` não retorna nada.
-- **Como demonstrar:** rodar a busca.
-- **Estado:** ATENDIDO.
+### Projeto em TypeScript
 
-### Componentes e páginas em pastas com `index.tsx`
+- **Onde está:** [src/](../src), sem nenhum `.js` ou `.jsx`.
+- **Como verificar:** `find src -name "*.js*"` não retorna nada.
+- **Situação:** atendido.
 
-- **Evidência:** 104 pastas em `src/components/` e `src/pages/`.
-- **Como demonstrar:** abrir `src/components/button/index.tsx`.
-- **Estado:** ATENDIDO.
+### Componentes e páginas em pasta própria com `index.tsx`
+
+- **Onde está:** [src/components/](../src/components) e [src/pages/](../src/pages), por exemplo [button/index.tsx](../src/components/button/index.tsx).
+- **Como verificar:** abrir qualquer pasta de componente ou página.
+- **Situação:** atendido.
+
+### Componentes de responsabilidade única, sem acesso à API
+
+- **Onde está:** [src/components/](../src/components). A busca global usa o hook [useGlobalSearchNavigation](../src/components/global-search/index.tsx#L50) em vez de chamar a API.
+- **Como verificar:** `grep -r "services/" src/components` não retorna nada.
+- **Situação:** atendido.
+
+### Tipos em `src/types/`, sem `any`
+
+- **Onde está:** [src/types/](../src/types) e a regra [no-explicit-any](../eslint.config.js#L24).
+- **Como verificar:** `npm run lint`.
+- **Situação:** atendido.
 
 ### API isolada em `src/services/`
 
-- **Evidência:** todos os services ficam em `src/services/`, um por recurso
-  (`alerts`, `auth`, `branches`, `employees`, `notifications`, `panels`,
-  `relocations`, `search`, `service-orders`), usando `request<Tipo>` de `http.ts`.
-  Os tipos de cada domínio ficam em `src/types/`.
-- **Como demonstrar:** abrir `src/services/`.
-- **Estado:** ATENDIDO.
-
-### Componentes sem acesso à API
-
-- **Evidência:** nenhum componente importa `services/`. A busca global usa o hook
-  `useGlobalSearchNavigation` (`src/components/global-search/index.tsx`, linha 50).
-- **Como demonstrar:** `grep -r "services/" src/components`.
-- **Estado:** ATENDIDO.
-
-### Tipagem sem `any`
-
-- **Evidência:** regra `no-explicit-any` como erro em `eslint.config.js`.
-- **Como demonstrar:** `npm run lint`.
-- **Estado:** ATENDIDO.
+- **Onde está:** [src/services/](../src/services), um arquivo por recurso. Todos usam [request](../src/services/http.ts#L55), que devolve `Promise<T>` e concentra o try/catch. O `.env` fica fora do Git pelo [.gitignore](../.gitignore#L24).
+- **Como verificar:** abrir a pasta `src/services/`.
+- **Situação:** atendido.
 
 ### Estado do formulário agrupado
 
-- **Evidência:** `ServiceOrderFormState` em
-  `src/pages/service-order/service-order-form/index.tsx`, linha 60.
-- **Como demonstrar:** preencher e enviar uma OS.
-- **Estado:** ATENDIDO.
+- **Onde está:** [ServiceOrderFormState](../src/pages/service-order/service-order-form/index.tsx#L30) e [updateField](../src/pages/service-order/service-order-form/index.tsx#L67), que atualiza o objeto sem mutação.
+- **Como verificar:** preencher e enviar uma OS.
+- **Situação:** atendido.
 
-### `useEffect` com dependências corretas
+### Dependências do `useEffect`
 
-- **Evidência:** regra `react-hooks/exhaustive-deps` como erro em `eslint.config.js`.
-- **Como demonstrar:** `npm run lint`.
-- **Estado:** ATENDIDO.
+- **Onde está:** a regra [exhaustive-deps](../eslint.config.js#L25) e o [useApiResource](../src/hooks/useApiResource.ts#L27).
+- **Como verificar:** remover uma dependência ao vivo e ver o lint e o comportamento mudarem.
+- **Situação:** atendido.
 
-### Chaves estáveis em listas
+### Chaves estáveis nas listas
 
-- **Evidência:** `key={item.uid}` e `key={panel.uid}` em
-  `src/pages/branches/features/mine-branch/inverter-form/strings-step/index.tsx`
-  (linhas 49 e 110).
-- **Como demonstrar:** no cadastro de inversor, adicionar e remover strings e placas.
-- **Estado:** ATENDIDO.
+- **Onde está:** [key={item.uid}](../src/pages/branches/features/mine-branch/inverter-form/strings-step/index.tsx#L49) e [key={panel.uid}](../src/pages/branches/features/mine-branch/inverter-form/strings-step/index.tsx#L110), com o `uid` gerado por `crypto.randomUUID()` na criação.
+- **Como verificar:** no cadastro de inversor, adicionar e remover strings e placas.
+- **Situação:** atendido.
 
-### `useParams` com verificação
+### Verificação do `useParams`
 
-- **Evidência:** as telas de detalhe tratam `id` ausente (ex.: `relocation-details`).
-- **Como demonstrar:** abrir um detalhe com id inválido.
-- **Estado:** ATENDIDO.
+- **Onde está:** as telas de detalhe tratam `id` ausente, por exemplo [relocation-details](../src/pages/relocations/relocation-details/index.tsx#L35).
+- **Como verificar:** abrir um detalhe com um id inválido.
+- **Situação:** atendido.
 
 ### Rotas e página 404
 
-- **Evidência:** `path="*"` em `src/routes/AppRoutes.tsx`, linha 158.
-- **Como demonstrar:** abrir `/abc` e clicar em "Voltar ao início".
-- **Estado:** ATENDIDO.
+- **Onde está:** [AppRoutes.tsx](../src/routes/AppRoutes.tsx#L158), com a rota `path="*"`, e a página [NotFound](../src/pages/not-found/index.tsx).
+- **Como verificar:** acessar `/abc` e clicar em "Voltar ao início".
+- **Situação:** atendido.
 
 ### Acessibilidade básica
 
-- **Evidência:** teclado e `aria-activedescendant` em
-  `src/components/inputs/combobox/index.tsx` e
-  `src/components/inputs/select-input/index.tsx`. Erros com `role="alert"`.
-- **Como demonstrar:** usar os filtros só com o teclado (↑ ↓ Enter Esc).
-- **Estado:** PARCIALMENTE ATENDIDO. Teclado, rótulos e `role="alert"` testados manualmente; o contraste do botão laranja fica pendente.
+- **Onde está:** [Combobox](../src/components/inputs/combobox/index.tsx#L58) e [SelectInput](../src/components/inputs/select-input/index.tsx#L132), no padrão ARIA de combobox, e [ErrorState](../src/components/error-state/index.tsx#L19) com `role="alert"`.
+- **Como verificar:** usar os filtros de Alertas só pelo teclado.
+- **Situação:** parcialmente atendido.
 
 ### Carregamento, sucesso e erro
 
-- **Evidência:** skeleton nas listas, modais de sucesso e `ErrorState` com
-  "Tentar novamente" (`src/components/error-state/index.tsx`).
-- **Como demonstrar:** parar a API, abrir Alertas, subir a API e clicar em
-  "Tentar novamente".
-- **Estado:** NÃO VERIFICÁVEL.
+- **Onde está:** [TableSkeleton](../src/components/table-skeleton/index.tsx#L7) no carregamento, modais de sucesso nos formulários e [ErrorState](../src/components/error-state/index.tsx) com "Tentar novamente".
+- **Como verificar:** desligar a API, abrir Alertas e usar "Tentar novamente".
+- **Situação:** atendido.
 
 ### Publicação
 
-- **Evidência:** pendente.
-- **Como demonstrar:** abrir o link da Vercel.
-- **Estado:** NÃO ATENDIDO.
+- **Onde está:** [apollo-sigma-ruby.vercel.app](https://apollo-sigma-ruby.vercel.app), com o link no [README](../README.md). A função [`api/[...path].ts`](../api/%5B...path%5D.ts) repassa as chamadas à API e o [vercel.json](../vercel.json) faz o F5 em rotas internas abrir o app.
+- **Como verificar:** abrir o link em janela anônima, entrar, apertar F5 em `/alerts` e acessar `/abc`.
+- **Situação:** atendido.
 
-### Commits convencionais
+### Commits no padrão Conventional Commits
 
-- **Evidência:** 107 commits de 11/10 a 01/11/2026.
-- **Como demonstrar:** `git log --oneline`.
-- **Estado:** PARCIALMENTE ATENDIDO (3 semanas e 1 dia).
+- **Onde está:** [histórico de commits](https://github.com/ApolloOficial/Apollo-Web/commits/main).
+- **Como verificar:** `git log --oneline`.
+- **Situação:** parcialmente atendido.
 
-## Extras
+## Requisitos extras
 
-### Context de autenticação
+### Context API
 
-- **Evidência:** `AuthProvider` e `useAuth` em `src/contexts/AuthProvider.tsx`.
-- **Como demonstrar:** entrar, apertar F5 e sair.
-- **Estado:** ATENDIDO.
-
-### Hook com `AbortController`
-
-- **Evidência:** `src/hooks/useApiResource.ts`, linha 30.
-- **Como demonstrar:** em Filiais, trocar de aba com a aba Network aberta; a
-  requisição aparece como cancelada.
-- **Estado:** ATENDIDO.
+- **Onde está:** [AuthProvider](../src/contexts/AuthProvider.tsx#L41), [AuthContextValue](../src/contexts/auth.context.ts#L7) e o hook tipado [useAuth](../src/hooks/useAuth.ts#L4), que evita prop drilling.
+- **Como verificar:** entrar, apertar F5 e sair.
+- **Situação:** atendido.
 
 ### `useReducer`
 
-- **Evidência:** `src/pages/branches/data-access/vm/InverterForm.reducer.ts`, usado
-  no cadastro de inversor (4 etapas).
-- **Como demonstrar:** avançar e voltar entre as etapas.
-- **Estado:** ATENDIDO.
+- **Onde está:** [InverterForm.reducer.ts](../src/pages/branches/data-access/vm/InverterForm.reducer.ts#L20), com `State` e `Action` em union types, usado no [cadastro de inversor](../src/pages/branches/features/mine-branch/inverter-form/index.tsx#L52).
+- **Como verificar:** passar pelas quatro etapas do cadastro.
+- **Situação:** atendido.
+
+### Hook com `AbortController`
+
+- **Onde está:** [useApiResource](../src/hooks/useApiResource.ts#L30), com o `signal` repassado ao `fetch` em [request](../src/services/http.ts#L77).
+- **Como verificar:** trocar de aba em Filiais com a aba Network aberta.
+- **Situação:** atendido.
 
 ### `React.lazy` e `Suspense`
 
-- **Evidência:** 23 páginas com `lazy()` em `src/routes/AppRoutes.tsx`.
-- **Como demonstrar:** aba Network, um arquivo `.js` novo por página.
-- **Estado:** ATENDIDO. O build gera 51 arquivos `.js`, um por página e por dependência compartilhada.
+- **Onde está:** [AppRoutes.tsx](../src/routes/AppRoutes.tsx#L10), com um chunk por página no build.
+- **Como verificar:** aba Network ao navegar entre as telas.
+- **Situação:** atendido.
 
-### `localStorage` versionado
+### `localStorage` com versão
 
-- **Evidência:** `_versao` em `src/utils/session.ts`.
-- **Como demonstrar:** alterar `_versao` no navegador e recarregar.
-- **Estado:** ATENDIDO.
+- **Onde está:** [session.ts](../src/utils/session.ts#L21), que descarta a sessão quando `_versao` não bate.
+- **Como verificar:** alterar `_versao` no navegador e recarregar.
+- **Situação:** atendido.
 
-### Validação tipada em `src/utils/`
+### Proteção contra XSS
 
-- **Evidência:** `src/utils/validators/` reúne senha, e-mail, IPv4, porta,
-  preenchimento, tamanho máximo, URL https, strings do inversor e
-  `validateServiceOrderForm`, que devolve `ValidationResult` com erro por campo.
-- **Como demonstrar:** abrir uma OS sem preencher o técnico.
-- **Estado:** ATENDIDO.
+- **Onde está:** não há `dangerouslySetInnerHTML`; o conteúdo dinâmico vai por `{variavel}` no JSX. Os links dos dashboards passam por [sanitizeEmbedUrl](../src/utils/validators/url.ts#L1) antes do [iframe](../src/pages/metrics/features/dashboard-frame/index.tsx#L31).
+- **Como verificar:** mostrar o código.
+- **Situação:** atendido.
+
+### Validação em `src/utils/`
+
+- **Onde está:** [ValidationResult](../src/utils/validators/index.ts#L26) e [validateServiceOrderForm](../src/utils/validators/index.ts#L51), usada no [formulário de OS](../src/pages/service-order/service-order-form/index.tsx#L136).
+- **Como verificar:** tentar abrir uma OS sem escolher o técnico.
+- **Situação:** atendido.
 
 ### `PrivateRoute`
 
-- **Evidência:** `src/routes/PrivateRoute.tsx`, usando `useAuth`.
-- **Como demonstrar:** abrir `/alerts` sem estar logado.
-- **Estado:** ATENDIDO.
+- **Onde está:** [PrivateRoute.tsx](../src/routes/PrivateRoute.tsx#L12), que lê a autenticação pelo `useAuth`.
+- **Como verificar:** abrir `/alerts` sem login.
+- **Situação:** atendido.
 
-### Modais acessíveis
+### Acessibilidade avançada
 
-- **Evidência:** `src/hooks/useModalFocus.ts`.
-- **Como demonstrar:** no modal de desligar funcionário, Tab e Shift+Tab ficam
-  dentro, Esc fecha e o foco volta ao botão.
-- **Estado:** ATENDIDO. Testado manualmente.
-
-### Landmarks
-
-- **Evidência:** um único `<main>`, `<nav aria-label="Menu principal">` e link
-  "Pular para o conteúdo" e `<footer>` semântico (lido só pelo leitor de tela) em
-  `src/components/layout/index.tsx`.
-- **Como demonstrar:** apertar Tab ao abrir a página.
-- **Estado:** ATENDIDO. Testado manualmente.
-
-### `useMemo` e `useCallback` justificados
-
-- **Como demonstrar:** medir no React Profiler.
-- **Estado:** NÃO VERIFICÁVEL.
+- **Onde está:** [useModalFocus](../src/hooks/useModalFocus.ts#L6) nos modais, [Layout](../src/components/layout/index.tsx#L35) com `<main>`, `<footer>` e o link "Pular para o conteúdo", [Header](../src/components/header/index.tsx#L81) e [Sidebar](../src/components/sidebar/index.tsx#L70) com `<nav aria-label>`.
+- **Como verificar:** abrir o modal de desligar funcionário e navegar com Tab, Shift+Tab e Esc.
+- **Situação:** atendido.
 
 ## Verificações
 
-Executadas em 01/11/2026 numa cópia limpa do projeto, com `npm ci`, em Linux
-(mesmo ambiente do CI):
+Rodadas em 01/11/2026 em uma cópia limpa do projeto, no mesmo ambiente do CI:
 
-- `npm run lint`: passou.
-- `npm run format:check`: passou.
-- `npm run typecheck`: passou.
-- `npm run test:coverage`: 5 arquivos e 17 testes passaram.
-- `npm run build`: passou, com 51 arquivos `.js` em `dist/assets`.
+- `npm run lint`: sem erros.
+- `npm run format:check`: sem erros.
+- `npm run typecheck`: sem erros.
+- `npm run test:coverage`: 17 testes em 5 arquivos, todos passando.
+- `npm run build`: concluído, com um chunk por página em `dist/assets`.
 
 ## Testes automatizados
 
-- `src/utils/validators/validators.test.ts`: validadores e `validateServiceOrderForm`.
-- `src/utils/session.test.ts`: sessão com `_versao` e descarte de versão antiga.
-- `src/pages/branches/data-access/vm/InverterForm.reducer.test.ts`: ações do reducer.
-- `src/components/error-state/ErrorState.test.tsx`: `role="alert"` e "Tentar novamente".
-- `src/components/inputs/combobox/Combobox.test.tsx`: seleção só pelo teclado e Esc.
+- [validators.test.ts](../src/utils/validators/validators.test.ts): validadores e validação da OS.
+- [session.test.ts](../src/utils/session.test.ts): sessão com `_versao`.
+- [InverterForm.reducer.test.ts](../src/pages/branches/data-access/vm/InverterForm.reducer.test.ts): ações do cadastro de inversor.
+- [ErrorState.test.tsx](../src/components/error-state/ErrorState.test.tsx): aviso de erro e "Tentar novamente".
+- [Combobox.test.tsx](../src/components/inputs/combobox/Combobox.test.tsx): seleção pelo teclado e Esc.
 
-## Roteiro de teste manual
+## Roteiro da apresentação
 
-1. **Rotas:** abrir `/abc` e voltar ao início. Abrir `/alerts` deslogado.
-2. **Autenticação:** entrar, apertar F5 e sair. Entrar como técnico.
-3. **Teclado:** apertar Tab desde o topo e usar os filtros com ↑ ↓ Enter Esc.
-4. **Modal:** abrir "Desligar" em Funcionários e testar Tab, Shift+Tab e Esc.
-5. **Erro:** parar a API, abrir Alertas e usar "Tentar novamente".
-6. **Cancelamento:** trocar de aba em Filiais com a aba Network aberta.
-7. **Lazy:** navegar entre páginas com a aba Network aberta.
-8. **Reducer:** cadastrar um inversor passando pelas 4 etapas.
+1. Abrir o site em janela anônima e acessar `/alerts` sem login.
+2. Entrar, apertar F5 e sair. Entrar como técnico e mostrar a permissão negada.
+3. Acessar `/abc` e voltar ao início.
+4. Apertar Tab desde o topo e usar os filtros de Alertas só pelo teclado.
+5. Abrir o modal de desligar funcionário e testar Tab, Shift+Tab e Esc.
+6. Com a aba Network aberta, navegar entre as telas e trocar de aba em Filiais.
+7. Cadastrar um inversor pelas quatro etapas.
+8. Desligar a API, abrir Alertas e usar "Tentar novamente".
