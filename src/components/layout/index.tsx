@@ -43,9 +43,6 @@ export function Layout() {
             <Outlet context={{ user, loading } satisfies LayoutContext} />
           </Suspense>
         </main>
-        <footer className="layout__footer">
-          <p>Apollo · Gestão de usinas solares</p>
-        </footer>
       </div>
     </div>
   )
