@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import { AuthLayout } from '../components/auth-layout'
 import { Layout } from '../components/layout'
 import { ROLE } from '../utils/user'
@@ -70,18 +70,7 @@ export function AppRoutes() {
               path={paths.branchInverterDetails}
               element={<BranchInverterDetails />}
             />
-            <Route
-              path={paths.metrics}
-              element={<Navigate to={paths.metricsCorporate} replace />}
-            />
-            <Route
-              path={paths.metricsCorporate}
-              element={<Metrics type="corporate" />}
-            />
-            <Route
-              path={paths.metricsSolar}
-              element={<Metrics type="solar" />}
-            />
+            <Route path={paths.metrics} element={<Metrics />} />
             <Route
               path={paths.alerts}
               element={<Alerts audience="operator" />}

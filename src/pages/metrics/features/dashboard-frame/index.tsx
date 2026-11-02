@@ -4,10 +4,32 @@ import { Spinner } from '../../../../components/spinner'
 interface Props {
   embedUrl: string
   title: string
+  userStatus?: 'loading' | 'missing'
 }
 
-export function MetricsDashboardFrame({ embedUrl, title }: Props) {
+export function MetricsDashboardFrame({ embedUrl, title, userStatus }: Props) {
   const [loadedUrl, setLoadedUrl] = useState('')
+
+  if (userStatus === 'loading') {
+    return (
+      <div
+        className="metrics-frame metrics-frame--empty"
+        role="status"
+        aria-busy="true"
+      >
+        <Spinner />
+      </div>
+    )
+  }
+
+  if (userStatus === 'missing') {
+    return (
+      <div className="metrics-frame metrics-frame--empty" role="status">
+        <strong>Não foi possível identificar sua empresa e filial</strong>
+        <p>Entre novamente para carregar este dashboard.</p>
+      </div>
+    )
+  }
 
   if (!embedUrl) {
     return (

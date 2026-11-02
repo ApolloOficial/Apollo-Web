@@ -124,7 +124,7 @@ front, e é lida com `import.meta.env.VITE_NOME`. O `.env` está no
 | `/branches`       | Filiais      | Dados da própria filial e dos lotes cadastrados                       |
 | `/employees`      | Funcionários | Cadastro, edição e desativação de funcionários — exclusivo do Gerente |
 | `/map`            | Mapa         | Visualização geográfica das filiais                                   |
-| `/metrics`        | Métricas     | Indicadores e dashboards da filial                                    |
+| `/metrics`        | Métricas     | Dashboard de métricas solares da empresa e da filial                  |
 
 O Analista tem acesso somente leitura a todas as telas acima, exceto
 Funcionários. Todas as rotas exceto `/welcome` e `/login` exigem sessão ativa
