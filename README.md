@@ -36,7 +36,7 @@ O guia de frontend descreve a arquitetura, os módulos e as permissões com mais
 
 ## Aplicação publicada
 
-Acesse em **https://LINK-DA-VERCEL**.
+Acesse em **[apollo-sigma-ruby.vercel.app](https://apollo-sigma-ruby.vercel.app)**.
 
 ## Início rápido
 
