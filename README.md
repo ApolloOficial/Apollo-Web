@@ -87,7 +87,7 @@ As rotas privadas exigem sessão ativa. A matriz completa de acesso por perfil e
 
 O frontend roda em HTTPS e a Apollo API na EC2 roda em HTTP. Para o navegador
 não bloquear as chamadas (mixed content), elas passam pela própria Vercel: o
-navegador chama `/api/v1/...` no mesmo domínio e a função `api/[...path].ts`
+navegador chama `/api/v1/...` no mesmo domínio e a função `api/proxy.ts`
 repassa a requisição para a API.
 
 1. Importe o repositório em **vercel.com > Add New > Project**.
