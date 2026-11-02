@@ -1,8 +1,14 @@
-import { request } from './http'
+import { request, toApiError } from './http'
 import type { SearchSuggestionsDto } from '../types/search.types'
 
-export function getSearchSuggestions(term: string) {
-  const query = new URLSearchParams({ q: term })
+export async function getSearchSuggestions(
+  term: string,
+): Promise<SearchSuggestionsDto> {
+  try {
+    const query = new URLSearchParams({ q: term })
 
-  return request<SearchSuggestionsDto>(`/search/suggestions?${query}`)
+    return await request<SearchSuggestionsDto>(`/search/suggestions?${query}`)
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }

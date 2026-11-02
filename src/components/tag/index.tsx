@@ -8,7 +8,6 @@ export type TagSize = 'sm' | 'md'
 interface TagProps {
   label: string
   tone: TagTone
-  /** sm = 5.5rem (ex.: severidade), md = 7.5rem (ex.: status). */
   size?: TagSize
 }
 

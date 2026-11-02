@@ -55,7 +55,6 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
   const [formError, setFormError] = useState('')
 
   useEffect(() => {
-    // Aguarda o usuário autenticado, carregado uma única vez pelo Layout.
     if (loadingUser) return
     if (!me?.companyUnitId) return
     const user = me
@@ -93,7 +92,6 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
     void prepare()
   }, [me, loadingUser])
 
-  // Erro e carregamento derivados do usuário, sem setState dentro do efeito.
   const userMissingError =
     !loadingUser && !me
       ? (userError ?? 'Não foi possível carregar os dados.')

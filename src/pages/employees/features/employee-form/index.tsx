@@ -24,7 +24,6 @@ interface Props {
 export function EmployeesForm({ onSuccess }: Props) {
   const [form, setForm] = useState<EmployeeFormVM>(INITIAL_EMPLOYEE_FORM)
   const [roles, setRoles] = useState<RoleDTO[]>([])
-  // A filial vem do gerente autenticado e não aparece no formulário.
   const { user, error: userError } = useCurrentUserContext()
   const companyUnitId = user?.companyUnitId ?? ''
   const [submitting, setSubmitting] = useState(false)

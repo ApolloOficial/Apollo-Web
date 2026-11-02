@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import reportPendingImage from '../../../../assets/images/service-order-report-pending.png'
 import type { WarningDto } from '../../../../types/alert.types'
@@ -13,6 +13,12 @@ import {
   serviceOrderStatusLabels,
 } from '../../data-access/vm/ServiceOrder.vm'
 import { Spinner } from '../../../../components/spinner'
+import { useApiResource } from '../../../../hooks/useApiResource'
+
+interface ServiceOrderDetails {
+  order: ServiceOrderDto
+  warning: WarningDto
+}
 
 interface HistoryItem {
   title: string
@@ -42,40 +48,25 @@ function getVisualStatus(order: ServiceOrderDto) {
 export function ServiceOrderDetailsFeature() {
   const { id } = useParams()
 
-  const [order, setOrder] = useState<ServiceOrderDto | null>(null)
-  const [warning, setWarning] = useState<WarningDto | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const orderId = id && !Number.isNaN(Number(id)) ? Number(id) : null
+  const fetchDetails = useMemo(
+    () =>
+      orderId === null
+        ? null
+        : async (): Promise<ServiceOrderDetails> => {
+            const order = await getServiceOrder(orderId)
+            const warning = await getServiceOrderWarning(order.warningId)
 
-  const loadDetails = useCallback(async () => {
-    if (!id || Number.isNaN(Number(id))) {
-      setError('Ordem de serviço inválida.')
-      setLoading(false)
-      return
-    }
-
-    setLoading(true)
-    setError('')
-
-    try {
-      const orderResult = await getServiceOrder(Number(id))
-      const warningResult = await getServiceOrderWarning(orderResult.warningId)
-
-      setOrder(orderResult)
-      setWarning(warningResult)
-    } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : 'Não foi possível carregar a ordem de serviço.',
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [id])
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => void loadDetails(), [loadDetails])
+            return { order, warning }
+          },
+    [orderId],
+  )
+  const { data, loading, error } = useApiResource(
+    fetchDetails,
+    'Não foi possível carregar a ordem de serviço.',
+  )
+  const order = data?.order ?? null
+  const warning = data?.warning ?? null
 
   const history = useMemo<HistoryItem[]>(() => {
     if (!order) return []
@@ -129,7 +120,7 @@ export function ServiceOrderDetailsFeature() {
     return items
   }, [order])
 
-  if (loading) {
+  if (orderId !== null && loading) {
     return (
       <p className="service-order-details__state">
         <Spinner />
@@ -140,7 +131,7 @@ export function ServiceOrderDetailsFeature() {
   if (!order || !warning) {
     return (
       <p className="service-orders-error" role="alert">
-        {error}
+        {orderId === null ? 'Ordem de serviço inválida.' : error}
       </p>
     )
   }

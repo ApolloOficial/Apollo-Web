@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import type { WarningDto } from '../../../types/alert.types'
 import { getWarning } from '../../../services/alerts.service'
 import {
   severityLabels,
   statusLabels,
   typeLabels,
 } from '../data-access/vm/Alerts.vm'
+import { useApiResource } from '../../../hooks/useApiResource'
 import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { formatDate } from '../../../utils/formatters'
 import { isOperator } from '../../../utils/user'
@@ -20,37 +20,18 @@ interface Props {
 export default function AlertDetails({ audience = 'operator' }: Props) {
   const { id } = useParams()
   const { user } = useCurrentUserContext()
-  const [warning, setWarning] = useState<WarningDto | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const warningId = id && !Number.isNaN(Number(id)) ? Number(id) : null
+  const fetchWarning = useMemo(
+    () => (warningId === null ? null : () => getWarning(warningId)),
+    [warningId],
+  )
+  const {
+    data: warning,
+    loading,
+    error,
+  } = useApiResource(fetchWarning, 'Não foi possível carregar o alerta.')
 
-  const loadWarning = useCallback(async () => {
-    if (!id || Number.isNaN(Number(id))) {
-      setError('Alerta inválido.')
-      setLoading(false)
-      return
-    }
-
-    setLoading(true)
-    setError('')
-
-    try {
-      setWarning(await getWarning(Number(id)))
-    } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : 'Não foi possível carregar o alerta.',
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [id])
-
-  // eslint-disable-next-line react-hooks/set-state-in-effect
-  useEffect(() => void loadWarning(), [loadWarning])
-
-  if (loading) {
+  if (warningId !== null && loading) {
     return (
       <p className="alerts-details__state">
         <Spinner />
@@ -61,7 +42,7 @@ export default function AlertDetails({ audience = 'operator' }: Props) {
   if (!warning) {
     return (
       <p className="alerts-error" role="alert">
-        {error}
+        {warningId === null ? 'Alerta inválido.' : error}
       </p>
     )
   }

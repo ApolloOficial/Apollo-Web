@@ -1,4 +1,4 @@
-import { request } from './http'
+import { request, toApiError } from './http'
 import { ROLE } from '../utils/user'
 import type { WarningDto } from '../types/alert.types'
 import type {
@@ -64,75 +64,105 @@ export async function getServiceOrders({
   page,
   size,
 }: GetServiceOrdersParams): Promise<PageDto<ServiceOrderListItemDto>> {
-  const query = createServiceOrderQuery({
-    filters,
-    page,
-    size,
-  })
+  try {
+    const query = createServiceOrderQuery({
+      filters,
+      page,
+      size,
+    })
 
-  const ordersPage = await request<PageDto<ServiceOrderDto>>(
-    `/maintenance-registers?${query}`,
-  )
+    const ordersPage = await request<PageDto<ServiceOrderDto>>(
+      `/maintenance-registers?${query}`,
+    )
 
-  const warningIds = [
-    ...new Set(ordersPage.content.map((order) => order.warningId)),
-  ]
-  const warnings = new Map(
-    await Promise.all(
-      warningIds.map(
-        async (id) => [id, await getServiceOrderWarning(id)] as const,
+    const warningIds = [
+      ...new Set(ordersPage.content.map((order) => order.warningId)),
+    ]
+    const warnings = new Map(
+      await Promise.all(
+        warningIds.map(
+          async (id) => [id, await getServiceOrderWarning(id)] as const,
+        ),
       ),
-    ),
-  )
+    )
 
-  const content = ordersPage.content.flatMap((order) => {
-    const warning = warnings.get(order.warningId)
+    const content = ordersPage.content.flatMap((order) => {
+      const warning = warnings.get(order.warningId)
 
-    return warning ? [{ order, warning }] : []
-  })
+      return warning ? [{ order, warning }] : []
+    })
 
-  return {
-    ...ordersPage,
-    content,
+    return {
+      ...ordersPage,
+      content,
+    }
+  } catch (cause) {
+    throw toApiError(cause)
   }
 }
 
-export function getServiceOrderIds() {
-  const query = new URLSearchParams({
-    page: '0',
-    size: '100',
-    sortBy: 'openingDt',
-    direction: 'DESC',
-  })
+export async function getServiceOrderIds(): Promise<PageDto<ServiceOrderDto>> {
+  try {
+    const query = new URLSearchParams({
+      page: '0',
+      size: '100',
+      sortBy: 'openingDt',
+      direction: 'DESC',
+    })
 
-  return request<PageDto<ServiceOrderDto>>(`/maintenance-registers?${query}`)
-}
-
-export function getServiceOrder(id: number) {
-  return request<ServiceOrderDto>(`/maintenance-registers/${id}`)
-}
-
-export function getServiceOrderWarning(warningId: number) {
-  return request<WarningDto>(`/warnings/${warningId}`)
-}
-
-export function getMaintenanceTypes() {
-  return request<MaintenanceTypeDto[]>('/maintenance-types')
-}
-
-export function getActiveTechnicians(companyUnitId?: string | null) {
-  const query = new URLSearchParams({
-    role: ROLE.TECHNICIAN,
-    isActive: 'true',
-    page: '0',
-    size: '100',
-    sortBy: 'fullName',
-    direction: 'ASC',
-  })
-
-  if (companyUnitId) {
-    query.set('companyUnitId', companyUnitId)
+    return await request<PageDto<ServiceOrderDto>>(
+      `/maintenance-registers?${query}`,
+    )
+  } catch (cause) {
+    throw toApiError(cause)
   }
+}
 
-  return request<PageDto<EmployeeDto>>(`/employees?${query}`)
+export async function getServiceOrder(id: number): Promise<ServiceOrderDto> {
+  try {
+    return await request<ServiceOrderDto>(`/maintenance-registers/${id}`)
+  } catch (cause) {
+    throw toApiError(cause)
+  }
+}
+
+export async function getServiceOrderWarning(
+  warningId: number,
+): Promise<WarningDto> {
+  try {
+    return await request<WarningDto>(`/warnings/${warningId}`)
+  } catch (cause) {
+    throw toApiError(cause)
+  }
+}
+
+export async function getMaintenanceTypes(): Promise<MaintenanceTypeDto[]> {
+  try {
+    return await request<MaintenanceTypeDto[]>('/maintenance-types')
+  } catch (cause) {
+    throw toApiError(cause)
+  }
+}
+
+export async function getActiveTechnicians(
+  companyUnitId?: string | null,
+): Promise<PageDto<EmployeeDto>> {
+  try {
+    const query = new URLSearchParams({
+      role: ROLE.TECHNICIAN,
+      isActive: 'true',
+      page: '0',
+      size: '100',
+      sortBy: 'fullName',
+      direction: 'ASC',
+    })
+
+    if (companyUnitId) {
+      query.set('companyUnitId', companyUnitId)
+    }
+
+    return await request<PageDto<EmployeeDto>>(`/employees?${query}`)
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }
