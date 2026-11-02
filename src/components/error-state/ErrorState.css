@@ -2,14 +2,15 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  padding: 2.5rem 1.5rem;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem 1rem;
   text-align: center;
 }
 
 .error-state__illustration {
-  width: 10rem;
-  height: auto;
+  width: auto;
+  height: clamp(5rem, 18vh, 9rem);
 }
 
 .error-state__title {
@@ -29,5 +30,5 @@
 .error-state__actions {
   width: 20rem;
   max-width: 100%;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
