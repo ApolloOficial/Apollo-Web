@@ -4,13 +4,13 @@ import { paths } from '../../../routes/paths'
 import type {
   ExternalRelocationDTO,
   InternalRelocationDTO,
-} from '../data-access/dto/Relocations.dto'
+} from '../../../types/relocation.types'
 import {
   getExternalRelocation,
   getInternalRelocation,
   reviewExternalRelocation,
   reviewInternalRelocation,
-} from '../data-access/services/Relocations.service'
+} from '../../../services/relocations.service'
 import { relocationStatusLabels } from '../data-access/vm/Relocations.vm'
 import { Spinner } from '../../../components/spinner'
 import '../Relocations.css'

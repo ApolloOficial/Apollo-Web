@@ -1,9 +1,6 @@
 import { useSearchParams } from 'react-router-dom'
 import { relocationFiltersFromParams } from './data-access/vm/Relocations.vm'
-import {
-  RelocationsFeature,
-  type RelocationsAudience,
-} from './features'
+import { RelocationsFeature, type RelocationsAudience } from './features'
 import './Relocations.css'
 
 export default function Relocations({

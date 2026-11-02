@@ -1,8 +1,8 @@
-import { request } from '../../../../services/http'
-import type { CreateEmployeeDTO, RoleDTO } from '../dto/Employees.dto'
-import type { EmployeeFiltersVM } from '../vm/Employees.vm'
-import type { PageDto } from '../../../../types/common.types'
-import type { EmployeeDto } from '../../../../types/employee.types'
+import { request } from './http'
+import type { CreateEmployeeDTO, RoleDTO } from '../types/employee.types'
+import type { EmployeeFiltersVM } from '../pages/employees/data-access/vm/Employees.vm'
+import type { PageDto } from '../types/common.types'
+import type { EmployeeDto } from '../types/employee.types'
 
 export function getEmployees(
   filters: EmployeeFiltersVM,

@@ -9,7 +9,7 @@ import { isOperator } from '../../../../../utils/user'
 import {
   getInverters,
   getLastReadings,
-} from '../../../data-access/services/Branches.service'
+} from '../../../../../services/branches.service'
 import { toInverterStatusVM } from '../../../data-access/vm/Branches.vm'
 import { BranchesStatusChip } from '../../status-chip'
 import { TableSkeleton } from '../../../../../components/table-skeleton'

@@ -12,17 +12,18 @@ import { TextareaInput } from '../../../components/inputs/textarea-input'
 import { paths } from '../../../routes/paths'
 import errorImage from '../../../assets/images/relocation-error.png'
 import successImage from '../../../assets/images/relocation-success.png'
-import type { WarningDto } from '../../alerts/data-access/dto/Alerts.dto'
+import type { WarningDto } from '../../../types/alert.types'
 import {
   getActiveTechnicians,
   getMaintenanceTypes,
   getWarning,
   postServiceOrder,
-} from '../../alerts/data-access/services/Alerts.service'
+} from '../../../services/alerts.service'
 import { severityLabels } from '../../alerts/data-access/vm/Alerts.vm'
 import type { EmployeeDto } from '../../../types/employee.types'
 import type { MaintenanceTypeDto } from '../../../types/service-order.types'
 import { Spinner } from '../../../components/spinner'
+import { validateServiceOrderForm } from '../../../utils/validators'
 
 type ModalState = 'success' | 'error' | null
 
@@ -132,8 +133,17 @@ export default function ServiceOrderForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!warning || !selectedTechnician || !form.maintenanceTypeId) {
-      setError('Preencha todos os campos obrigatórios.')
+    const validation = validateServiceOrderForm(
+      form,
+      selectedTechnician !== undefined,
+      todayIso(),
+    )
+
+    if (!warning || !selectedTechnician || !validation.isValid) {
+      setError(
+        Object.values(validation.errors)[0] ??
+          'Preencha todos os campos obrigatórios.',
+      )
       return
     }
 

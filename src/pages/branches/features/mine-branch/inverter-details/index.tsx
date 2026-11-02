@@ -14,7 +14,7 @@ import {
   getInverterModels,
   getLastReading,
   getStrings,
-} from '../../../data-access/services/Branches.service'
+} from '../../../../../services/branches.service'
 import { toInverterStatusVM } from '../../../data-access/vm/Branches.vm'
 import { Spinner } from '../../../../../components/spinner'
 

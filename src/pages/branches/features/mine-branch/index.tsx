@@ -4,7 +4,7 @@ import { formatCnpj, formatKwp } from '../../../../utils/formatters'
 import {
   getActiveStringsCount,
   getBranch,
-} from '../../data-access/services/Branches.service'
+} from '../../../../services/branches.service'
 import { BranchesInvertersTable } from './inverters-table'
 import { Spinner } from '../../../../components/spinner'
 

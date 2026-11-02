@@ -7,12 +7,12 @@ import {
 import { Paginator } from '../../../components/paginator'
 import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { isManager } from '../../../utils/user'
-import type { RoleDTO } from '../data-access/dto/Employees.dto'
+import type { RoleDTO } from '../../../types/employee.types'
 import {
   getEmployees,
   getRoles,
   patchDeactivateEmployee,
-} from '../data-access/services/Employees.service'
+} from '../../../services/employees.service'
 import {
   INITIAL_EMPLOYEE_FILTERS,
   type EmployeeFiltersVM,

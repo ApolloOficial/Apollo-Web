@@ -5,16 +5,13 @@ import { FormActions } from '../../../../components/form-actions'
 import { Combobox } from '../../../../components/inputs/combobox'
 import { SimpleInput } from '../../../../components/inputs/simple-input'
 import { useCurrentUserContext } from '../../../../hooks/useCurrentUserContext'
-import {
-  getRoles,
-  postEmployee,
-} from '../../data-access/services/Employees.service'
+import { getRoles, postEmployee } from '../../../../services/employees.service'
 import {
   isValidPassword,
   PASSWORD_RULES_MESSAGE,
 } from '../../../../utils/validators'
 import { isManager } from '../../../../utils/user'
-import type { RoleDTO } from '../../data-access/dto/Employees.dto'
+import type { RoleDTO } from '../../../../types/employee.types'
 import {
   INITIAL_EMPLOYEE_FORM,
   type EmployeeFormVM,

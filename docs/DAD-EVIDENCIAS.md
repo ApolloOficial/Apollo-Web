@@ -1,8 +1,8 @@
 # Evidências DAD (Aplicações Dinâmicas Web)
 
 Roteiro para demonstrar os requisitos da disciplina. Cada item mostra onde está no
-código, como demonstrar e o estado. Itens que dependem de navegador, deploy ou
-leitor de tela aparecem como **NÃO VERIFICÁVEL** até a demonstração.
+código, como demonstrar e o estado. Os testes manuais de teclado e acessibilidade
+foram feitos pela equipe em 01/11/2026 e passaram.
 
 ## Mínimos
 
@@ -16,6 +16,15 @@ leitor de tela aparecem como **NÃO VERIFICÁVEL** até a demonstração.
 
 - **Evidência:** 104 pastas em `src/components/` e `src/pages/`.
 - **Como demonstrar:** abrir `src/components/button/index.tsx`.
+- **Estado:** ATENDIDO.
+
+### API isolada em `src/services/`
+
+- **Evidência:** todos os services ficam em `src/services/`, um por recurso
+  (`alerts`, `auth`, `branches`, `employees`, `notifications`, `panels`,
+  `relocations`, `search`, `service-orders`), usando `request<Tipo>` de `http.ts`.
+  Os tipos de cada domínio ficam em `src/types/`.
+- **Como demonstrar:** abrir `src/services/`.
 - **Estado:** ATENDIDO.
 
 ### Componentes sem acesso à API
@@ -70,7 +79,7 @@ leitor de tela aparecem como **NÃO VERIFICÁVEL** até a demonstração.
   `src/components/inputs/combobox/index.tsx` e
   `src/components/inputs/select-input/index.tsx`. Erros com `role="alert"`.
 - **Como demonstrar:** usar os filtros só com o teclado (↑ ↓ Enter Esc).
-- **Estado:** NÃO VERIFICÁVEL.
+- **Estado:** PARCIALMENTE ATENDIDO. Teclado, rótulos e `role="alert"` testados manualmente; o contraste do botão laranja fica pendente.
 
 ### Carregamento, sucesso e erro
 
@@ -118,12 +127,20 @@ leitor de tela aparecem como **NÃO VERIFICÁVEL** até a demonstração.
 
 - **Evidência:** 23 páginas com `lazy()` em `src/routes/AppRoutes.tsx`.
 - **Como demonstrar:** aba Network, um arquivo `.js` novo por página.
-- **Estado:** NÃO VERIFICÁVEL.
+- **Estado:** ATENDIDO. O build gera 51 arquivos `.js`, um por página e por dependência compartilhada.
 
 ### `localStorage` versionado
 
 - **Evidência:** `_versao` em `src/utils/session.ts`.
 - **Como demonstrar:** alterar `_versao` no navegador e recarregar.
+- **Estado:** ATENDIDO.
+
+### Validação tipada em `src/utils/`
+
+- **Evidência:** `src/utils/validators/` reúne senha, e-mail, IPv4, porta,
+  preenchimento, tamanho máximo, URL https, strings do inversor e
+  `validateServiceOrderForm`, que devolve `ValidationResult` com erro por campo.
+- **Como demonstrar:** abrir uma OS sem preencher o técnico.
 - **Estado:** ATENDIDO.
 
 ### `PrivateRoute`
@@ -137,14 +154,15 @@ leitor de tela aparecem como **NÃO VERIFICÁVEL** até a demonstração.
 - **Evidência:** `src/hooks/useModalFocus.ts`.
 - **Como demonstrar:** no modal de desligar funcionário, Tab e Shift+Tab ficam
   dentro, Esc fecha e o foco volta ao botão.
-- **Estado:** NÃO VERIFICÁVEL.
+- **Estado:** ATENDIDO. Testado manualmente.
 
 ### Landmarks
 
 - **Evidência:** um único `<main>`, `<nav aria-label="Menu principal">` e link
-  "Pular para o conteúdo" em `src/components/layout/index.tsx`.
+  "Pular para o conteúdo" e `<footer>` semântico (lido só pelo leitor de tela) em
+  `src/components/layout/index.tsx`.
 - **Como demonstrar:** apertar Tab ao abrir a página.
-- **Estado:** NÃO VERIFICÁVEL.
+- **Estado:** ATENDIDO. Testado manualmente.
 
 ### `useMemo` e `useCallback` justificados
 
@@ -153,9 +171,22 @@ leitor de tela aparecem como **NÃO VERIFICÁVEL** até a demonstração.
 
 ## Verificações
 
-- `npm run typecheck`: passou.
+Executadas em 01/11/2026 numa cópia limpa do projeto, com `npm ci`, em Linux
+(mesmo ambiente do CI):
+
 - `npm run lint`: passou.
-- `npm run build`, `npm run test:run` e `npm run format:check`: rodar no Windows.
+- `npm run format:check`: passou.
+- `npm run typecheck`: passou.
+- `npm run test:coverage`: 5 arquivos e 17 testes passaram.
+- `npm run build`: passou, com 51 arquivos `.js` em `dist/assets`.
+
+## Testes automatizados
+
+- `src/utils/validators/validators.test.ts`: validadores e `validateServiceOrderForm`.
+- `src/utils/session.test.ts`: sessão com `_versao` e descarte de versão antiga.
+- `src/pages/branches/data-access/vm/InverterForm.reducer.test.ts`: ações do reducer.
+- `src/components/error-state/ErrorState.test.tsx`: `role="alert"` e "Tentar novamente".
+- `src/components/inputs/combobox/Combobox.test.tsx`: seleção só pelo teclado e Esc.
 
 ## Roteiro de teste manual
 
@@ -167,5 +198,3 @@ leitor de tela aparecem como **NÃO VERIFICÁVEL** até a demonstração.
 6. **Cancelamento:** trocar de aba em Filiais com a aba Network aberta.
 7. **Lazy:** navegar entre páginas com a aba Network aberta.
 8. **Reducer:** cadastrar um inversor passando pelas 4 etapas.
-
-

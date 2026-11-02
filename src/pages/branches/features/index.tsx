@@ -7,7 +7,7 @@ import {
 import { useLayoutContext } from '../../../hooks/useLayoutContext'
 import { useTabIndicator } from '../../../hooks/useTabIndicator'
 import { paths } from '../../../routes/paths'
-import { getBranches } from '../data-access/services/Branches.service'
+import { getBranches } from '../../../services/branches.service'
 import {
   INITIAL_BRANCH_FILTERS,
   type BranchesTabVM,

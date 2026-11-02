@@ -8,10 +8,7 @@ import {
   formatKwp,
   padNumber,
 } from '../../../../../utils/formatters'
-import {
-  getPanels,
-  getString,
-} from '../../../data-access/services/Branches.service'
+import { getPanels, getString } from '../../../../../services/branches.service'
 import {
   toPanelStatusVM,
   toStringStatusVM,

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import type { WarningDto } from '../data-access/dto/Alerts.dto'
-import { getWarning } from '../data-access/services/Alerts.service'
+import type { WarningDto } from '../../../types/alert.types'
+import { getWarning } from '../../../services/alerts.service'
 import {
   severityLabels,
   statusLabels,

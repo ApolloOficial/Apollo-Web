@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import reportPendingImage from '../../../../assets/images/service-order-report-pending.png'
-import type { WarningDto } from '../../../alerts/data-access/dto/Alerts.dto'
+import type { WarningDto } from '../../../../types/alert.types'
 import { formatDate, formatDateTime } from '../../../../utils/formatters'
-import type { ServiceOrderDto } from '../../data-access/dto/ServiceOrder.dto'
+import type { ServiceOrderDto } from '../../../../types/service-order.types'
 import {
   getServiceOrder,
   getServiceOrderWarning,
-} from '../../data-access/services/ServiceOrder.service'
+} from '../../../../services/service-orders.service'
 import {
   priorityLabels,
   serviceOrderStatusLabels,

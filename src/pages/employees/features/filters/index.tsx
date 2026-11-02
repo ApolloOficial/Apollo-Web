@@ -1,5 +1,5 @@
 import { Combobox } from '../../../../components/inputs/combobox'
-import type { RoleDTO } from '../../data-access/dto/Employees.dto'
+import type { RoleDTO } from '../../../../types/employee.types'
 import { SelectInput } from '../../../../components/inputs/select-input'
 import type { EmployeeFiltersVM } from '../../data-access/vm/Employees.vm'
 

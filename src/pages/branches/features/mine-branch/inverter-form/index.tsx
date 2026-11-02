@@ -18,7 +18,7 @@ import {
   getInverterModels,
   getPanelModels,
   postInverter,
-} from '../../../data-access/services/Branches.service'
+} from '../../../../../services/branches.service'
 import {
   INVERTER_DATA_SOURCE,
   SUPPORTED_INVERTER_BRANDS,
@@ -28,10 +28,8 @@ import {
   createInitialInverterFormState,
   inverterFormReducer,
 } from '../../../data-access/vm/InverterForm.reducer'
-import {
-  toCreateStrings,
-  validateInverterStrings,
-} from '../../../data-access/vm/InverterStrings.vm'
+import { toCreateStrings } from '../../../data-access/vm/InverterStrings.vm'
+import { validateInverterStrings } from '../../../../../utils/validators/inverter-strings'
 import { BranchesInverterStrings } from './strings-step'
 import { BranchesInverterSungrowConnection } from './sungrow-connection'
 

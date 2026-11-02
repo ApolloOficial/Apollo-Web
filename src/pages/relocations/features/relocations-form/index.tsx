@@ -11,7 +11,7 @@ import type {
   CompanyDTO,
   CompanyUnitDTO,
   SegmentDTO,
-} from '../../data-access/dto/Relocations.dto'
+} from '../../../../types/relocation.types'
 import {
   getCompanies,
   getCompanyUnits,
@@ -20,7 +20,7 @@ import {
   getStrings,
   postExternalRelocation,
   postInternalRelocation,
-} from '../../data-access/services/Relocations.service'
+} from '../../../../services/relocations.service'
 import {
   INITIAL_EXTERNAL_FORM,
   INITIAL_INTERNAL_FORM,

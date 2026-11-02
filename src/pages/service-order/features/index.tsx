@@ -11,13 +11,13 @@ import { formatDate } from '../../../utils/formatters'
 import type {
   ServiceOrderListItemDto,
   ServiceOrderStatus,
-} from '../data-access/dto/ServiceOrder.dto'
+} from '../../../types/service-order.types'
 import {
   getActiveTechnicians,
   getMaintenanceTypes,
   getServiceOrderIds,
   getServiceOrders,
-} from '../data-access/services/ServiceOrder.service'
+} from '../../../services/service-orders.service'
 import {
   INITIAL_SERVICE_ORDER_FILTERS,
   priorityLabels,

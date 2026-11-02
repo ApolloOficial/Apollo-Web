@@ -13,12 +13,12 @@ import { isOperator as isOperatorRole } from '../../../utils/user'
 import type {
   ExternalRelocationDTO,
   InternalRelocationDTO,
-} from '../data-access/dto/Relocations.dto'
+} from '../../../types/relocation.types'
 import {
   getExternalRelocations,
   getIncomingInternalRelocations,
   getMyInternalRelocations,
-} from '../data-access/services/Relocations.service'
+} from '../../../services/relocations.service'
 import {
   INITIAL_RELOCATION_FILTERS,
   relocationStatusLabels as statusLabels,

@@ -9,8 +9,8 @@ import { Tag, type TagTone } from '../../../components/tag'
 import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { formatDate } from '../../../utils/formatters'
 import { isOperator } from '../../../utils/user'
-import type { WarningDto } from '../data-access/dto/Alerts.dto'
-import { getWarnings } from '../data-access/services/Alerts.service'
+import type { WarningDto } from '../../../types/alert.types'
+import { getWarnings } from '../../../services/alerts.service'
 import {
   INITIAL_ALERT_FILTERS,
   severityLabels,
