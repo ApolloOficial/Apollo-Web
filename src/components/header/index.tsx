@@ -19,6 +19,8 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const {
     items: notifications,
+    loading: notificationsLoading,
+    error: notificationsError,
     hasUnread,
     markAsRead,
   } = useNotifications(user !== null)
@@ -105,6 +107,8 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
         {notificationsOpen && (
           <NotificationsPanel
             items={notifications}
+            loading={notificationsLoading}
+            error={notificationsError}
             onItemClick={markAsRead}
             onClose={() => setNotificationsOpen(false)}
           />

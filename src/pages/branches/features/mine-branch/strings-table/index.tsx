@@ -7,6 +7,7 @@ import { getStrings } from '../../../data-access/services/Branches.service'
 import { toStringStatusVM } from '../../../data-access/vm/Branches.vm'
 import { BranchesStatusChip } from '../../status-chip'
 import { TableSkeleton } from '../../../../../components/table-skeleton'
+import { ErrorState } from '../../../../../components/error-state'
 
 interface Props {
   unitId: string
@@ -20,7 +21,7 @@ export function BranchesStringsTable({ unitId }: Props) {
     () => () => getStrings({ unitId, page, size }),
     [unitId, page, size],
   )
-  const { data, loading, error } = useApiResource(
+  const { data, loading, error, reload } = useApiResource(
     fetchStrings,
     'Não foi possível carregar as strings.',
   )
@@ -29,12 +30,6 @@ export function BranchesStringsTable({ unitId }: Props) {
   return (
     <section className="branches-section">
       <h3 className="branches-section__title">Strings de painéis</h3>
-
-      {error && (
-        <p className="branches-page__error" role="alert">
-          {error}
-        </p>
-      )}
 
       <div className="branches-table list-table" aria-busy={loading}>
         <div className="branches-table__header branches-table__header--strings">
@@ -59,6 +54,8 @@ export function BranchesStringsTable({ unitId }: Props) {
           ))}
 
         {loading && <TableSkeleton />}
+
+        {!loading && error && <ErrorState message={error} onRetry={reload} />}
 
         {!loading && !error && strings.length === 0 && (
           <p className="branches-table__state">

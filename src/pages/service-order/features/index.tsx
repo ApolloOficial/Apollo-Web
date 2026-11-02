@@ -28,6 +28,7 @@ import { ServiceOrderFilter } from './filters'
 import type { EmployeeDto } from '../../../types/employee.types'
 import type { MaintenanceTypeDto } from '../../../types/service-order.types'
 import { TableSkeleton } from '../../../components/table-skeleton'
+import { ErrorState } from '../../../components/error-state'
 
 function getEquipment(item: ServiceOrderListItemDto) {
   return (
@@ -311,12 +312,6 @@ export function ServiceOrderFeature() {
         onClear={clearAppliedFilters}
       />
 
-      {error && (
-        <p className="service-orders-error" role="alert">
-          {error}
-        </p>
-      )}
-
       <div className="service-orders-table list-table" aria-busy={loading}>
         <div className="service-orders-table__header">
           <strong>ID</strong>
@@ -357,7 +352,11 @@ export function ServiceOrderFeature() {
             )
           })}
 
-        {!loading && items.length === 0 && (
+        {!loading && error && (
+          <ErrorState message={error} onRetry={() => void loadOrders()} />
+        )}
+
+        {!loading && !error && items.length === 0 && (
           <p className="service-orders-table__state">
             Nenhuma ordem de serviço encontrada.
           </p>

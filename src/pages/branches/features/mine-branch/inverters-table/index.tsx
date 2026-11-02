@@ -13,6 +13,7 @@ import {
 import { toInverterStatusVM } from '../../../data-access/vm/Branches.vm'
 import { BranchesStatusChip } from '../../status-chip'
 import { TableSkeleton } from '../../../../../components/table-skeleton'
+import { ErrorState } from '../../../../../components/error-state'
 
 interface Props {
   unitId: string
@@ -28,7 +29,7 @@ export function BranchesInvertersTable({ unitId }: Props) {
     () => () => getInverters(unitId, page, size),
     [unitId, page, size],
   )
-  const { data, loading, error } = useApiResource(
+  const { data, loading, error, reload } = useApiResource(
     fetchInverters,
     'Não foi possível carregar os inversores.',
   )
@@ -64,12 +65,6 @@ export function BranchesInvertersTable({ unitId }: Props) {
         )}
       </div>
 
-      {error && (
-        <p className="branches-page__error" role="alert">
-          {error}
-        </p>
-      )}
-
       <div className="branches-table list-table" aria-busy={loading}>
         <div className="branches-table__header branches-table__header--inverters">
           <strong>Inversor</strong>
@@ -97,6 +92,8 @@ export function BranchesInvertersTable({ unitId }: Props) {
           ))}
 
         {loading && <TableSkeleton />}
+
+        {!loading && error && <ErrorState message={error} onRetry={reload} />}
 
         {!loading && !error && inverters.length === 0 && (
           <p className="branches-table__state">

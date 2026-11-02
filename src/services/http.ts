@@ -8,6 +8,10 @@ export { UNAUTHORIZED_EVENT }
 
 const SESSION_EXPIRED_MESSAGE = 'Sessão expirada. Faça login novamente.'
 const FORBIDDEN_MESSAGE = 'Sem permissão para realizar esta ação.'
+const NETWORK_ERROR_MESSAGE =
+  'Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.'
+const INVALID_RESPONSE_MESSAGE =
+  'O servidor retornou uma resposta inesperada. Tente novamente em instantes.'
 const CREDENTIAL_PATHS = ['/auth/login', '/auth/password', '/mobile/auth/']
 
 const BASE_URL = (
@@ -49,17 +53,23 @@ export async function request<TResponse>(
 ): Promise<TResponse> {
   const session = getSession()
 
-  const response = await fetch(`${BASE_URL}${path}`, {
-    method: options.method ?? 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(session
-        ? { Authorization: `${session.tokenType} ${session.token}` }
-        : {}),
-      ...options.headers,
-    },
-    body: options.body ? JSON.stringify(options.body) : undefined,
-  })
+  let response: Response
+
+  try {
+    response = await fetch(`${BASE_URL}${path}`, {
+      method: options.method ?? 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(session
+          ? { Authorization: `${session.tokenType} ${session.token}` }
+          : {}),
+        ...options.headers,
+      },
+      body: options.body ? JSON.stringify(options.body) : undefined,
+    })
+  } catch {
+    throw new ApiError(NETWORK_ERROR_MESSAGE, 0)
+  }
 
   if (!response.ok) {
     const expiredSession = response.status === 401 && !isCredentialPath(path)
@@ -81,15 +91,13 @@ export async function request<TResponse>(
 
   const contentType = response.headers.get('content-type') ?? ''
   if (!contentType.includes('application/json')) {
-    throw new Error(
-      'A API retornou uma resposta inválida. Confirme se o Spring está rodando na porta 8080.',
-    )
+    throw new ApiError(INVALID_RESPONSE_MESSAGE, response.status)
   }
 
   try {
     return JSON.parse(text) as TResponse
   } catch {
-    throw new Error('A API retornou um JSON inválido.')
+    throw new ApiError(INVALID_RESPONSE_MESSAGE, response.status)
   }
 }
 
@@ -103,7 +111,10 @@ async function extractError(
   response: Response,
   expiredSession: boolean,
 ): Promise<ExtractedError> {
-  const fallback = `Erro ${response.status}: ${response.statusText}`
+  const fallback =
+    response.status >= 500
+      ? 'O servidor está indisponível no momento. Tente novamente em instantes.'
+      : 'Não foi possível concluir a operação. Tente novamente.'
 
   if (expiredSession) {
     return { message: SESSION_EXPIRED_MESSAGE, code: null, traceId: null }

@@ -22,6 +22,7 @@ import { DeactivateEmployeeModal } from './deactivate-employee-modal'
 import { EmployeesFilter } from './filters'
 import type { EmployeeDto } from '../../../types/employee.types'
 import { TableSkeleton } from '../../../components/table-skeleton'
+import { ErrorState } from '../../../components/error-state'
 
 export function EmployeesFeature() {
   const { user, loading: loadingUser } = useCurrentUserContext()
@@ -46,6 +47,7 @@ export function EmployeesFeature() {
   const [loading, setLoading] = useState(true)
   const [deactivating, setDeactivating] = useState(false)
   const [error, setError] = useState('')
+  const [actionError, setActionError] = useState('')
 
   const companyUnitId = user?.companyUnitId ?? null
   const currentUserId = user?.userId ?? null
@@ -178,13 +180,14 @@ export function EmployeesFeature() {
     if (!selected) return
 
     setDeactivating(true)
+    setActionError('')
 
     try {
       await patchDeactivateEmployee(selected.id)
       setSelected(null)
       await loadEmployees()
     } catch (cause) {
-      setError(
+      setActionError(
         cause instanceof Error
           ? cause.message
           : 'Não foi possível desligar o funcionário.',
@@ -234,9 +237,9 @@ export function EmployeesFeature() {
         onClear={clearAppliedFilters}
       />
 
-      {error && (
+      {actionError && (
         <p className="employees-page__error" role="alert">
-          {error}
+          {actionError}
         </p>
       )}
 
@@ -273,7 +276,11 @@ export function EmployeesFeature() {
 
         {loading && <TableSkeleton />}
 
-        {!loading && employees.length === 0 && (
+        {!loading && error && (
+          <ErrorState message={error} onRetry={() => void loadEmployees()} />
+        )}
+
+        {!loading && !error && employees.length === 0 && (
           <p className="employees-table__state">
             Nenhum funcionário encontrado.
           </p>

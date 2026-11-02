@@ -28,6 +28,7 @@ import {
 } from '../data-access/vm/Relocations.vm'
 import { RelocationsFilters } from './filters'
 import { TableSkeleton } from '../../../components/table-skeleton'
+import { ErrorState } from '../../../components/error-state'
 
 export type RelocationsAudience = 'operator' | 'manager'
 type ManagerTab = 'others' | 'my-unit'
@@ -304,12 +305,6 @@ export function RelocationsFeature({
         role="tabpanel"
         aria-labelledby={`relocations-tab-${activeTab}`}
       >
-        {error && (
-          <p className="relocations-error" role="alert">
-            {error}
-          </p>
-        )}
-
         <div className="relocations-table list-table" aria-busy={loading}>
           <div
             className={`relocations-table__header relocations-table__header--${layout}`}
@@ -348,6 +343,10 @@ export function RelocationsFeature({
             ))}
 
           {loading && <TableSkeleton />}
+
+          {!loading && error && (
+            <ErrorState message={error} onRetry={() => void load()} />
+          )}
 
           {!loading && !error && visible.length === 0 && (
             <p className="relocations-table__state">

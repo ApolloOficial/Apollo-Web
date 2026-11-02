@@ -5,6 +5,7 @@ import { formatCnpj } from '../../../../utils/formatters'
 import { getBranches } from '../../data-access/services/Branches.service'
 import type { BranchFiltersVM } from '../../data-access/vm/Branches.vm'
 import { TableSkeleton } from '../../../../components/table-skeleton'
+import { ErrorState } from '../../../../components/error-state'
 
 interface Props {
   filters: BranchFiltersVM
@@ -24,7 +25,7 @@ export function BranchesAllBranches({ filters }: Props) {
     () => () => getBranches(filters, page, size),
     [filters, page, size],
   )
-  const { data, loading, error } = useApiResource(
+  const { data, loading, error, reload } = useApiResource(
     fetchBranches,
     'Não foi possível carregar as filiais.',
   )
@@ -32,12 +33,6 @@ export function BranchesAllBranches({ filters }: Props) {
 
   return (
     <>
-      {error && (
-        <p className="branches-page__error" role="alert">
-          {error}
-        </p>
-      )}
-
       <div className="branches-table list-table" aria-busy={loading}>
         <div className="branches-table__header branches-table__header--all">
           <strong>Filial</strong>
@@ -60,6 +55,8 @@ export function BranchesAllBranches({ filters }: Props) {
           ))}
 
         {loading && <TableSkeleton />}
+
+        {!loading && error && <ErrorState message={error} onRetry={reload} />}
 
         {!loading && !error && branches.length === 0 && (
           <p className="branches-table__state">Nenhuma filial encontrada.</p>

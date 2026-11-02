@@ -1,17 +1,22 @@
 import { Icon } from '@iconify/react'
 import { useNavigate } from 'react-router-dom'
 import type { NotificationItem } from '../../types/notification.types'
+import { Spinner } from '../spinner'
 import { getNotificationVisual } from './notification.config'
 import './NotificationsPanel.css'
 
 interface NotificationsPanelProps {
   items: NotificationItem[]
+  loading?: boolean
+  error?: string | null
   onItemClick: (item: NotificationItem) => void
   onClose: () => void
 }
 
 export function NotificationsPanel({
   items,
+  loading = false,
+  error = null,
   onItemClick,
   onClose,
 }: NotificationsPanelProps) {
@@ -31,7 +36,18 @@ export function NotificationsPanel({
         {unread > 0 && <span className="notifications__badge">{unread}</span>}
       </div>
 
-      {items.length === 0 ? (
+      {error && (
+        <p className="notifications__empty" role="alert">
+          {error}
+        </p>
+      )}
+
+      {loading && items.length === 0 ? (
+        <p className="notifications__empty" role="status" aria-busy="true">
+          <Spinner />
+          <span className="sr-only">Carregando notificações</span>
+        </p>
+      ) : items.length === 0 ? (
         <p className="notifications__empty">Nenhuma notificação por aqui.</p>
       ) : (
         <ul className="notifications__list">

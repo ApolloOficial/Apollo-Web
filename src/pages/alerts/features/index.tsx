@@ -20,6 +20,7 @@ import {
 } from '../data-access/vm/Alerts.vm'
 import { AlertsFilters } from './filters'
 import { TableSkeleton } from '../../../components/table-skeleton'
+import { ErrorState } from '../../../components/error-state'
 
 export type AlertsAudience = 'operator' | 'manager'
 
@@ -165,12 +166,6 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
         onClear={clearAppliedFilters}
       />
 
-      {error && (
-        <p className="alerts-error" role="alert">
-          {error}
-        </p>
-      )}
-
       <div className="alerts-table list-table" aria-busy={loading}>
         <div
           className={
@@ -250,7 +245,11 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
             )
           })}
 
-        {!loading && warnings.length === 0 && (
+        {!loading && error && (
+          <ErrorState message={error} onRetry={() => void loadWarnings()} />
+        )}
+
+        {!loading && !error && warnings.length === 0 && (
           <p className="alerts-table__state">Nenhum alerta encontrado.</p>
         )}
       </div>
