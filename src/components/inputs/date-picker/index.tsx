@@ -110,11 +110,14 @@ export function DatePicker({ label, value, min, required, onChange }: Props) {
         type="button"
         aria-haspopup="dialog"
         aria-expanded={open}
-        aria-labelledby={`${id}-label`}
+        aria-labelledby={`${id}-label ${id}-value`}
         onClick={() => setOpen((current) => !current)}
       >
         <Icon icon="boxicons:calendar-event" aria-hidden="true" />
-        <span className={value ? '' : 'date-picker__placeholder'}>
+        <span
+          id={`${id}-value`}
+          className={value ? '' : 'date-picker__placeholder'}
+        >
           {formatValue(value) || 'dd/mm/aaaa'}
         </span>
       </button>
@@ -133,7 +136,7 @@ export function DatePicker({ label, value, min, required, onChange }: Props) {
               aria-label="Mês anterior"
               onClick={() => changeMonth(-1)}
             >
-              <Icon icon="lucide:circle-chevron-left" />
+              <Icon icon="lucide:circle-chevron-left" aria-hidden="true" />
             </button>
 
             <strong>
@@ -146,7 +149,7 @@ export function DatePicker({ label, value, min, required, onChange }: Props) {
               aria-label="Próximo mês"
               onClick={() => changeMonth(1)}
             >
-              <Icon icon="lucide:circle-chevron-right" />
+              <Icon icon="lucide:circle-chevron-right" aria-hidden="true" />
             </button>
           </header>
 

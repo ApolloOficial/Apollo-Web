@@ -42,17 +42,19 @@
   box-shadow: 0 0.75rem 2rem rgb(28 28 28 / 12%);
 }
 
-.combobox__options button {
-  width: 100%;
+.combobox input:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.combobox__option {
   padding: 0.75rem 1rem;
-  border: 0;
   border-radius: 0.75rem;
-  background: transparent;
-  text-align: left;
   cursor: pointer;
 }
 
-.combobox__options button:hover,
-.combobox__options button:focus-visible {
+.combobox__option--active {
   background: var(--color-primary-light);
+  outline: 2px solid var(--color-focus);
+  outline-offset: -2px;
 }

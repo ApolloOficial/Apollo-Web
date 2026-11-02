@@ -47,7 +47,12 @@ export function NotificationsPanel({
                   <span
                     className={`notifications__icon notifications__icon--${visual.tone}`}
                   >
-                    <Icon icon={visual.icon} width={28} height={28} />
+                    <Icon
+                      icon={visual.icon}
+                      width={28}
+                      height={28}
+                      aria-hidden="true"
+                    />
                   </span>
                   <span className="notifications__content">
                     <span className="notifications__item-title">
