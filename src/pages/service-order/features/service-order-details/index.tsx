@@ -146,7 +146,7 @@ export function ServiceOrderDetailsFeature() {
   }
 
   return (
-    <main className="service-order-details">
+    <div className="service-order-details">
       <nav
         className="service-orders-breadcrumb"
         aria-label="Navegação estrutural"
@@ -259,6 +259,6 @@ export function ServiceOrderDetailsFeature() {
           )}
         </section>
       </div>
-    </main>
+    </div>
   )
 }

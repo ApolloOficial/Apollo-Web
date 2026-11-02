@@ -22,6 +22,7 @@ export function getBranches(
   filters: BranchFiltersVM,
   page: number,
   size: number,
+  signal?: AbortSignal,
 ) {
   const query = new URLSearchParams({
     page: String(page),
@@ -39,20 +40,17 @@ export function getBranches(
     query.set('city', filters.city.trim())
   }
 
-  return request<PageDto<BranchDTO>>(`/company-units?${query}`)
+  return request<PageDto<BranchDTO>>(`/company-units?${query}`, { signal })
 }
 
 export function getBranch(id: string) {
   return request<BranchDTO>(`/company-units/${id}`)
 }
 
-export function getStrings({
-  unitId,
-  page,
-  size,
-  status,
-  inverterCode,
-}: StringsParams) {
+export function getStrings(
+  { unitId, page, size, status, inverterCode }: StringsParams,
+  signal?: AbortSignal,
+) {
   const query = new URLSearchParams({
     companyUnitId: unitId,
     page: String(page),
@@ -69,7 +67,7 @@ export function getStrings({
     query.set('inverterCode', inverterCode)
   }
 
-  return request<PageDto<StringDto>>(`/strings?${query}`)
+  return request<PageDto<StringDto>>(`/strings?${query}`, { signal })
 }
 
 export function getString(id: string) {
@@ -99,7 +97,12 @@ export function getPanels(stringId: string, page: number, size: number) {
   return request<PageDto<PanelDto>>(`/panels?${query}`)
 }
 
-export function getInverters(unitId: string, page: number, size: number) {
+export function getInverters(
+  unitId: string,
+  page: number,
+  size: number,
+  signal?: AbortSignal,
+) {
   const query = new URLSearchParams({
     companyUnitId: unitId,
     page: String(page),
@@ -108,7 +111,7 @@ export function getInverters(unitId: string, page: number, size: number) {
     direction: 'ASC',
   })
 
-  return request<PageDto<InverterDTO>>(`/inverters?${query}`)
+  return request<PageDto<InverterDTO>>(`/inverters?${query}`, { signal })
 }
 
 export function getInverter(id: string) {

@@ -18,7 +18,7 @@ export function BranchesStringsTable({ unitId }: Props) {
   const [size, setSize] = useState(10)
 
   const fetchStrings = useMemo(
-    () => () => getStrings({ unitId, page, size }),
+    () => (signal: AbortSignal) => getStrings({ unitId, page, size }, signal),
     [unitId, page, size],
   )
   const { data, loading, error, reload } = useApiResource(

@@ -26,7 +26,7 @@ export function BranchesInvertersTable({ unitId }: Props) {
   const [size, setSize] = useState(10)
 
   const fetchInverters = useMemo(
-    () => () => getInverters(unitId, page, size),
+    () => (signal: AbortSignal) => getInverters(unitId, page, size, signal),
     [unitId, page, size],
   )
   const { data, loading, error, reload } = useApiResource(

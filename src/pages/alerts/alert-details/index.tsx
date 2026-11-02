@@ -72,7 +72,7 @@ export default function AlertDetails({ audience = 'operator' }: Props) {
     warning.status === 'ATIVO'
 
   return (
-    <main className="alerts-details">
+    <div className="alerts-details">
       <nav className="alerts-breadcrumb" aria-label="Navegação estrutural">
         <Link to="/">Início</Link>
         <span>›</span>
@@ -132,6 +132,6 @@ export default function AlertDetails({ audience = 'operator' }: Props) {
           <dd>{typeLabels[warning.type]}</dd>
         </div>
       </dl>
-    </main>
+    </div>
   )
 }

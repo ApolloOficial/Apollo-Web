@@ -45,6 +45,11 @@ interface RequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
   body?: unknown
   headers?: Record<string, string>
+  signal?: AbortSignal
+}
+
+export function isAbortError(cause: unknown): boolean {
+  return cause instanceof DOMException && cause.name === 'AbortError'
 }
 
 export async function request<TResponse>(
@@ -66,8 +71,10 @@ export async function request<TResponse>(
         ...options.headers,
       },
       body: options.body ? JSON.stringify(options.body) : undefined,
+      signal: options.signal,
     })
-  } catch {
+  } catch (cause) {
+    if (isAbortError(cause)) throw cause
     throw new ApiError(NETWORK_ERROR_MESSAGE, 0)
   }
 

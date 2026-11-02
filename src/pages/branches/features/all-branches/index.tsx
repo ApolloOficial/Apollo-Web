@@ -22,7 +22,7 @@ export function BranchesAllBranches({ filters }: Props) {
   }
 
   const fetchBranches = useMemo(
-    () => () => getBranches(filters, page, size),
+    () => (signal: AbortSignal) => getBranches(filters, page, size, signal),
     [filters, page, size],
   )
   const { data, loading, error, reload } = useApiResource(

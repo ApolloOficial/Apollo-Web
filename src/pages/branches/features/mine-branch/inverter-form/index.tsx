@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useReducer } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import successImage from '../../../../../assets/images/relocation-success.png'
@@ -20,17 +20,17 @@ import {
   postInverter,
 } from '../../../data-access/services/Branches.service'
 import {
-  INITIAL_INVERTER_FORM,
   INVERTER_DATA_SOURCE,
   SUPPORTED_INVERTER_BRANDS,
-  type InverterFormVM,
   type InverterStepVM,
 } from '../../../data-access/vm/Branches.vm'
 import {
-  createEmptyInverterString,
+  createInitialInverterFormState,
+  inverterFormReducer,
+} from '../../../data-access/vm/InverterForm.reducer'
+import {
   toCreateStrings,
   validateInverterStrings,
-  type InverterStringVM,
 } from '../../../data-access/vm/InverterStrings.vm'
 import { BranchesInverterStrings } from './strings-step'
 import { BranchesInverterSungrowConnection } from './sungrow-connection'
@@ -51,14 +51,19 @@ export function BranchesInverterForm() {
     getPanelModels,
     'Não foi possível carregar os modelos de placa.',
   )
-  const [strings, setStrings] = useState<InverterStringVM[]>([
-    createEmptyInverterString(),
-  ])
-  const [form, setForm] = useState<InverterFormVM>(INITIAL_INVERTER_FORM)
-  const [step, setStep] = useState<InverterStepVM>(1)
-  const [formError, setFormError] = useState('')
-  const [submitting, setSubmitting] = useState(false)
-  const [successOpen, setSuccessOpen] = useState(false)
+  const [state, dispatch] = useReducer(
+    inverterFormReducer,
+    undefined,
+    createInitialInverterFormState,
+  )
+  const {
+    form,
+    strings,
+    step,
+    error: formError,
+    submitting,
+    succeeded: successOpen,
+  } = state
 
   const models = useMemo(
     () =>
@@ -103,48 +108,40 @@ export function BranchesInverterForm() {
   }
 
   function changeManufacturer(value: string) {
-    setForm((current) => {
-      const brand = manufacturers.find((item) => sameText(item, value))
-      const keepModel =
-        !brand ||
-        models.some(
-          (model) =>
-            model.brand === brand && sameText(model.model, current.model),
-        )
+    const brand = manufacturers.find((item) => sameText(item, value))
+    const keepModel =
+      !brand ||
+      models.some(
+        (model) => model.brand === brand && sameText(model.model, form.model),
+      )
 
-      return {
-        ...current,
-        manufacturer: value,
-        model: keepModel ? current.model : '',
-      }
-    })
+    dispatch({ type: 'CHANGE_MANUFACTURER', value, keepModel })
   }
 
   function submitData(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
     if (!selectedModel) {
-      setFormError('Selecione um fabricante e um modelo existentes na lista.')
+      dispatch({
+        type: 'FAIL',
+        message: 'Selecione um fabricante e um modelo existentes na lista.',
+      })
       return
     }
 
-    setFormError('')
-    setStep(2)
+    dispatch({ type: 'GO_TO_STEP', step: 2 })
   }
 
   function editData() {
-    setFormError('')
-    setStep(1)
+    dispatch({ type: 'GO_TO_STEP', step: 1 })
   }
 
   function editStrings() {
-    setFormError('')
-    setStep(2)
+    dispatch({ type: 'GO_TO_STEP', step: 2 })
   }
 
   function editConnection() {
-    setFormError('')
-    setStep(3)
+    dispatch({ type: 'GO_TO_STEP', step: 3 })
   }
 
   function submitStrings(event: FormEvent<HTMLFormElement>) {
@@ -155,12 +152,11 @@ export function BranchesInverterForm() {
     const message = validateInverterStrings(strings, selectedModel, panelModels)
 
     if (message) {
-      setFormError(message)
+      dispatch({ type: 'FAIL', message })
       return
     }
 
-    setFormError('')
-    setStep(3)
+    dispatch({ type: 'GO_TO_STEP', step: 3 })
   }
 
   async function submit() {
@@ -169,12 +165,11 @@ export function BranchesInverterForm() {
     const message = validateInverterStrings(strings, selectedModel, panelModels)
 
     if (message) {
-      setFormError(message)
+      dispatch({ type: 'FAIL', message })
       return
     }
 
-    setSubmitting(true)
-    setFormError('')
+    dispatch({ type: 'SUBMIT_START' })
 
     try {
       await postInverter({
@@ -184,15 +179,15 @@ export function BranchesInverterForm() {
         installedAt: todayIso(),
         strings: toCreateStrings(strings, panelModels),
       })
-      setSuccessOpen(true)
+      dispatch({ type: 'SUBMIT_SUCCESS' })
     } catch (cause) {
-      setFormError(
-        cause instanceof Error
-          ? cause.message
-          : 'Não foi possível cadastrar o inversor.',
-      )
-    } finally {
-      setSubmitting(false)
+      dispatch({
+        type: 'SUBMIT_FAILURE',
+        message:
+          cause instanceof Error
+            ? cause.message
+            : 'Não foi possível cadastrar o inversor.',
+      })
     }
   }
 
@@ -240,7 +235,11 @@ export function BranchesInverterForm() {
                   maxLength={30}
                   required
                   onChange={(code) =>
-                    setForm((current) => ({ ...current, code }))
+                    dispatch({
+                      type: 'UPDATE_FIELD',
+                      field: 'code',
+                      value: code,
+                    })
                   }
                 />
 
@@ -263,7 +262,11 @@ export function BranchesInverterForm() {
                   value={form.model}
                   options={modelOptions}
                   onChange={(model) =>
-                    setForm((current) => ({ ...current, model }))
+                    dispatch({
+                      type: 'UPDATE_FIELD',
+                      field: 'model',
+                      value: model,
+                    })
                   }
                 />
 
@@ -275,7 +278,11 @@ export function BranchesInverterForm() {
                   maxLength={60}
                   required
                   onChange={(serialNumber) =>
-                    setForm((current) => ({ ...current, serialNumber }))
+                    dispatch({
+                      type: 'UPDATE_FIELD',
+                      field: 'serialNumber',
+                      value: serialNumber,
+                    })
                   }
                 />
 
@@ -310,7 +317,9 @@ export function BranchesInverterForm() {
                   strings={strings}
                   panelModels={panelModels}
                   maxStrings={entriesCount}
-                  onChange={setStrings}
+                  onChange={(next) =>
+                    dispatch({ type: 'SET_STRINGS', strings: next })
+                  }
                 />
 
                 {panelModelsResource.error && (
@@ -349,7 +358,10 @@ export function BranchesInverterForm() {
                 {sungrowConnection}
 
                 <FormActions>
-                  <Button fullWidth onClick={() => setStep(4)}>
+                  <Button
+                    fullWidth
+                    onClick={() => dispatch({ type: 'GO_TO_STEP', step: 4 })}
+                  >
                     Continuar
                   </Button>
                 </FormActions>

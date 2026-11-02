@@ -198,7 +198,7 @@ export function EmployeesFeature() {
   }
 
   return (
-    <main className="employees-page list-page">
+    <div className="employees-page list-page">
       <nav
         className="employees-page__breadcrumb"
         aria-label="Navegação estrutural"
@@ -306,6 +306,6 @@ export function EmployeesFeature() {
           onConfirm={() => void confirmDeactivation()}
         />
       )}
-    </main>
+    </div>
   )
 }

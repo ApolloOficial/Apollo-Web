@@ -279,7 +279,7 @@ export function ServiceOrderFeature() {
   }
 
   return (
-    <main className="service-orders-page list-page">
+    <div className="service-orders-page list-page">
       <nav
         className="service-orders-breadcrumb"
         aria-label="Navegação estrutural"
@@ -373,6 +373,6 @@ export function ServiceOrderFeature() {
           setSize(newSize)
         }}
       />
-    </main>
+    </div>
   )
 }

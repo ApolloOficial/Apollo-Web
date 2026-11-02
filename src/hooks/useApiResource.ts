@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { isAbortError } from '../services/http'
 
 interface ApiResourceState<T> {
   data: T | null
@@ -11,7 +12,7 @@ export interface ApiResource<T> extends ApiResourceState<T> {
 }
 
 export function useApiResource<T>(
-  fetcher: (() => Promise<T>) | null,
+  fetcher: ((signal: AbortSignal) => Promise<T>) | null,
   errorMessage: string,
 ): ApiResource<T> {
   const [state, setState] = useState<ApiResourceState<T>>({
@@ -26,31 +27,33 @@ export function useApiResource<T>(
   useEffect(() => {
     if (!fetcher) return
 
-    let active = true
+    const controller = new AbortController()
 
     void (async () => {
       await Promise.resolve()
-      if (!active) return
+      if (controller.signal.aborted) return
 
       setState((current) => ({ ...current, loading: true, error: '' }))
 
       try {
-        const data = await fetcher()
+        const data = await fetcher(controller.signal)
 
-        if (active) setState({ data, loading: false, error: '' })
-      } catch (cause) {
-        if (active) {
-          setState({
-            data: null,
-            loading: false,
-            error: cause instanceof Error ? cause.message : errorMessage,
-          })
+        if (!controller.signal.aborted) {
+          setState({ data, loading: false, error: '' })
         }
+      } catch (cause) {
+        if (isAbortError(cause) || controller.signal.aborted) return
+
+        setState({
+          data: null,
+          loading: false,
+          error: cause instanceof Error ? cause.message : errorMessage,
+        })
       }
     })()
 
     return () => {
-      active = false
+      controller.abort()
     }
   }, [fetcher, errorMessage, attempt])
 

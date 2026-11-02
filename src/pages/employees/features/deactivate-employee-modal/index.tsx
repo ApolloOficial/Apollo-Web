@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
+import { useModalFocus } from '../../../../hooks/useModalFocus'
 import { Spinner } from '../../../../components/spinner'
 import illustration from '../../../../assets/images/employee-deactivate.png'
 
@@ -16,23 +17,14 @@ export function DeactivateEmployeeModal({
   onConfirm,
 }: Props) {
   const closeRef = useRef<HTMLButtonElement>(null)
-  useEffect(() => {
-    closeRef.current?.focus()
-    const previous = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    const escape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && !submitting) onClose()
-    }
-    document.addEventListener('keydown', escape)
-    return () => {
-      document.removeEventListener('keydown', escape)
-      document.body.style.overflow = previous
-    }
-  }, [onClose, submitting])
+  const dialogRef = useRef<HTMLElement>(null)
+
+  useModalFocus(dialogRef, closeRef, submitting ? undefined : onClose)
 
   return (
     <div className="deactivate-modal__overlay">
       <section
+        ref={dialogRef}
         className="deactivate-modal"
         role="dialog"
         aria-modal="true"

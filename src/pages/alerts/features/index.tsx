@@ -139,7 +139,7 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
   }
 
   return (
-    <main className="alerts-page list-page">
+    <div className="alerts-page list-page">
       <nav className="alerts-breadcrumb" aria-label="Navegação estrutural">
         <Link to="/">Início</Link>
         <span>›</span>
@@ -264,6 +264,6 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
           setSize(newSize)
         }}
       />
-    </main>
+    </div>
   )
 }

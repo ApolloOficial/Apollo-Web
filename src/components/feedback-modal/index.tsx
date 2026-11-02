@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef } from 'react'
+import { useId, useRef } from 'react'
+import { useModalFocus } from '../../hooks/useModalFocus'
 import './FeedbackModal.css'
 
 interface Action {
@@ -30,24 +31,14 @@ export function FeedbackModal({
   const titleId = useId()
   const descriptionId = useId()
   const firstButtonRef = useRef<HTMLButtonElement>(null)
+  const dialogRef = useRef<HTMLElement>(null)
 
-  useEffect(() => {
-    firstButtonRef.current?.focus()
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape' && onClose) onClose()
-    }
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-      document.body.style.overflow = previousOverflow
-    }
-  }, [onClose])
+  useModalFocus(dialogRef, firstButtonRef, onClose)
 
   return (
     <div className="feedback-modal__overlay">
       <section
+        ref={dialogRef}
         className="feedback-modal"
         role={alert ? 'alertdialog' : 'dialog'}
         aria-modal="true"
