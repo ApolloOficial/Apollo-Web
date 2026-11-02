@@ -1,4 +1,7 @@
-export type MetricsDashboardType = 'corporate' | 'solar'
+export interface MetricsFilterParams {
+  company: string
+  unit: string
+}
 
 export interface MetricsDashboardVM {
   title: string
@@ -6,4 +9,5 @@ export interface MetricsDashboardVM {
   iframeTitle: string
   /** URL de embed do Databricks. Vazia enquanto o link não foi configurado. */
   embedUrl: string
+  filterParams?: MetricsFilterParams
 }

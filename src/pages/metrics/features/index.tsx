@@ -1,16 +1,30 @@
-import { Link, NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { paths } from '../../../routes/paths'
-import { METRICS_DASHBOARDS } from '../data-access/config/Metrics.config'
-import type { MetricsDashboardType } from '../data-access/vm/Metrics.vm'
+import { buildDashboardUrl } from '../../../utils/dashboard-url'
+import { METRICS_DASHBOARD as dashboard } from '../data-access/config/Metrics.config'
 import '../Metrics.css'
 import { MetricsDashboardFrame } from './dashboard-frame'
 
-interface Props {
-  type: MetricsDashboardType
-}
+export function MetricsFeature() {
+  const { user, loading } = useCurrentUserContext()
+  const { filterParams } = dashboard
 
-export function MetricsFeature({ type }: Props) {
-  const dashboard = METRICS_DASHBOARDS[type]
+  let dashboardUrl = dashboard.embedUrl
+  let userStatus: 'loading' | 'missing' | undefined
+
+  if (filterParams) {
+    dashboardUrl = ''
+
+    if (user?.companyName) {
+      dashboardUrl = buildDashboardUrl(dashboard.embedUrl, {
+        [filterParams.company]: user.companyName,
+        [filterParams.unit]: user.companyUnitName,
+      })
+    } else {
+      userStatus = loading ? 'loading' : 'missing'
+    }
+  }
 
   return (
     <section className="metrics-page">
@@ -24,20 +38,27 @@ export function MetricsFeature({ type }: Props) {
       </nav>
 
       <header className="metrics-page__heading">
-        <h1>{dashboard.title}</h1>
-        <p>{dashboard.description}</p>
+        <div>
+          <h1>{dashboard.title}</h1>
+          <p>{dashboard.description}</p>
+        </div>
+
+        {dashboardUrl && (
+          <a
+            className="button button--secondary"
+            href={dashboardUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Abrir dashboard em nova aba
+          </a>
+        )}
       </header>
 
-      {/* Só aparece com o menu lateral recolhido, onde os submenus somem. */}
-      <nav className="metrics-page__tabs" aria-label="Tipo de métrica">
-        <NavLink to={paths.metricsCorporate}>Corporativas</NavLink>
-        <NavLink to={paths.metricsSolar}>Solares</NavLink>
-      </nav>
-
       <MetricsDashboardFrame
-        key={type}
-        embedUrl={dashboard.embedUrl}
+        embedUrl={dashboardUrl}
         title={dashboard.iframeTitle}
+        userStatus={userStatus}
       />
     </section>
   )
