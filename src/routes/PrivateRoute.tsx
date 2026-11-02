@@ -1,7 +1,6 @@
 import { Navigate, Outlet, useOutletContext } from 'react-router-dom'
-import { useCurrentUserContext } from '../hooks/useCurrentUserContext'
+import { useAuth } from '../hooks/useAuth'
 import type { LayoutContext } from '../types/ui.types'
-import { getSession } from '../utils/session'
 import { normalizeRole } from '../utils/user'
 import { paths } from './paths'
 
@@ -10,14 +9,14 @@ interface PrivateRouteProps {
 }
 
 export function PrivateRoute({ roles }: PrivateRouteProps) {
-  const { user, loading } = useCurrentUserContext()
+  const { user, isAuthenticated, isLoading } = useAuth()
   const outletContext = useOutletContext<LayoutContext>()
 
-  if (!getSession()) return <Navigate to={paths.login} replace />
+  if (!isAuthenticated) return <Navigate to={paths.login} replace />
 
   if (!roles) return <Outlet context={outletContext} />
 
-  if (loading) return null
+  if (isLoading) return null
 
   const allowed = user !== null && roles.includes(normalizeRole(user.role))
 

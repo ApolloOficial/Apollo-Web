@@ -1,27 +1,17 @@
 import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import { CurrentUserProvider } from '../../contexts/CurrentUserProvider'
-import { useCurrentUserContext } from '../../hooks/useCurrentUserContext'
+import { useAuth } from '../../hooks/useAuth'
 import { navigationItems } from '../../routes/navigation.config'
 import { paths } from '../../routes/paths'
 import { UNAUTHORIZED_EVENT } from '../../utils/events'
 import type { LayoutContext } from '../../types/ui.types'
-import { clearSession } from '../../utils/session'
 import { Header } from '../header'
 import { Sidebar } from '../sidebar'
 import './Layout.css'
 
 export function Layout() {
-  return (
-    <CurrentUserProvider>
-      <LayoutContent />
-    </CurrentUserProvider>
-  )
-}
-
-function LayoutContent() {
   const navigate = useNavigate()
-  const { user, loading } = useCurrentUserContext()
+  const { user, isLoading: loading, signOut } = useAuth()
 
   useEffect(() => {
     function handleUnauthorized() {
@@ -35,7 +25,7 @@ function LayoutContent() {
   }, [navigate])
 
   function handleLogout() {
-    clearSession()
+    signOut()
     navigate(paths.login)
   }
 

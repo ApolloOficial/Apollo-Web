@@ -10,13 +10,9 @@ import { PasswordInput } from '../../components/inputs/password-input'
 import { SimpleInput } from '../../components/inputs/simple-input'
 import { TextLink } from '../../components/text-link'
 import { paths } from '../../routes/paths'
-import {
-  checkWebAccess,
-  getCurrentUser,
-  login,
-} from '../../services/auth.service'
+import { useAuth } from '../../hooks/useAuth'
+import { checkWebAccess, login } from '../../services/auth.service'
 import { ApiError } from '../../services/http'
-import { clearSession, saveSession } from '../../utils/session'
 import { isTechnician } from '../../utils/user'
 import type { LoginFormViewModel } from '../../types/auth.types'
 import './Login.css'
@@ -28,6 +24,7 @@ const initialForm: LoginFormViewModel = {
 }
 
 export default function Login() {
+  const { signIn, signOut } = useAuth()
   const [form, setForm] = useState<LoginFormViewModel>(initialForm)
   const [status, setStatus] = useState<{
     loading: boolean
@@ -62,19 +59,17 @@ export default function Login() {
         email: form.email.trim(),
         password: form.password,
       })
-      saveSession({ token, tokenType })
-
-      const currentUser = await getCurrentUser()
+      const currentUser = await signIn({ token, tokenType })
 
       if (isTechnician(currentUser.role)) {
-        clearSession()
+        signOut()
         navigate(paths.permissionDenied, { replace: true })
         return
       }
 
       navigate(firstAccess ? paths.updatePassword : paths.home)
     } catch (err) {
-      clearSession()
+      signOut()
       if (err instanceof ApiError && err.status === 403) {
         navigate(paths.permissionDenied, { replace: true })
         return
