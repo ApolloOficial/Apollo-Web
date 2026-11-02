@@ -24,27 +24,27 @@
 
 .tag--success {
   background: color-mix(in srgb, var(--color-success-light) 35%, transparent);
-  color: var(--color-success-dark);
+  color: var(--color-success-text);
 }
 
 .tag--info {
   background: color-mix(in srgb, var(--color-info-light) 25%, transparent);
-  color: var(--color-info-dark);
+  color: var(--color-info-text);
 }
 
 .tag--caution {
   background: color-mix(in srgb, var(--color-alert-light) 25%, transparent);
-  color: var(--color-alert);
+  color: var(--color-alert-text);
 }
 
 .tag--alert {
   background: color-mix(in srgb, var(--color-alert) 20%, transparent);
-  color: var(--color-alert-dark);
+  color: var(--color-alert-text);
 }
 
 .tag--error {
   background: color-mix(in srgb, var(--color-error-light) 25%, transparent);
-  color: var(--color-error);
+  color: var(--color-error-dark);
 }
 
 .tag--muted {

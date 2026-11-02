@@ -6,15 +6,18 @@
   --color-secondary: #ff672c;
   --color-secondary-light: #ffc8a8;
   --color-secondary-dark: #fe4a11;
+  --color-secondary-strong: #d43a0a;
 
   --color-success: #10b981;
   --color-success-light: #6ee7b7;
   --color-success-dark: #059669;
   --color-success-darker: #00814b;
+  --color-success-text: #006c3f;
 
   --color-alert: #f59e0b;
   --color-alert-light: #fcd34d;
   --color-alert-dark: #d97706;
+  --color-alert-text: #92400e;
 
   --color-error: #dc2626;
   --color-error-light: #f87171;
@@ -23,6 +26,7 @@
   --color-info: #0ea5e9;
   --color-info-light: #7dd3fc;
   --color-info-dark: #0284c7;
+  --color-info-text: #0369a1;
 
   --color-text: #1c1c1c;
   --color-text-muted: #716764;
@@ -188,7 +192,7 @@ textarea {
   padding: 0 1.5rem;
   border: 0;
   border-radius: 999px;
-  background: var(--color-secondary);
+  background: var(--color-secondary-strong);
   color: var(--color-on-brand);
   font-size: var(--text-body-3);
   font-weight: var(--font-weight-bold);

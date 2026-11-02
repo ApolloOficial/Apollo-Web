@@ -46,11 +46,11 @@
 .feedback-modal__secondary {
   border: 2px solid var(--color-secondary);
   background: transparent;
-  color: var(--color-secondary);
+  color: var(--color-secondary-strong);
 }
 .feedback-modal__primary {
   border: 2px solid var(--color-secondary);
-  background: var(--color-secondary);
+  background: var(--color-secondary-strong);
   color: var(--color-on-brand);
 }
 .feedback-modal__actions button:disabled {

@@ -16,6 +16,11 @@ import { checkWebAccess, login } from '../../services/auth.service'
 import { ApiError } from '../../services/http'
 import { isTechnician } from '../../utils/user'
 import type { LoginFormViewModel } from '../../types/auth.types'
+import {
+  EMAIL_MAX_LENGTH,
+  PASSWORD_MAX_LENGTH,
+  validateLoginForm,
+} from '../../utils/validators/auth'
 import './Login.css'
 
 const initialForm: LoginFormViewModel = {
@@ -36,6 +41,9 @@ export default function Login() {
     loading: false,
     error: null,
   })
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof LoginFormViewModel, string>>
+  >({})
   const [showSplash, setShowSplash] = useState(!splashPlayed)
   const navigate = useNavigate()
   const { state, pathname } = useLocation()
@@ -59,6 +67,9 @@ export default function Login() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    const validation = validateLoginForm(form)
+    setFieldErrors(validation.errors)
+    if (!validation.isValid) return
     setStatus({ loading: true, error: null })
 
     try {
@@ -106,6 +117,8 @@ export default function Login() {
           icon={<MailIcon />}
           value={form.email}
           onChange={(email) => setForm((current) => ({ ...current, email }))}
+          maxLength={EMAIL_MAX_LENGTH}
+          error={fieldErrors.email}
           invalid={Boolean(status.error)}
         />
         <PasswordInput
@@ -117,6 +130,8 @@ export default function Login() {
           onChange={(password) =>
             setForm((current) => ({ ...current, password }))
           }
+          maxLength={PASSWORD_MAX_LENGTH}
+          error={fieldErrors.password}
           invalid={Boolean(status.error)}
         />
         <div className="login__options">

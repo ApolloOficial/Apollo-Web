@@ -1,15 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Paginator } from '../../../../../components/paginator'
-import { useApiResource } from '../../../../../hooks/useApiResource'
+import {
+  useInvertersPage,
+  useLastReadings,
+} from '../../../../../hooks/useBranchData'
 import { useCurrentUserContext } from '../../../../../hooks/useCurrentUserContext'
 import { paths } from '../../../../../routes/paths'
 import { formatLastReading } from '../../../../../utils/formatters'
 import { isOperator } from '../../../../../utils/user'
-import {
-  getInverters,
-  getLastReadings,
-} from '../../../../../services/branches.service'
 import { toInverterStatusVM } from '../../../data-access/vm/Branches.vm'
 import { BranchesStatusChip } from '../../status-chip'
 import { TableSkeleton } from '../../../../../components/table-skeleton'
@@ -25,24 +24,10 @@ export function BranchesInvertersTable({ unitId }: Props) {
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
 
-  const fetchInverters = useMemo(
-    () => (signal: AbortSignal) => getInverters(unitId, page, size, signal),
-    [unitId, page, size],
-  )
-  const { data, loading, error, reload } = useApiResource(
-    fetchInverters,
-    'Não foi possível carregar os inversores.',
-  )
+  const { data, loading, error, reload } = useInvertersPage(unitId, page, size)
   const inverters = data?.content ?? []
 
-  const fetchReadings = useMemo(
-    () => (data ? () => getLastReadings(data.content) : null),
-    [data],
-  )
-  const readings = useApiResource(
-    fetchReadings,
-    'Não foi possível carregar as leituras.',
-  )
+  const readings = useLastReadings(data?.content)
 
   function readingOf(id: string) {
     if (!readings.data || !(id in readings.data)) return '...'

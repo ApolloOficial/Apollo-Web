@@ -17,7 +17,7 @@
 .info-note__icon {
   flex-shrink: 0;
   margin-top: 0.125rem;
-  color: var(--color-info-dark);
+  color: var(--color-info-text);
 }
 
 .info-note__title {

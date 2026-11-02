@@ -18,5 +18,5 @@
 }
 
 .status-message--alert {
-  color: var(--color-alert-light);
+  color: var(--color-alert-text);
 }

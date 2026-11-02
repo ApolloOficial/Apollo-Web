@@ -1,10 +1,8 @@
-import { useMemo } from 'react'
-import { useApiResource } from '../../../../hooks/useApiResource'
-import { formatCnpj, formatKwp } from '../../../../utils/formatters'
 import {
-  getActiveStringsCount,
-  getBranch,
-} from '../../../../services/branches.service'
+  useActiveStringsCount,
+  useBranch,
+} from '../../../../hooks/useBranchData'
+import { formatCnpj, formatKwp } from '../../../../utils/formatters'
 import { BranchesInvertersTable } from './inverters-table'
 import { Spinner } from '../../../../components/spinner'
 
@@ -14,22 +12,8 @@ interface Props {
 }
 
 export function BranchesMineBranch({ unitId, userLoading }: Props) {
-  const fetchBranch = useMemo(
-    () => (unitId ? () => getBranch(unitId) : null),
-    [unitId],
-  )
-  const fetchActiveStrings = useMemo(
-    () => (unitId ? () => getActiveStringsCount(unitId) : null),
-    [unitId],
-  )
-  const branch = useApiResource(
-    fetchBranch,
-    'Não foi possível carregar os dados da filial.',
-  )
-  const activeStrings = useApiResource(
-    fetchActiveStrings,
-    'Não foi possível contar as strings ativas.',
-  )
+  const branch = useBranch(unitId)
+  const activeStrings = useActiveStringsCount(unitId)
 
   if (userLoading) {
     return (

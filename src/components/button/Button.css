@@ -16,7 +16,7 @@
 }
 
 .button--primary {
-  background: var(--color-secondary-dark);
+  background: var(--color-secondary-strong);
   color: var(--color-on-brand);
 }
 

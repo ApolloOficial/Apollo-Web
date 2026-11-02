@@ -60,7 +60,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--color-secondary);
+  color: var(--color-secondary-strong);
   cursor: pointer;
 }
 

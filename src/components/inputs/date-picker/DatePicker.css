@@ -67,7 +67,7 @@
 }
 
 .date-picker__header .date-picker__next {
-  color: var(--color-secondary);
+  color: var(--color-secondary-strong);
 }
 
 .date-picker__header svg {
@@ -107,7 +107,7 @@
 }
 
 .date-picker__days .date-picker__day--selected {
-  background: var(--color-secondary);
+  background: var(--color-secondary-strong);
   color: var(--color-on-brand);
 }
 
