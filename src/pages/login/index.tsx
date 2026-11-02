@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AuthPage } from '../../components/auth-page'
 import { Button } from '../../components/button'
+import { SplashScreen } from '../../components/splash-screen'
 import { StatusMessage } from '../../components/status-message'
 import { MailIcon } from '../../components/icons/mail-icon'
 import { Checkbox } from '../../components/inputs/checkbox'
@@ -23,6 +24,8 @@ const initialForm: LoginFormViewModel = {
   remember: false,
 }
 
+let splashPlayed = false
+
 export default function Login() {
   const { signIn, signOut } = useAuth()
   const [form, setForm] = useState<LoginFormViewModel>(initialForm)
@@ -33,6 +36,7 @@ export default function Login() {
     loading: false,
     error: null,
   })
+  const [showSplash, setShowSplash] = useState(!splashPlayed)
   const navigate = useNavigate()
   const { state, pathname } = useLocation()
   const [passwordReset] = useState(
@@ -45,6 +49,11 @@ export default function Login() {
   useEffect(() => {
     if (passwordReset) navigate(pathname, { replace: true, state: null })
   }, [passwordReset, navigate, pathname])
+
+  const finishSplash = useCallback(() => {
+    splashPlayed = true
+    setShowSplash(false)
+  }, [])
 
   const canSubmit = form.email.trim() !== '' && form.password !== ''
 
@@ -79,6 +88,10 @@ export default function Login() {
     }
 
     setStatus({ loading: false, error: null })
+  }
+
+  if (showSplash) {
+    return <SplashScreen onFinish={finishSplash} />
   }
 
   return (
