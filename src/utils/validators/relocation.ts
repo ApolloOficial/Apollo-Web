@@ -49,7 +49,11 @@ export function validateInternalRelocation(
   }
 
   const quantity = Number(form.quantity)
-  if (!isFilled(form.quantity) || !Number.isInteger(quantity) || quantity <= 0) {
+  if (
+    !isFilled(form.quantity) ||
+    !Number.isInteger(quantity) ||
+    quantity <= 0
+  ) {
     errors.quantity = 'Informe uma quantidade inteira maior que zero.'
   }
 
