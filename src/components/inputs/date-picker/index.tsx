@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react'
+import { Icon } from '@iconify/react/offline'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import './DatePicker.css'
 

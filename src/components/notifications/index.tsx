@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react'
+import { Icon } from '@iconify/react/offline'
 import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { NotificationItem } from '../../types/notification.types'
