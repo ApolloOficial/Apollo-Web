@@ -40,6 +40,7 @@
 .feedback-modal__actions button {
   min-height: 3rem;
   border-radius: 999px;
+  font-size: var(--text-button);
   font-weight: var(--font-weight-bold);
   cursor: pointer;
 }
@@ -50,7 +51,7 @@
 }
 .feedback-modal__primary {
   border: 2px solid var(--color-secondary);
-  background: var(--color-secondary-strong);
+  background: var(--color-secondary-dark);
   color: var(--color-on-brand);
 }
 .feedback-modal__actions button:disabled {

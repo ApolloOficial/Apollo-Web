@@ -124,7 +124,7 @@
 .alerts-details__open-order {
   min-width: 12rem;
   min-height: 3.25rem;
-  background: var(--color-secondary-strong);
+  background: var(--color-secondary-dark);
   color: var(--color-on-brand);
 }
 
