@@ -88,8 +88,7 @@ export default function Login() {
         return
       }
 
-      const needsFirstAccess =
-        firstAccess && !wasPasswordRecovered(form.email)
+      const needsFirstAccess = firstAccess && !wasPasswordRecovered(form.email)
 
       navigate(needsFirstAccess ? paths.updatePassword : paths.home)
     } catch (err) {
