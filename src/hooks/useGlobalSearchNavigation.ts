@@ -39,6 +39,14 @@ const RESOLVERS: Record<SearchCategory, PathResolver> = {
         id: item.id,
       },
     ),
+  strings: (item) => generatePath(paths.branchStringDetails, { id: item.id }),
+  alerts: (item, user) =>
+    generatePath(
+      isManager(user?.role) ? paths.alertManagerDetails : paths.alertDetails,
+      { id: item.id },
+    ),
+  serviceOrders: (item) =>
+    generatePath(paths.serviceOrderDetails, { id: item.id }),
 }
 
 export interface UseGlobalSearchNavigationResult {

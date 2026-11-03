@@ -2,6 +2,7 @@ import { useRef } from 'react'
 import { useModalFocus } from '../../../../hooks/useModalFocus'
 import { Spinner } from '../../../../components/spinner'
 import illustration from '../../../../assets/images/employee-deactivate.png'
+import './DeactivateEmployeeModal.css'
 
 interface Props {
   employeeName: string

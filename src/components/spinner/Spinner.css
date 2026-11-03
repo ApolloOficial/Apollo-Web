@@ -9,6 +9,15 @@
   animation: spinner-rotate 1.2s linear infinite;
 }
 
+:is(p, div):has(> .spinner) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 8rem;
+  margin: 0;
+}
+
 button .spinner {
   width: 2.5rem;
   height: 2.5rem;

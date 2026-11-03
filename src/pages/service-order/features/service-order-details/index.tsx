@@ -8,7 +8,7 @@ import {
   priorityLabels,
   serviceOrderStatusLabels,
 } from '../../data-access/vm/ServiceOrder.vm'
-import { Spinner } from '../../../../components/spinner'
+import { PageLoading } from '../../../../components/page-loading'
 import { useServiceOrderDetails } from '../../../../hooks/useServiceOrderData'
 
 interface HistoryItem {
@@ -97,11 +97,7 @@ export function ServiceOrderDetailsFeature() {
   }, [order])
 
   if (orderId !== null && loading) {
-    return (
-      <p className="service-order-details__state">
-        <Spinner />
-      </p>
-    )
+    return <PageLoading />
   }
 
   if (!order || !warning) {
