@@ -1,4 +1,5 @@
 import { Icon } from '@iconify/react'
+import { useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { NotificationItem } from '../../types/notification.types'
 import { Spinner } from '../spinner'
@@ -6,6 +7,7 @@ import { getNotificationVisual } from './notification.config'
 import './NotificationsPanel.css'
 
 interface NotificationsPanelProps {
+  id: string
   items: NotificationItem[]
   loading?: boolean
   error?: string | null
@@ -14,6 +16,7 @@ interface NotificationsPanelProps {
 }
 
 export function NotificationsPanel({
+  id,
   items,
   loading = false,
   error = null,
@@ -21,7 +24,12 @@ export function NotificationsPanel({
   onClose,
 }: NotificationsPanelProps) {
   const navigate = useNavigate()
+  const panelRef = useRef<HTMLDivElement>(null)
   const unread = items.filter((item) => !item.read).length
+
+  useEffect(() => {
+    panelRef.current?.focus()
+  }, [])
 
   function handleClick(item: NotificationItem) {
     onItemClick(item)
@@ -30,7 +38,14 @@ export function NotificationsPanel({
   }
 
   return (
-    <div className="notifications" role="dialog" aria-label="Notificações">
+    <div
+      ref={panelRef}
+      id={id}
+      className="notifications"
+      role="dialog"
+      aria-label="Notificações"
+      tabIndex={-1}
+    >
       <div className="notifications__header">
         <h2 className="notifications__title">Notificações</h2>
         {unread > 0 && <span className="notifications__badge">{unread}</span>}

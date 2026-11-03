@@ -65,7 +65,7 @@ export default function RelocationDetails({
 
   return (
     <section className="relocation-details">
-      <nav className="relocations-breadcrumb">
+      <nav className="relocations-breadcrumb" aria-label="Navegação estrutural">
         <Link to={paths.home}>Início</Link>
         <span>›</span>
         <Link to={paths.relocations}>Realocações</Link>

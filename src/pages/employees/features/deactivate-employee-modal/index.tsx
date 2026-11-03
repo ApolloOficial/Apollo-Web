@@ -29,6 +29,7 @@ export function DeactivateEmployeeModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="deactivate-title"
+        aria-describedby="deactivate-description"
       >
         <img
           className="deactivate-modal__illustration"
@@ -40,13 +41,14 @@ export function DeactivateEmployeeModal({
           <br />
           desligar funcionário?
         </h2>
-        <p>
+        <p id="deactivate-description">
           <span className="sr-only">Funcionário: {employeeName}. </span>
           Ele fica sem acesso ao sistema. Os dados dele continuam salvos.
         </p>
         <div className="deactivate-modal__actions">
           <button
             ref={closeRef}
+            type="button"
             className="deactivate-modal__close"
             disabled={submitting}
             onClick={onClose}
@@ -54,6 +56,7 @@ export function DeactivateEmployeeModal({
             Fechar
           </button>
           <button
+            type="button"
             className="deactivate-modal__confirm"
             disabled={submitting}
             onClick={onConfirm}

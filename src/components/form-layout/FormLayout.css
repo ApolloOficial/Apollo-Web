@@ -44,7 +44,7 @@
 
 .form-layout .select-input__placeholder,
 .form-layout .date-picker__placeholder {
-  color: var(--color-disabled-soft);
+  color: var(--color-text-muted);
   font-weight: var(--font-weight-regular);
 }
 
@@ -70,7 +70,7 @@
 }
 
 .form-layout .combobox input::placeholder {
-  color: var(--color-disabled-soft);
+  color: var(--color-text-muted);
   font-weight: var(--font-weight-regular);
 }
 

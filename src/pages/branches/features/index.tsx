@@ -7,6 +7,7 @@ import {
 import { useAllBranches } from '../../../hooks/useBranchData'
 import { useLayoutContext } from '../../../hooks/useLayoutContext'
 import { useTabIndicator } from '../../../hooks/useTabIndicator'
+import { useTabListKeyboard } from '../../../hooks/useTabListKeyboard'
 import { paths } from '../../../routes/paths'
 import {
   INITIAL_BRANCH_FILTERS,
@@ -21,11 +22,14 @@ function uniqueSorted(values: string[]) {
   return [...new Set(values)].sort((a, b) => a.localeCompare(b, 'pt-BR'))
 }
 
+const BRANCH_TAB_KEYS = ['all', 'mine'] as const
+
 export function BranchesFeature() {
   const { user, loading: userLoading } = useLayoutContext()
   const [searchParams, setSearchParams] = useSearchParams()
   const tab: BranchesTabVM = searchParams.get('tab') === 'mine' ? 'mine' : 'all'
   const { ref: tabsRef, indicatorProps } = useTabIndicator(tab)
+  const tabList = useTabListKeyboard(BRANCH_TAB_KEYS, tab, setTab)
   const [draft, setDraft] = useState<BranchFiltersVM>(INITIAL_BRANCH_FILTERS)
   const [applied, setApplied] = useState<BranchFiltersVM>(
     INITIAL_BRANCH_FILTERS,
@@ -148,6 +152,8 @@ export function BranchesFeature() {
           id="branches-tab-all"
           aria-selected={tab === 'all'}
           aria-controls="branches-panel"
+          tabIndex={tabList.getTabIndex('all')}
+          onKeyDown={tabList.onKeyDown}
           onClick={() => setTab('all')}
         >
           Todas as filiais
@@ -159,6 +165,8 @@ export function BranchesFeature() {
           id="branches-tab-mine"
           aria-selected={tab === 'mine'}
           aria-controls="branches-panel"
+          tabIndex={tabList.getTabIndex('mine')}
+          onKeyDown={tabList.onKeyDown}
           onClick={() => setTab('mine')}
         >
           Minha filial
@@ -171,6 +179,7 @@ export function BranchesFeature() {
           tab === 'all' ? 'list-panel' : 'list-panel list-panel--scroll'
         }
         role="tabpanel"
+        tabIndex={0}
         aria-labelledby={`branches-tab-${tab}`}
       >
         {tab === 'all' ? (

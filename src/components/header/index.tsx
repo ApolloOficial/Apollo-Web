@@ -1,4 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from 'react'
 import { useLocation } from 'react-router-dom'
 import type { HeaderProps } from '../../types/ui.types'
 import { getInitials } from '../../utils/user'
@@ -17,6 +23,11 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
   const [search, setSearch] = useState('')
   const notificationsRef = useRef<HTMLDivElement>(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
+  const menuId = useId()
+  const notificationsId = useId()
+  const menuRef = useRef<HTMLUListElement>(null)
+  const accountButtonRef = useRef<HTMLButtonElement>(null)
+  const bellButtonRef = useRef<HTMLButtonElement>(null)
   const {
     items: notifications,
     loading: notificationsLoading,
@@ -38,7 +49,10 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setNotificationsOpen(false)
+      if (event.key === 'Escape') {
+        setNotificationsOpen(false)
+        bellButtonRef.current?.focus()
+      }
     }
 
     document.addEventListener('mousedown', handleOutsideClick)
@@ -63,7 +77,46 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
     }
 
     function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') setMenuOpen(false)
+      if (event.key === 'Escape') {
+        setMenuOpen(false)
+        accountButtonRef.current?.focus()
+        return
+      }
+
+      if (!accountRef.current?.contains(document.activeElement)) return
+
+      if (event.key === 'Tab') {
+        setMenuOpen(false)
+        accountButtonRef.current?.focus()
+        return
+      }
+
+      const items = Array.from(
+        menuRef.current?.querySelectorAll<HTMLElement>('[role="menuitem"]') ??
+          [],
+      )
+      const current = items.findIndex((item) => item === document.activeElement)
+      let next: number
+
+      switch (event.key) {
+        case 'ArrowDown':
+          next = current >= items.length - 1 ? 0 : current + 1
+          break
+        case 'ArrowUp':
+          next = current <= 0 ? items.length - 1 : current - 1
+          break
+        case 'Home':
+          next = 0
+          break
+        case 'End':
+          next = items.length - 1
+          break
+        default:
+          return
+      }
+
+      event.preventDefault()
+      items[next]?.focus()
     }
 
     document.addEventListener('mousedown', handleOutsideClick)
@@ -74,6 +127,22 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
       document.removeEventListener('keydown', handleKeyDown)
     }
   }, [menuOpen])
+
+  useEffect(() => {
+    if (!menuOpen) return
+    menuRef.current?.querySelector<HTMLElement>('[role="menuitem"]')?.focus()
+  }, [menuOpen])
+
+  function closeNotifications() {
+    setNotificationsOpen(false)
+    bellButtonRef.current?.focus()
+  }
+
+  function handleAccountKeyDown(event: ReactKeyboardEvent<HTMLButtonElement>) {
+    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return
+    event.preventDefault()
+    setMenuOpen(true)
+  }
 
   const initials = user ? getInitials(user.fullName) : ''
 
@@ -91,11 +160,13 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
 
       <div ref={notificationsRef} className="header__notifications">
         <button
+          ref={bellButtonRef}
           className="header__action"
           type="button"
           aria-label="Notificações"
           aria-haspopup="dialog"
           aria-expanded={notificationsOpen}
+          aria-controls={notificationsOpen ? notificationsId : undefined}
           onClick={() => setNotificationsOpen((current) => !current)}
         >
           <BellIcon className="header__bell" />
@@ -106,23 +177,27 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
 
         {notificationsOpen && (
           <NotificationsPanel
+            id={notificationsId}
             items={notifications}
             loading={notificationsLoading}
             error={notificationsError}
             onItemClick={markAsRead}
-            onClose={() => setNotificationsOpen(false)}
+            onClose={closeNotifications}
           />
         )}
       </div>
 
       <div ref={accountRef} className="header__account">
         <button
+          ref={accountButtonRef}
           className="header__user"
           type="button"
           aria-haspopup="menu"
           aria-expanded={menuOpen}
+          aria-controls={menuOpen ? menuId : undefined}
           aria-busy={loading}
           onClick={() => setMenuOpen((current) => !current)}
+          onKeyDown={handleAccountKeyDown}
         >
           <span className="header__avatar" aria-hidden="true">
             {initials}
@@ -147,7 +222,13 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
         </button>
 
         {menuOpen && (
-          <ul className="header__menu" role="menu">
+          <ul
+            id={menuId}
+            ref={menuRef}
+            className="header__menu"
+            role="menu"
+            aria-label="Menu da conta"
+          >
             <li role="none">
               <button
                 className="header__menu-item"

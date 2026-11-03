@@ -27,6 +27,13 @@ const months = [
 
 const weekdays = ['Dom.', 'Seg.', 'Ter.', 'Qua.', 'Qui.', 'Sex.', 'Sáb.']
 
+const DAY_KEY_STEPS: Record<string, number> = {
+  ArrowLeft: -1,
+  ArrowRight: 1,
+  ArrowUp: -7,
+  ArrowDown: 7,
+}
+
 function toIsoDate(date: Date) {
   const year = date.getFullYear()
   const month = String(date.getMonth() + 1).padStart(2, '0')
@@ -44,6 +51,8 @@ function formatValue(value: string) {
 export function DatePicker({ label, value, min, required, onChange }: Props) {
   const id = useId()
   const containerRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const popoverRef = useRef<HTMLElement>(null)
   const selectedDate = value ? new Date(`${value}T12:00:00`) : new Date()
 
   const [open, setOpen] = useState(false)
@@ -52,6 +61,8 @@ export function DatePicker({ label, value, min, required, onChange }: Props) {
   )
 
   useEffect(() => {
+    if (!open) return
+
     function handleOutsideClick(event: MouseEvent) {
       if (
         containerRef.current &&
@@ -61,18 +72,72 @@ export function DatePicker({ label, value, min, required, onChange }: Props) {
       }
     }
 
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === 'Escape') setOpen(false)
+    function handleKeyDown(event: KeyboardEvent) {
+      const popover = popoverRef.current
+      const active = document.activeElement
+
+      if (event.key === 'Escape') {
+        setOpen(false)
+        triggerRef.current?.focus()
+        return
+      }
+
+      if (!popover) return
+
+      if (event.key === 'Tab') {
+        const focusable = Array.from(
+          popover.querySelectorAll<HTMLElement>('button:not(:disabled)'),
+        )
+        const edge = event.shiftKey
+          ? focusable[0]
+          : focusable[focusable.length - 1]
+
+        if (active === edge) {
+          if (event.shiftKey) event.preventDefault()
+          setOpen(false)
+          triggerRef.current?.focus()
+        }
+        return
+      }
+
+      const step = DAY_KEY_STEPS[event.key]
+      if (!step) return
+
+      const dayButtons = Array.from(
+        popover.querySelectorAll<HTMLButtonElement>(
+          '.date-picker__days button',
+        ),
+      )
+      const index = dayButtons.findIndex((button) => button === active)
+      if (index < 0) return
+
+      event.preventDefault()
+      dayButtons[index + step]?.focus()
     }
 
     document.addEventListener('mousedown', handleOutsideClick)
-    document.addEventListener('keydown', handleEscape)
+    document.addEventListener('keydown', handleKeyDown)
 
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick)
-      document.removeEventListener('keydown', handleEscape)
+      document.removeEventListener('keydown', handleKeyDown)
     }
-  }, [])
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+
+    const popover = popoverRef.current
+    const target =
+      popover?.querySelector<HTMLElement>(
+        '.date-picker__days button[aria-pressed="true"]:not(:disabled)',
+      ) ??
+      popover?.querySelector<HTMLElement>(
+        '.date-picker__days button:not(:disabled):not(.date-picker__day--outside)',
+      )
+
+    target?.focus()
+  }, [open])
 
   const days = useMemo(() => {
     const firstDay = new Date(
@@ -105,11 +170,13 @@ export function DatePicker({ label, value, min, required, onChange }: Props) {
       </label>
 
       <button
+        ref={triggerRef}
         id={id}
         className="date-picker__trigger"
         type="button"
         aria-haspopup="dialog"
         aria-expanded={open}
+        aria-controls={open ? `${id}-popover` : undefined}
         aria-labelledby={`${id}-label ${id}-value`}
         onClick={() => setOpen((current) => !current)}
       >
@@ -126,6 +193,8 @@ export function DatePicker({ label, value, min, required, onChange }: Props) {
 
       {open && (
         <section
+          ref={popoverRef}
+          id={`${id}-popover`}
           className="date-picker__popover"
           role="dialog"
           aria-label={`Calendário de ${label}`}
@@ -176,9 +245,11 @@ export function DatePicker({ label, value, min, required, onChange }: Props) {
                   ].join(' ')}
                   disabled={disabled}
                   aria-pressed={selected}
+                  aria-label={`${date.getDate()} de ${months[date.getMonth()]} de ${date.getFullYear()}`}
                   onClick={() => {
                     onChange(isoDate)
                     setOpen(false)
+                    triggerRef.current?.focus()
                   }}
                 >
                   {date.getDate()}

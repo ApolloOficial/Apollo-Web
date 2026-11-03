@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useTabIndicator } from '../../../hooks/useTabIndicator'
+import { useTabListKeyboard } from '../../../hooks/useTabListKeyboard'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   AppliedFilters,
@@ -160,6 +161,8 @@ export function RelocationsFeature({
       ]
   const activeTab = isOperator ? operatorTab : tab
   const { ref: tabsRef, indicatorProps } = useTabIndicator(activeTab)
+  const tabKeys = tabs.map(({ key }) => key)
+  const tabList = useTabListKeyboard(tabKeys, activeTab, selectTab)
 
   function selectTab(key: string) {
     setPage(0)
@@ -249,6 +252,8 @@ export function RelocationsFeature({
             id={`relocations-tab-${key}`}
             aria-selected={activeTab === key}
             aria-controls="relocations-panel"
+            tabIndex={tabList.getTabIndex(key)}
+            onKeyDown={tabList.onKeyDown}
             onClick={() => selectTab(key)}
           >
             {label}
@@ -260,6 +265,7 @@ export function RelocationsFeature({
         id="relocations-panel"
         className="list-panel"
         role="tabpanel"
+        tabIndex={0}
         aria-labelledby={`relocations-tab-${activeTab}`}
       >
         <div className="relocations-table list-table" aria-busy={loading}>

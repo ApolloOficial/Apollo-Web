@@ -87,3 +87,7 @@
     padding: 2rem 1rem;
   }
 }
+
+.auth-layout__content:focus {
+  outline: none;
+}
