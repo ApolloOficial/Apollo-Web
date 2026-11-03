@@ -13,6 +13,7 @@ import { TextLink } from '../../components/text-link'
 import { paths } from '../../routes/paths'
 import { useAuth } from '../../hooks/useAuth'
 import { useAuthActions, isForbiddenError } from '../../hooks/useAuthActions'
+import { wasPasswordRecovered } from '../../utils/recovered-passwords'
 import { isTechnician } from '../../utils/user'
 import type { LoginFormViewModel } from '../../types/auth.types'
 import {
@@ -87,7 +88,10 @@ export default function Login() {
         return
       }
 
-      navigate(firstAccess ? paths.updatePassword : paths.home)
+      const needsFirstAccess =
+        firstAccess && !wasPasswordRecovered(form.email)
+
+      navigate(needsFirstAccess ? paths.updatePassword : paths.home)
     } catch (err) {
       signOut()
       if (isForbiddenError(err)) {
