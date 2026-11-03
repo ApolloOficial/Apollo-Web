@@ -128,9 +128,7 @@ export default function ServiceOrderForm() {
   ]
 
   if (loading) {
-    return (
-      <PageLoading />
-    )
+    return <PageLoading />
   }
 
   if (!warning) {

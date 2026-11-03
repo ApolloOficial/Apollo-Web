@@ -44,10 +44,7 @@ export default function RelocationDetails({
     }
   }
 
-  if (loading)
-    return (
-      <PageLoading />
-    )
+  if (loading) return <PageLoading />
   if (!data)
     return (
       <p className="relocations-error" role="alert">

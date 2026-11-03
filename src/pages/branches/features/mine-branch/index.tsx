@@ -17,9 +17,7 @@ export function BranchesMineBranch({ unitId, userLoading }: Props) {
   const activeStrings = useActiveStringsCount(unitId)
 
   if (userLoading) {
-    return (
-      <PageLoading />
-    )
+    return <PageLoading />
   }
 
   if (!unitId) {

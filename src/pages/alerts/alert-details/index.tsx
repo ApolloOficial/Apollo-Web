@@ -22,9 +22,7 @@ export default function AlertDetails({ audience = 'operator' }: Props) {
   const { data: warning, loading, error } = useWarning(warningId)
 
   if (warningId !== null && loading) {
-    return (
-      <PageLoading />
-    )
+    return <PageLoading />
   }
 
   if (!warning) {

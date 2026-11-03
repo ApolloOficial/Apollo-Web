@@ -97,9 +97,7 @@ export function ServiceOrderDetailsFeature() {
   }, [order])
 
   if (orderId !== null && loading) {
-    return (
-      <PageLoading />
-    )
+    return <PageLoading />
   }
 
   if (!order || !warning) {
