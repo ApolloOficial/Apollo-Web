@@ -63,7 +63,11 @@ export function SlideSwitch({ transitionKey, children }: SlideSwitchProps) {
   return (
     <div className={className} aria-busy={changed}>
       {waiting ? (
-        <div className="slide-switch__bar" role="progressbar" />
+        <div
+          className="slide-switch__bar"
+          role="progressbar"
+          aria-label="Carregando página"
+        />
       ) : (
         <div className="slide-switch__content">
           {leaving ? shown.node : children}

@@ -33,7 +33,7 @@
 }
 
 .textarea-input__control::placeholder {
-  color: var(--color-disabled-soft);
+  color: var(--color-text-muted);
   opacity: 1;
 }
 

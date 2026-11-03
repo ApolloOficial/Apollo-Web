@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react'
+import { Icon } from '@iconify/react/offline'
 import { SelectInput } from '../inputs/select-input'
 import './Paginator.css'
 

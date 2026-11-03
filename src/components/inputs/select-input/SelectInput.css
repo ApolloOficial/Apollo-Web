@@ -31,7 +31,7 @@
 }
 
 .select-input__placeholder {
-  color: var(--color-disabled);
+  color: var(--color-text-muted);
   font-weight: var(--font-weight-bold);
 }
 

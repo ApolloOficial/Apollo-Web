@@ -1,4 +1,4 @@
-import { Icon } from '@iconify/react'
+import { Icon } from '@iconify/react/offline'
 import './AppliedFilters.css'
 
 export interface AppliedFilter {

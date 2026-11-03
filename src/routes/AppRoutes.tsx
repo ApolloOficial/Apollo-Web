@@ -6,6 +6,8 @@ import { ROLE } from '../utils/user'
 import { PrivateRoute } from './PrivateRoute'
 import { paths } from './paths'
 import { PageLoading } from '../components/page-loading'
+import Home from '../pages/home'
+import Login from '../pages/login'
 
 const EmployeeForm = lazy(() => import('../pages/employees/employee-form'))
 const Branches = lazy(() => import('../pages/branches'))
@@ -30,8 +32,6 @@ const ServiceOrderForm = lazy(
 )
 const FirstAccess = lazy(() => import('../pages/first-access'))
 const ForgotPassword = lazy(() => import('../pages/forgot-password'))
-const Home = lazy(() => import('../pages/home'))
-const Login = lazy(() => import('../pages/login'))
 const Metrics = lazy(() => import('../pages/metrics'))
 const NotFound = lazy(() => import('../pages/not-found'))
 const PermissionDenied = lazy(() => import('../pages/permission-denied'))

@@ -9,6 +9,7 @@ import './index.css'
 import './styles/list-page.css'
 import App from './App'
 import './styles/motion.css'
+import './components/icons/offline-icons'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -30,7 +30,7 @@
 }
 
 .date-picker__placeholder {
-  color: var(--color-disabled);
+  color: var(--color-text-muted);
   font-weight: var(--font-weight-bold);
 }
 
@@ -62,7 +62,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--color-disabled);
+  color: var(--color-text-muted);
   cursor: pointer;
 }
 
@@ -103,7 +103,6 @@
 
 .date-picker__days .date-picker__day--outside {
   color: var(--color-text-muted);
-  opacity: 0.65;
 }
 
 .date-picker__days .date-picker__day--selected {

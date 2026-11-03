@@ -9,7 +9,7 @@
   flex-direction: column;
   justify-content: space-between;
   padding: 3.1875rem 4.625rem 5.125rem;
-  background-image: url('../../assets/images/auth-background.jpg');
+  background-image: url('../../assets/images/auth-background.webp');
   background-size: cover;
   background-position: center;
   color: var(--color-on-brand);
@@ -86,4 +86,8 @@
     min-height: calc(100vh - 11rem);
     padding: 2rem 1rem;
   }
+}
+
+.auth-layout__content:focus {
+  outline: none;
 }

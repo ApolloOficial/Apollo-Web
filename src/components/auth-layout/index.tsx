@@ -25,7 +25,7 @@ export function AuthLayout() {
           </p>
         </div>
       </aside>
-      <main className="auth-layout__content">
+      <main id="conteudo" className="auth-layout__content" tabIndex={-1}>
         <SlideSwitch transitionKey={pathname}>{outlet}</SlideSwitch>
       </main>
     </div>
