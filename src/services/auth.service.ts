@@ -11,7 +11,7 @@ import type {
   RecoveryStartPayloadDto,
   RecoveryStartResponseDto,
 } from '../types/auth.types'
-import { request } from './http'
+import { request, toApiError } from './http'
 
 let currentUserRequest: Promise<CurrentUserDto> | null = null
 
@@ -22,28 +22,40 @@ function resetCurrentUser() {
 export async function login(
   payload: LoginPayloadDto,
 ): Promise<LoginResponseDto> {
-  resetCurrentUser()
-  return request<LoginResponseDto>('/auth/login', {
-    method: 'POST',
-    body: payload,
-  })
+  try {
+    resetCurrentUser()
+    return await request<LoginResponseDto>('/auth/login', {
+      method: 'POST',
+      body: payload,
+    })
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }
 
 export async function checkWebAccess(email: string): Promise<void> {
-  return request<void>('/auth/web-access', {
-    method: 'POST',
-    body: { email },
-  })
+  try {
+    return await request<void>('/auth/web-access', {
+      method: 'POST',
+      body: { email },
+    })
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }
 
 export async function changePassword(
   payload: ChangePasswordPayloadDto,
 ): Promise<void> {
-  resetCurrentUser()
-  return request<void>('/auth/password', {
-    method: 'PATCH',
-    body: payload,
-  })
+  try {
+    resetCurrentUser()
+    return await request<void>('/auth/password', {
+      method: 'PATCH',
+      body: payload,
+    })
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }
 
 export function getCurrentUser(): Promise<CurrentUserDto> {
@@ -61,35 +73,51 @@ export function getCurrentUser(): Promise<CurrentUserDto> {
 export async function startPasswordRecovery(
   payload: RecoveryStartPayloadDto,
 ): Promise<RecoveryStartResponseDto> {
-  return request<RecoveryStartResponseDto>('/mobile/auth/recovery', {
-    method: 'POST',
-    body: payload,
-  })
+  try {
+    return await request<RecoveryStartResponseDto>('/mobile/auth/recovery', {
+      method: 'POST',
+      body: payload,
+    })
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }
 
 export async function sendRecoveryCode(
   payload: OtpSendPayloadDto,
 ): Promise<OtpSentResponseDto> {
-  return request<OtpSentResponseDto>('/mobile/auth/otp/send', {
-    method: 'POST',
-    body: payload,
-  })
+  try {
+    return await request<OtpSentResponseDto>('/mobile/auth/otp/send', {
+      method: 'POST',
+      body: payload,
+    })
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }
 
 export async function verifyRecoveryCode(
   payload: OtpVerifyPayloadDto,
 ): Promise<OtpVerifyResponseDto> {
-  return request<OtpVerifyResponseDto>('/mobile/auth/otp/verify', {
-    method: 'POST',
-    body: payload,
-  })
+  try {
+    return await request<OtpVerifyResponseDto>('/mobile/auth/otp/verify', {
+      method: 'POST',
+      body: payload,
+    })
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }
 
 export async function resetPassword(
   payload: PasswordResetPayloadDto,
 ): Promise<void> {
-  return request<void>('/mobile/auth/password/reset', {
-    method: 'POST',
-    body: payload,
-  })
+  try {
+    return await request<void>('/mobile/auth/password/reset', {
+      method: 'POST',
+      body: payload,
+    })
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }

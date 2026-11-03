@@ -70,7 +70,11 @@ export function AppRoutes() {
               path={paths.branchInverterDetails}
               element={<BranchInverterDetails />}
             />
-            <Route path={paths.metrics} element={<Metrics />} />
+            <Route
+              element={<PrivateRoute roles={[ROLE.MANAGER, ROLE.TECHNICIAN]} />}
+            >
+              <Route path={paths.metrics} element={<Metrics />} />
+            </Route>
             <Route
               path={paths.alerts}
               element={<Alerts audience="operator" />}

@@ -27,6 +27,10 @@ import {
 } from '../../data-access/vm/Relocations.vm'
 import type { StringDto } from '../../../../types/string.types'
 import type { PanelDto } from '../../../../types/panel.types'
+import {
+  validateExternalRelocation,
+  validateInternalRelocation,
+} from '../../../../utils/validators/relocation'
 
 function noop() {}
 
@@ -55,7 +59,6 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
   const [formError, setFormError] = useState('')
 
   useEffect(() => {
-    // Aguarda o usuário autenticado, carregado uma única vez pelo Layout.
     if (loadingUser) return
     if (!me?.companyUnitId) return
     const user = me
@@ -93,7 +96,6 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
     void prepare()
   }, [me, loadingUser])
 
-  // Erro e carregamento derivados do usuário, sem setState dentro do efeito.
   const userMissingError =
     !loadingUser && !me
       ? (userError ?? 'Não foi possível carregar os dados.')
@@ -134,23 +136,21 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
     event.preventDefault()
     setFormError('')
     if (!me) return setFormError('Os dados do usuário não foram carregados.')
-    if (
-      type === 'INTERNAL' &&
-      (!unit ||
-        !string ||
-        Number(internal.quantity) <= 0 ||
-        !internal.justification.trim())
-    )
-      return setFormError(
-        'Preencha filial, string, quantidade e justificativa válidas.',
-      )
-    if (
-      type === 'EXTERNAL' &&
-      (!company || !segment || !panel || !external.justification.trim())
-    )
-      return setFormError(
-        'Preencha empresa, segmento, placa e justificativa válidos.',
-      )
+    const validation =
+      type === 'INTERNAL'
+        ? validateInternalRelocation(internal, {
+            unitExists: Boolean(unit),
+            stringExists: Boolean(string),
+          })
+        : validateExternalRelocation(external, {
+            companyExists: Boolean(company),
+            segmentExists: Boolean(segment),
+            panelExists: Boolean(panel),
+          })
+    if (!validation.isValid) {
+      const [firstError] = Object.values(validation.errors)
+      return setFormError(firstError ?? 'Revise os campos do formulário.')
+    }
 
     setSubmitting(true)
     try {

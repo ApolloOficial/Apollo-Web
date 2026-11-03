@@ -1,0 +1,58 @@
+.splash-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  animation: splash-fade-out 0.4s ease-in forwards;
+  animation-delay: calc(var(--splash-duration) - 0.4s);
+}
+
+.splash-screen__zoom {
+  display: inline-flex;
+  animation: splash-zoom var(--splash-duration) ease-in-out forwards;
+}
+
+.splash-screen__logo {
+  display: block;
+  animation: splash-spin calc(var(--splash-duration) - 0.6s)
+    cubic-bezier(0.45, 0, 0.25, 1) 0.2s both;
+}
+
+@keyframes splash-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes splash-zoom {
+  from {
+    transform: scale(0.8);
+  }
+
+  to {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes splash-fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash-screen__zoom,
+  .splash-screen__logo {
+    animation: none;
+  }
+}

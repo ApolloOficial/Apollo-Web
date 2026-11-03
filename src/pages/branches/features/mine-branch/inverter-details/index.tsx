@@ -1,7 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Paginator } from '../../../../../components/paginator'
-import { useApiResource } from '../../../../../hooks/useApiResource'
+import {
+  useInverter,
+  useInverterModels,
+  useInverterStrings,
+  useLastReading,
+} from '../../../../../hooks/useBranchData'
 import { paths } from '../../../../../routes/paths'
 import {
   formatKw,
@@ -9,12 +14,6 @@ import {
   formatPercent,
   padNumber,
 } from '../../../../../utils/formatters'
-import {
-  getInverter,
-  getInverterModels,
-  getLastReading,
-  getStrings,
-} from '../../../../../services/branches.service'
 import { toInverterStatusVM } from '../../../data-access/vm/Branches.vm'
 import { Spinner } from '../../../../../components/spinner'
 
@@ -23,39 +22,15 @@ export function BranchesInverterDetails() {
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
 
-  const fetchInverter = useMemo(() => (id ? () => getInverter(id) : null), [id])
-  const inverterResource = useApiResource(
-    fetchInverter,
-    'Não foi possível carregar o inversor.',
-  )
-  const modelsResource = useApiResource(
-    getInverterModels,
-    'Não foi possível carregar os modelos de inversor.',
-  )
+  const inverterResource = useInverter(id)
+  const modelsResource = useInverterModels()
 
   const inverter = inverterResource.data
   const unitId = inverter?.companyUnitId
   const code = inverter?.code
 
-  const fetchReading = useMemo(
-    () => (unitId && code ? () => getLastReading(unitId, code) : null),
-    [unitId, code],
-  )
-  const fetchEntries = useMemo(
-    () =>
-      unitId && code
-        ? () => getStrings({ unitId, inverterCode: code, page, size })
-        : null,
-    [unitId, code, page, size],
-  )
-  const readingResource = useApiResource(
-    fetchReading,
-    'Não foi possível carregar a última leitura.',
-  )
-  const entriesResource = useApiResource(
-    fetchEntries,
-    'Não foi possível carregar as strings.',
-  )
+  const readingResource = useLastReading(unitId, code)
+  const entriesResource = useInverterStrings(unitId, code, page, size)
 
   const status = inverter ? toInverterStatusVM(inverter.status) : null
   const ratedPower = modelsResource.data?.content.find(

@@ -26,7 +26,6 @@ export function EmployeesFilter({
         onApply()
       }}
     >
-      {/* Sem seta: comboboxes pesquisáveis. */}
       <Combobox
         placeholder="E-mail"
         value={value.email}
@@ -42,7 +41,6 @@ export function EmployeesFilter({
         }))}
         onChange={(role) => onChange({ ...value, role })}
       />
-      {/* Com seta: dropdown. */}
       <SelectInput
         placeholder="Ativo"
         value={value.isActive}

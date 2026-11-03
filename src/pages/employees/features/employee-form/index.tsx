@@ -7,9 +7,12 @@ import { SimpleInput } from '../../../../components/inputs/simple-input'
 import { useCurrentUserContext } from '../../../../hooks/useCurrentUserContext'
 import { getRoles, postEmployee } from '../../../../services/employees.service'
 import {
-  isValidPassword,
-  PASSWORD_RULES_MESSAGE,
-} from '../../../../utils/validators'
+  EMPLOYEE_EMAIL_MAX_LENGTH,
+  EMPLOYEE_NAME_MAX_LENGTH,
+  validateEmployeeForm,
+  type EmployeeFormInput,
+} from '../../../../utils/validators/employee'
+import { PASSWORD_MAX_LENGTH } from '../../../../utils/validators/auth'
 import { isManager } from '../../../../utils/user'
 import type { RoleDTO } from '../../../../types/employee.types'
 import {
@@ -24,11 +27,13 @@ interface Props {
 export function EmployeesForm({ onSuccess }: Props) {
   const [form, setForm] = useState<EmployeeFormVM>(INITIAL_EMPLOYEE_FORM)
   const [roles, setRoles] = useState<RoleDTO[]>([])
-  // A filial vem do gerente autenticado e não aparece no formulário.
   const { user, error: userError } = useCurrentUserContext()
   const companyUnitId = user?.companyUnitId ?? ''
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof EmployeeFormInput, string>>
+  >({})
 
   useEffect(() => {
     void getRoles()
@@ -55,11 +60,11 @@ export function EmployeesForm({ onSuccess }: Props) {
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError('')
-    if (!selectedRole) return setError('Selecione um cargo existente na lista.')
+    const validation = validateEmployeeForm(form, Boolean(selectedRole))
+    setFieldErrors(validation.errors)
+    if (!validation.isValid || !selectedRole) return
     if (!companyUnitId)
       return setError(userError ?? 'A filial do gerente não foi encontrada.')
-    if (!isValidPassword(form.temporaryPassword))
-      return setError(PASSWORD_RULES_MESSAGE)
     setSubmitting(true)
     try {
       await postEmployee({
@@ -90,8 +95,9 @@ export function EmployeesForm({ onSuccess }: Props) {
         label="Nome"
         placeholder="Digite o nome do funcionário"
         value={form.fullName}
-        maxLength={120}
+        maxLength={EMPLOYEE_NAME_MAX_LENGTH}
         required
+        error={fieldErrors.fullName}
         onChange={(fullName) => setForm({ ...form, fullName })}
       />
 
@@ -101,8 +107,9 @@ export function EmployeesForm({ onSuccess }: Props) {
         type="email"
         placeholder="Digite o e-mail do funcionário"
         value={form.email}
-        maxLength={120}
+        maxLength={EMPLOYEE_EMAIL_MAX_LENGTH}
         required
+        error={fieldErrors.email}
         onChange={(email) => setForm({ ...form, email })}
       />
 
@@ -112,9 +119,10 @@ export function EmployeesForm({ onSuccess }: Props) {
         placeholder="Digite a senha temporária do funcionário"
         value={form.temporaryPassword}
         minLength={8}
-        maxLength={72}
+        maxLength={PASSWORD_MAX_LENGTH}
         autoComplete="off"
         required
+        error={fieldErrors.temporaryPassword}
         onChange={(temporaryPassword) =>
           setForm({ ...form, temporaryPassword })
         }
@@ -132,9 +140,9 @@ export function EmployeesForm({ onSuccess }: Props) {
         onChange={(roleName) => setForm({ ...form, roleName })}
       />
 
-      {error && (
+      {(error || fieldErrors.roleName) && (
         <p className="form-layout__error" role="alert">
-          {error}
+          {error || fieldErrors.roleName}
         </p>
       )}
 

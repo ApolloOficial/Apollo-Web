@@ -30,5 +30,6 @@ export const navigationItems: NavigationItem[] = [
     label: 'Métricas',
     to: paths.metrics,
     icon: ChartIcon,
+    roles: [ROLE.MANAGER, ROLE.TECHNICIAN],
   },
 ]

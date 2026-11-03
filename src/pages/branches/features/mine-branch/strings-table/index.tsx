@@ -1,9 +1,8 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Paginator } from '../../../../../components/paginator'
-import { useApiResource } from '../../../../../hooks/useApiResource'
+import { useStringsPage } from '../../../../../hooks/useBranchData'
 import { formatKwp } from '../../../../../utils/formatters'
-import { getStrings } from '../../../../../services/branches.service'
 import { toStringStatusVM } from '../../../data-access/vm/Branches.vm'
 import { BranchesStatusChip } from '../../status-chip'
 import { TableSkeleton } from '../../../../../components/table-skeleton'
@@ -17,14 +16,7 @@ export function BranchesStringsTable({ unitId }: Props) {
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
 
-  const fetchStrings = useMemo(
-    () => (signal: AbortSignal) => getStrings({ unitId, page, size }, signal),
-    [unitId, page, size],
-  )
-  const { data, loading, error, reload } = useApiResource(
-    fetchStrings,
-    'Não foi possível carregar as strings.',
-  )
+  const { data, loading, error, reload } = useStringsPage(unitId, page, size)
   const strings = data?.content ?? []
 
   return (

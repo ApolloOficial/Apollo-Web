@@ -39,7 +39,7 @@
   height: 1.25rem;
   padding: 0 0.3125rem;
   border-radius: 999px;
-  background: var(--color-secondary);
+  background: var(--color-secondary-strong);
   color: var(--color-on-brand);
   font-size: var(--text-label-4);
   font-weight: var(--font-weight-bold);
@@ -85,15 +85,15 @@
 
 .notifications__icon--info {
   background: #bde8fd;
-  color: var(--color-info);
+  color: var(--color-info-text);
 }
 .notifications__icon--alert {
   background: #fff2ca;
-  color: var(--color-alert);
+  color: var(--color-alert-text);
 }
 .notifications__icon--success {
   background: #d4f8ea;
-  color: var(--color-success);
+  color: var(--color-success-darker);
 }
 .notifications__icon--neutral {
   background: #f2f1ed;
@@ -147,7 +147,7 @@
   padding: 0;
   border: 0;
   background: none;
-  color: var(--color-secondary-dark);
+  color: var(--color-secondary-strong);
   font: inherit;
   font-size: var(--text-body-4);
   font-weight: var(--font-weight-bold);

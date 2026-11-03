@@ -1,4 +1,4 @@
-import { request } from './http'
+import { request, toApiError } from './http'
 import { ROLE } from '../utils/user'
 import type {
   MaintenanceRegisterDto,
@@ -41,46 +41,70 @@ function createWarningsQuery({ filters, page, size }: GetWarningsParams) {
   return query
 }
 
-export function getWarnings(params: GetWarningsParams) {
-  const query = createWarningsQuery(params)
+export async function getWarnings(
+  params: GetWarningsParams,
+): Promise<PageDto<WarningDto>> {
+  try {
+    const query = createWarningsQuery(params)
 
-  return request<PageDto<WarningDto>>(`/warnings?${query}`)
-}
-
-export function getWarning(id: number) {
-  return request<WarningDto>(`/warnings/${id}`)
-}
-
-export function getActiveTechnicians(companyUnitId?: string | null) {
-  const query = new URLSearchParams({
-    role: ROLE.TECHNICIAN,
-    isActive: 'true',
-    page: '0',
-    size: '100',
-    sortBy: 'fullName',
-    direction: 'ASC',
-  })
-
-  if (companyUnitId) {
-    query.set('companyUnitId', companyUnitId)
+    return await request<PageDto<WarningDto>>(`/warnings?${query}`)
+  } catch (cause) {
+    throw toApiError(cause)
   }
-
-  return request<PageDto<EmployeeDto>>(`/employees?${query}`)
 }
 
-export function getMaintenanceTypes() {
-  return request<MaintenanceTypeDto[]>('/maintenance-types')
+export async function getWarning(id: number): Promise<WarningDto> {
+  try {
+    return await request<WarningDto>(`/warnings/${id}`)
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }
 
-export function postServiceOrder(
+export async function getActiveTechnicians(
+  companyUnitId?: string | null,
+): Promise<PageDto<EmployeeDto>> {
+  try {
+    const query = new URLSearchParams({
+      role: ROLE.TECHNICIAN,
+      isActive: 'true',
+      page: '0',
+      size: '100',
+      sortBy: 'fullName',
+      direction: 'ASC',
+    })
+
+    if (companyUnitId) {
+      query.set('companyUnitId', companyUnitId)
+    }
+
+    return await request<PageDto<EmployeeDto>>(`/employees?${query}`)
+  } catch (cause) {
+    throw toApiError(cause)
+  }
+}
+
+export async function getMaintenanceTypes(): Promise<MaintenanceTypeDto[]> {
+  try {
+    return await request<MaintenanceTypeDto[]>('/maintenance-types')
+  } catch (cause) {
+    throw toApiError(cause)
+  }
+}
+
+export async function postServiceOrder(
   warningId: number,
   body: ServiceOrderCreateDto,
-) {
-  return request<MaintenanceRegisterDto>(
-    `/warnings/${warningId}/service-order`,
-    {
-      method: 'POST',
-      body,
-    },
-  )
+): Promise<MaintenanceRegisterDto> {
+  try {
+    return await request<MaintenanceRegisterDto>(
+      `/warnings/${warningId}/service-order`,
+      {
+        method: 'POST',
+        body,
+      },
+    )
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }

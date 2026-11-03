@@ -159,7 +159,6 @@ export function RelocationsFeature({
 
   const totalPages = Math.ceil(filtered.length / size)
 
-  // Colunas conforme o protótipo: "Minha filial" mostra o revisor no lugar da origem.
   const layout = isOperator
     ? 'operator'
     : tab === 'my-unit'

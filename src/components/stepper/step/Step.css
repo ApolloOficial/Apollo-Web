@@ -32,12 +32,12 @@
 
 .step__number--action:hover,
 .step__number--action:focus-visible {
-  background: var(--color-secondary-dark);
+  background: var(--color-secondary-strong);
   color: var(--color-on-brand);
 }
 
 .step--active .step__number {
-  background: var(--color-secondary-dark);
+  background: var(--color-secondary-strong);
   color: var(--color-on-brand);
 }
 

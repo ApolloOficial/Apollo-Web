@@ -58,7 +58,6 @@ export default function RelocationDetails({
     }
   }, [id, type])
 
-  // Os detalhes são recarregados sempre que o identificador da rota muda.
   useEffect(() => {
     void (async () => {
       await Promise.resolve()

@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AuthPage } from '../../components/auth-page'
 import { Button } from '../../components/button'
+import { SplashScreen } from '../../components/splash-screen'
 import { StatusMessage } from '../../components/status-message'
 import { MailIcon } from '../../components/icons/mail-icon'
 import { Checkbox } from '../../components/inputs/checkbox'
@@ -15,6 +16,11 @@ import { checkWebAccess, login } from '../../services/auth.service'
 import { ApiError } from '../../services/http'
 import { isTechnician } from '../../utils/user'
 import type { LoginFormViewModel } from '../../types/auth.types'
+import {
+  EMAIL_MAX_LENGTH,
+  PASSWORD_MAX_LENGTH,
+  validateLoginForm,
+} from '../../utils/validators/auth'
 import './Login.css'
 
 const initialForm: LoginFormViewModel = {
@@ -22,6 +28,8 @@ const initialForm: LoginFormViewModel = {
   password: '',
   remember: false,
 }
+
+let splashPlayed = false
 
 export default function Login() {
   const { signIn, signOut } = useAuth()
@@ -33,6 +41,10 @@ export default function Login() {
     loading: false,
     error: null,
   })
+  const [fieldErrors, setFieldErrors] = useState<
+    Partial<Record<keyof LoginFormViewModel, string>>
+  >({})
+  const [showSplash, setShowSplash] = useState(!splashPlayed)
   const navigate = useNavigate()
   const { state, pathname } = useLocation()
   const [passwordReset] = useState(
@@ -46,10 +58,18 @@ export default function Login() {
     if (passwordReset) navigate(pathname, { replace: true, state: null })
   }, [passwordReset, navigate, pathname])
 
+  const finishSplash = useCallback(() => {
+    splashPlayed = true
+    setShowSplash(false)
+  }, [])
+
   const canSubmit = form.email.trim() !== '' && form.password !== ''
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    const validation = validateLoginForm(form)
+    setFieldErrors(validation.errors)
+    if (!validation.isValid) return
     setStatus({ loading: true, error: null })
 
     try {
@@ -81,6 +101,10 @@ export default function Login() {
     setStatus({ loading: false, error: null })
   }
 
+  if (showSplash) {
+    return <SplashScreen onFinish={finishSplash} />
+  }
+
   return (
     <AuthPage title="Entrar" subtitle="Acesse sua conta para continuar">
       <form className="login__form" onSubmit={handleSubmit} noValidate>
@@ -93,6 +117,8 @@ export default function Login() {
           icon={<MailIcon />}
           value={form.email}
           onChange={(email) => setForm((current) => ({ ...current, email }))}
+          maxLength={EMAIL_MAX_LENGTH}
+          error={fieldErrors.email}
           invalid={Boolean(status.error)}
         />
         <PasswordInput
@@ -104,6 +130,8 @@ export default function Login() {
           onChange={(password) =>
             setForm((current) => ({ ...current, password }))
           }
+          maxLength={PASSWORD_MAX_LENGTH}
+          error={fieldErrors.password}
           invalid={Boolean(status.error)}
         />
         <div className="login__options">

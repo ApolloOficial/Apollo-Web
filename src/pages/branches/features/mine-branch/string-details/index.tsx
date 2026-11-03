@@ -1,14 +1,13 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { Paginator } from '../../../../../components/paginator'
-import { useApiResource } from '../../../../../hooks/useApiResource'
+import { useString, useStringPanels } from '../../../../../hooks/useBranchData'
 import { paths } from '../../../../../routes/paths'
 import {
   formatDate,
   formatKwp,
   padNumber,
 } from '../../../../../utils/formatters'
-import { getPanels, getString } from '../../../../../services/branches.service'
 import {
   toPanelStatusVM,
   toStringStatusVM,
@@ -24,19 +23,8 @@ export function BranchesStringDetails() {
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
 
-  const fetchString = useMemo(() => (id ? () => getString(id) : null), [id])
-  const fetchPanels = useMemo(
-    () => (id ? () => getPanels(id, page, size) : null),
-    [id, page, size],
-  )
-  const stringResource = useApiResource(
-    fetchString,
-    'Não foi possível carregar a string.',
-  )
-  const panelsResource = useApiResource(
-    fetchPanels,
-    'Não foi possível carregar as placas.',
-  )
+  const stringResource = useString(id)
+  const panelsResource = useStringPanels(id, page, size)
 
   const item = stringResource.data
   const status = item ? toStringStatusVM(item.status) : null

@@ -12,6 +12,8 @@ const NETWORK_ERROR_MESSAGE =
   'Não foi possível conectar ao servidor. Verifique sua conexão e tente novamente.'
 const INVALID_RESPONSE_MESSAGE =
   'O servidor retornou uma resposta inesperada. Tente novamente em instantes.'
+const UNEXPECTED_ERROR_MESSAGE =
+  'Não foi possível concluir a operação. Tente novamente.'
 const CREDENTIAL_PATHS = ['/auth/login', '/auth/password', '/mobile/auth/']
 
 const BASE_URL = (
@@ -50,6 +52,14 @@ interface RequestOptions {
 
 export function isAbortError(cause: unknown): boolean {
   return cause instanceof DOMException && cause.name === 'AbortError'
+}
+
+export function toApiError(cause: unknown): Error {
+  if (cause instanceof ApiError || isAbortError(cause)) {
+    return cause as Error
+  }
+
+  return new ApiError(UNEXPECTED_ERROR_MESSAGE, 0)
 }
 
 export async function request<TResponse>(

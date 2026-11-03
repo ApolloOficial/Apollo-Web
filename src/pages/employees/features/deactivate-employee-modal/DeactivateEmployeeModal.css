@@ -57,7 +57,7 @@
 .deactivate-modal__close {
   border: 2px solid var(--color-secondary);
   background: var(--color-background);
-  color: var(--color-secondary);
+  color: var(--color-secondary-strong);
 }
 
 .deactivate-modal__confirm {

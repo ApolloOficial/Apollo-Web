@@ -82,14 +82,14 @@
   padding: 0.5rem 1.5rem;
   border: 2px solid var(--color-secondary);
   border-radius: 999px;
-  color: var(--color-secondary);
+  color: var(--color-secondary-strong);
   font-weight: var(--font-weight-bold);
   text-decoration: none;
   white-space: nowrap;
 }
 
 .alerts-status--resolved {
-  color: var(--color-success-dark);
+  color: var(--color-success-darker);
 }
 
 .alerts-table__state {
@@ -124,7 +124,7 @@
 .alerts-details__open-order {
   min-width: 12rem;
   min-height: 3.25rem;
-  background: var(--color-secondary);
+  background: var(--color-secondary-strong);
   color: var(--color-on-brand);
 }
 

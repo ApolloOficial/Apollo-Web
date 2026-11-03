@@ -1,6 +1,10 @@
 import type { PanelDto } from '../types/panel.types'
-import { request } from './http'
+import { request, toApiError } from './http'
 
-export function getPanelById(id: string) {
-  return request<PanelDto>(`/panels/${encodeURIComponent(id)}`)
+export async function getPanelById(id: string): Promise<PanelDto> {
+  try {
+    return await request<PanelDto>(`/panels/${encodeURIComponent(id)}`)
+  } catch (cause) {
+    throw toApiError(cause)
+  }
 }
