@@ -12,6 +12,7 @@ import type {
   ResetPasswordLocationStateViewModel,
 } from '../../types/auth.types'
 import { translateAuthMessage } from '../../utils/auth-messages'
+import { markPasswordRecovered } from '../../utils/recovered-passwords'
 import { PASSWORD_RULES_MESSAGE, isValidPassword } from '../../utils/validators'
 import './ResetPassword.css'
 
@@ -20,12 +21,17 @@ const initialForm: ResetPasswordFormValues = {
   confirmPassword: '',
 }
 
-function getResetToken(state: unknown): string | null {
+function getResetState(
+  state: unknown,
+): ResetPasswordLocationStateViewModel | null {
   if (typeof state !== 'object' || state === null) return null
 
-  const { resetToken } = state as Partial<ResetPasswordLocationStateViewModel>
+  const { resetToken, email } =
+    state as Partial<ResetPasswordLocationStateViewModel>
 
-  return typeof resetToken === 'string' && resetToken !== '' ? resetToken : null
+  if (typeof resetToken !== 'string' || resetToken === '') return null
+
+  return { resetToken, email: typeof email === 'string' ? email : '' }
 }
 
 export default function ResetPassword() {
@@ -41,7 +47,7 @@ export default function ResetPassword() {
     error: null,
   })
 
-  const [resetToken] = useState(() => getResetToken(state))
+  const [resetState] = useState(() => getResetState(state))
   const newPasswordValid = isValidPassword(form.newPassword)
   const passwordsMatch = form.newPassword === form.confirmPassword
   const canSubmit =
@@ -53,12 +59,16 @@ export default function ResetPassword() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!resetToken) return
+    if (!resetState) return
 
     setStatus({ loading: true, error: null })
 
     try {
-      await resetPassword({ resetToken, newPassword: form.newPassword })
+      await resetPassword({
+        resetToken: resetState.resetToken,
+        newPassword: form.newPassword,
+      })
+      markPasswordRecovered(resetState.email)
       navigate(paths.login, {
         replace: true,
         state: { passwordReset: true },
@@ -71,7 +81,7 @@ export default function ResetPassword() {
     }
   }
 
-  if (!resetToken) return <Navigate to={paths.forgotPassword} replace />
+  if (!resetState) return <Navigate to={paths.forgotPassword} replace />
 
   return (
     <AuthPage

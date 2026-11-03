@@ -88,6 +88,7 @@ export interface PasswordResetPayloadDto {
 
 export interface RecoveryChallengeViewModel {
   challengeId: string
+  email: string
   method: string
   destination: string
   resendInSeconds: number
@@ -95,6 +96,7 @@ export interface RecoveryChallengeViewModel {
 
 export interface ResetPasswordLocationStateViewModel {
   resetToken: string
+  email: string
 }
 
 export interface CurrentUserDto {

@@ -62,7 +62,10 @@ export function VerifyCode({ challenge, onRestart }: VerifyCodeProps) {
         challengeId: challenge.challengeId,
         code: form.code,
       })
-      const state: ResetPasswordLocationStateViewModel = { resetToken }
+      const state: ResetPasswordLocationStateViewModel = {
+        resetToken,
+        email: challenge.email,
+      }
 
       navigate(paths.resetPassword, { state, replace: true })
     } catch (err) {

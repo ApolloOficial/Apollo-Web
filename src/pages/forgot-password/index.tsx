@@ -59,6 +59,7 @@ export default function ForgotPassword() {
 
       setChallenge({
         challengeId: started.challengeId,
+        email: form.email.trim(),
         method,
         destination: sent.destination,
         resendInSeconds: sent.resendInSeconds,
