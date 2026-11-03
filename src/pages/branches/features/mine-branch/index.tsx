@@ -4,6 +4,7 @@ import {
 } from '../../../../hooks/useBranchData'
 import { formatCnpj, formatKwp } from '../../../../utils/formatters'
 import { BranchesInvertersTable } from './inverters-table'
+import { PageLoading } from '../../../../components/page-loading'
 import { Spinner } from '../../../../components/spinner'
 
 interface Props {
@@ -17,9 +18,7 @@ export function BranchesMineBranch({ unitId, userLoading }: Props) {
 
   if (userLoading) {
     return (
-      <p className="branches-table__state">
-        <Spinner />
-      </p>
+      <PageLoading />
     )
   }
 

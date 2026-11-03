@@ -8,7 +8,7 @@ import { useWarning } from '../../../hooks/useAlertData'
 import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { formatDate } from '../../../utils/formatters'
 import { isOperator } from '../../../utils/user'
-import { Spinner } from '../../../components/spinner'
+import { PageLoading } from '../../../components/page-loading'
 import '../Alerts.css'
 
 interface Props {
@@ -23,9 +23,7 @@ export default function AlertDetails({ audience = 'operator' }: Props) {
 
   if (warningId !== null && loading) {
     return (
-      <p className="alerts-details__state">
-        <Spinner />
-      </p>
+      <PageLoading />
     )
   }
 

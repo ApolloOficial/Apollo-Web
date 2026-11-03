@@ -17,24 +17,23 @@ interface SearchGroup {
   label: string
 }
 
-const SUBTITLE_LABELS: Record<string, string> = {
-  Employee: 'Funcionário',
-  'Company Unit': 'Filial',
-  Inverter: 'Inversor',
-  Panel: 'Placa',
-  'Internal Relocation': 'Realocação interna',
-  'External Relocation': 'Realocação externa',
-}
-
-function getSubtitleLabel(subtitle: string) {
-  return SUBTITLE_LABELS[subtitle] ?? subtitle
+function getItemDetail(item: SearchResultDto, label: string) {
+  return (
+    <>
+      {item.context && `${item.context} · `}
+      em <strong className="global-search__item-category">{label}</strong>
+    </>
+  )
 }
 
 const SEARCH_GROUPS: SearchGroup[] = [
   { key: 'employees', label: 'Funcionários' },
   { key: 'companyUnits', label: 'Filiais' },
   { key: 'inverters', label: 'Inversores' },
+  { key: 'strings', label: 'Strings' },
   { key: 'panels', label: 'Placas' },
+  { key: 'alerts', label: 'Alertas' },
+  { key: 'serviceOrders', label: 'Ordens de serviço' },
   { key: 'relocations', label: 'Realocações' },
 ]
 
@@ -171,11 +170,9 @@ export function GlobalSearch({
                         <span className="global-search__item-title">
                           {item.title}
                         </span>
-                        {item.subtitle && (
-                          <span className="global-search__item-subtitle">
-                            {getSubtitleLabel(item.subtitle)}
-                          </span>
-                        )}
+                        <span className="global-search__item-subtitle">
+                          {getItemDetail(item, section.label)}
+                        </span>
                       </button>
                     </li>
                   ))}

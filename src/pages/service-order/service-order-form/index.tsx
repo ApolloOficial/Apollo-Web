@@ -17,7 +17,7 @@ import {
   useServiceOrderFormData,
 } from '../../../hooks/useServiceOrderData'
 import { severityLabels } from '../../alerts/data-access/vm/Alerts.vm'
-import { Spinner } from '../../../components/spinner'
+import { PageLoading } from '../../../components/page-loading'
 import { validateServiceOrderForm } from '../../../utils/validators'
 
 type ModalState = 'success' | 'error' | null
@@ -129,9 +129,7 @@ export default function ServiceOrderForm() {
 
   if (loading) {
     return (
-      <p>
-        <Spinner />
-      </p>
+      <PageLoading />
     )
   }
 

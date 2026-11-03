@@ -6,7 +6,7 @@ import {
   useRelocationDetail,
 } from '../../../hooks/useRelocationData'
 import { relocationStatusLabels } from '../data-access/vm/Relocations.vm'
-import { Spinner } from '../../../components/spinner'
+import { PageLoading } from '../../../components/page-loading'
 import '../Relocations.css'
 
 export default function RelocationDetails({
@@ -46,9 +46,7 @@ export default function RelocationDetails({
 
   if (loading)
     return (
-      <p>
-        <Spinner />
-      </p>
+      <PageLoading />
     )
   if (!data)
     return (

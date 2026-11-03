@@ -8,7 +8,7 @@ import {
 import { useLocation } from 'react-router-dom'
 import type { HeaderProps } from '../../types/ui.types'
 import { getInitials } from '../../utils/user'
-import { SearchInput } from '../inputs/search-input'
+import { GlobalSearch } from '../global-search'
 import { BellIcon } from '../icons/bell-icon'
 import { ChevronRightIcon } from '../icons/chevron-right-icon'
 import { LogoutIcon } from '../icons/logout-icon'
@@ -20,7 +20,6 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
   const { pathname } = useLocation()
   const accountRef = useRef<HTMLDivElement>(null)
   const [menuOpen, setMenuOpen] = useState(false)
-  const [search, setSearch] = useState('')
   const notificationsRef = useRef<HTMLDivElement>(null)
   const [notificationsOpen, setNotificationsOpen] = useState(false)
   const menuId = useId()
@@ -150,11 +149,7 @@ export function Header({ user, loading = false, onLogout }: HeaderProps) {
     <header className="header">
       {pathname !== '/' && (
         <div className="header__search">
-          <SearchInput
-            value={search}
-            onChange={setSearch}
-            placeholder="Busque por projetos, equipes e muito mais."
-          />
+          <GlobalSearch />
         </div>
       )}
 
