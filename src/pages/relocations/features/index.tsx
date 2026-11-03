@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useTabIndicator } from '../../../hooks/useTabIndicator'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
@@ -15,10 +15,9 @@ import type {
   InternalRelocationDTO,
 } from '../../../types/relocation.types'
 import {
-  getExternalRelocations,
-  getIncomingInternalRelocations,
-  getMyInternalRelocations,
-} from '../../../services/relocations.service'
+  useRelocationList,
+  type RelocationListSource,
+} from '../../../hooks/useRelocationData'
 import {
   INITIAL_RELOCATION_FILTERS,
   relocationStatusLabels as statusLabels,
@@ -69,7 +68,6 @@ export function RelocationsFeature({
 }) {
   const { user } = useCurrentUserContext()
   const canRequestRelocation = isOperatorRole(user?.role)
-  const [items, setItems] = useState<RelocationListItemVM[]>([])
   const [draft, setDraft] = useState<RelocationFiltersVM>(
     initialFilters ?? INITIAL_RELOCATION_FILTERS,
   )
@@ -82,66 +80,26 @@ export function RelocationsFeature({
     searchParams.get('tab') === 'internal' ? 'internal' : 'external'
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   const isOperator = audience === 'operator'
 
-  const load = useCallback(async () => {
-    setLoading(true)
-    setError('')
+  const source: RelocationListSource =
+    isOperator && operatorTab === 'internal'
+      ? 'my-internal'
+      : !isOperator && tab === 'my-unit'
+        ? 'incoming-internal'
+        : 'external'
+  const { data, loading, error, reload } = useRelocationList(
+    source,
+    filters.status,
+  )
+  const items = useMemo<RelocationListItemVM[]>(() => {
+    if (!data) return []
 
-    try {
-      if (isOperator && operatorTab === 'internal') {
-        const result = await getMyInternalRelocations({
-          status: filters.status,
-          page: 0,
-          size: 100,
-        })
-
-        setItems(result.content.map(toInternal))
-      } else if (isOperator) {
-        const result = await getExternalRelocations({
-          status: filters.status,
-          page: 0,
-          size: 100,
-        })
-
-        setItems(result.content.map(toExternal))
-      } else if (tab === 'my-unit') {
-        const result = await getIncomingInternalRelocations({
-          status: filters.status,
-          page: 0,
-          size: 100,
-        })
-
-        setItems(result.content.map(toInternal))
-      } else {
-        const result = await getExternalRelocations({
-          status: filters.status,
-          page: 0,
-          size: 100,
-        })
-
-        setItems(result.content.map(toExternal))
-      }
-    } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : 'Não foi possível carregar as realocações.',
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [isOperator, operatorTab, filters, tab])
-
-  useEffect(() => {
-    void (async () => {
-      await Promise.resolve()
-      await load()
-    })()
-  }, [load])
+    return data.kind === 'internal'
+      ? data.items.map(toInternal)
+      : data.items.map(toExternal)
+  }, [data])
 
   const filtered = useMemo(
     () =>
@@ -343,9 +301,7 @@ export function RelocationsFeature({
 
           {loading && <TableSkeleton />}
 
-          {!loading && error && (
-            <ErrorState message={error} onRetry={() => void load()} />
-          )}
+          {!loading && error && <ErrorState message={error} onRetry={reload} />}
 
           {!loading && !error && visible.length === 0 && (
             <p className="relocations-table__state">

@@ -1,23 +1,13 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { paths } from '../../../routes/paths'
-import type {
-  ExternalRelocationDTO,
-  InternalRelocationDTO,
-} from '../../../types/relocation.types'
 import {
-  getExternalRelocation,
-  getInternalRelocation,
-  reviewExternalRelocation,
-  reviewInternalRelocation,
-} from '../../../services/relocations.service'
+  useRelocationActions,
+  useRelocationDetail,
+} from '../../../hooks/useRelocationData'
 import { relocationStatusLabels } from '../data-access/vm/Relocations.vm'
 import { Spinner } from '../../../components/spinner'
 import '../Relocations.css'
-
-type Data =
-  | { type: 'INTERNAL'; item: InternalRelocationDTO }
-  | { type: 'EXTERNAL'; item: ExternalRelocationDTO }
 
 export default function RelocationDetails({
   managerMode = false,
@@ -26,44 +16,15 @@ export default function RelocationDetails({
 }) {
   const { id, type } = useParams()
   const navigate = useNavigate()
-  const [data, setData] = useState<Data | null>(null)
-  const [loading, setLoading] = useState(true)
   const [reviewing, setReviewing] = useState(false)
   const [error, setError] = useState('')
 
-  const load = useCallback(async () => {
-    if (!id || !type) {
-      setError('Realocação inválida.')
-      setLoading(false)
-      return
-    }
-    try {
-      if (type === 'internal')
-        setData({
-          type: 'INTERNAL',
-          item: await getInternalRelocation(Number(id)),
-        })
-      else if (type === 'external')
-        setData({
-          type: 'EXTERNAL',
-          item: await getExternalRelocation(Number(id)),
-        })
-      else setError('Tipo de realocação inválido.')
-    } catch (cause) {
-      setError(
-        cause instanceof Error ? cause.message : 'Erro ao carregar detalhes.',
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [id, type])
-
-  useEffect(() => {
-    void (async () => {
-      await Promise.resolve()
-      await load()
-    })()
-  }, [load])
+  const detail = useRelocationDetail(type, id)
+  const { reviewInternalRelocation, reviewExternalRelocation } =
+    useRelocationActions()
+  const data = detail.data
+  const loading = Boolean(id && type) && detail.loading
+  const loadError = !id || !type ? 'Realocação inválida.' : detail.error
 
   async function review(status: 'APROVADA' | 'REJEITADA') {
     if (!data) return
@@ -92,7 +53,7 @@ export default function RelocationDetails({
   if (!data)
     return (
       <p className="relocations-error" role="alert">
-        {error}
+        {error || loadError}
       </p>
     )
   const { item } = data

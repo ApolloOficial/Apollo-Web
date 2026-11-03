@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Button } from '../../../components/button'
 import { FeedbackModal } from '../../../components/feedback-modal'
@@ -12,16 +12,11 @@ import { TextareaInput } from '../../../components/inputs/textarea-input'
 import { paths } from '../../../routes/paths'
 import errorImage from '../../../assets/images/relocation-error.png'
 import successImage from '../../../assets/images/relocation-success.png'
-import type { WarningDto } from '../../../types/alert.types'
 import {
-  getActiveTechnicians,
-  getMaintenanceTypes,
-  getWarning,
-  postServiceOrder,
-} from '../../../services/alerts.service'
+  useServiceOrderActions,
+  useServiceOrderFormData,
+} from '../../../hooks/useServiceOrderData'
 import { severityLabels } from '../../alerts/data-access/vm/Alerts.vm'
-import type { EmployeeDto } from '../../../types/employee.types'
-import type { MaintenanceTypeDto } from '../../../types/service-order.types'
 import { Spinner } from '../../../components/spinner'
 import { validateServiceOrderForm } from '../../../utils/validators'
 
@@ -52,14 +47,21 @@ export default function ServiceOrderForm() {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  const [warning, setWarning] = useState<WarningDto | null>(null)
-  const [technicians, setTechnicians] = useState<EmployeeDto[]>([])
-  const [maintenanceTypes, setMaintenanceTypes] = useState<
-    MaintenanceTypeDto[]
-  >([])
+  const alertId = id && !Number.isNaN(Number(id)) ? Number(id) : null
+  const formData = useServiceOrderFormData(alertId)
+  const { createServiceOrder } = useServiceOrderActions()
+  const warning = formData.data?.warning ?? null
+  const technicians = useMemo(
+    () => formData.data?.technicians ?? [],
+    [formData.data],
+  )
+  const maintenanceTypes = useMemo(
+    () => formData.data?.maintenanceTypes ?? [],
+    [formData.data],
+  )
+  const loading = alertId !== null && formData.loading
 
   const [form, setForm] = useState<ServiceOrderFormState>(INITIAL_FORM)
-  const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [modal, setModal] = useState<ModalState>(null)
@@ -70,52 +72,6 @@ export default function ServiceOrderForm() {
   ) {
     setForm((current) => ({ ...current, [field]: value }))
   }
-
-  useEffect(() => {
-    let active = true
-
-    void (async () => {
-      await Promise.resolve()
-
-      if (!active) return
-
-      if (!id || Number.isNaN(Number(id))) {
-        setError('Alerta inválido.')
-        setLoading(false)
-        return
-      }
-
-      try {
-        const warningResult = await getWarning(Number(id))
-        const [techniciansResult, typesResult] = await Promise.all([
-          getActiveTechnicians(warningResult.companyUnitId),
-          getMaintenanceTypes(),
-        ])
-
-        if (!active) return
-
-        setWarning(warningResult)
-        setTechnicians(techniciansResult.content)
-        setMaintenanceTypes(typesResult)
-      } catch (cause: unknown) {
-        if (!active) return
-
-        setError(
-          cause instanceof Error
-            ? cause.message
-            : 'Não foi possível carregar os dados da OS.',
-        )
-      } finally {
-        if (active) {
-          setLoading(false)
-        }
-      }
-    })()
-
-    return () => {
-      active = false
-    }
-  }, [id])
 
   const technicianOptions = useMemo(
     () =>
@@ -151,7 +107,7 @@ export default function ServiceOrderForm() {
     setError('')
 
     try {
-      await postServiceOrder(warning.id, {
+      await createServiceOrder(warning.id, {
         maintenanceTypeId: Number(form.maintenanceTypeId),
         technicianId: selectedTechnician.id,
         dueDate: form.dueDate ? `${form.dueDate}T23:59:59` : null,
@@ -183,7 +139,7 @@ export default function ServiceOrderForm() {
     return (
       <FormLayout breadcrumb={breadcrumb} title="Registrar Ordem de Serviço">
         <p className="form-layout__error" role="alert">
-          {error}
+          {alertId === null ? 'Alerta inválido.' : formData.error || error}
         </p>
       </FormLayout>
     )

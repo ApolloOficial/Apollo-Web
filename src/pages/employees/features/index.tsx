@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   AppliedFilters,
@@ -7,12 +7,11 @@ import {
 import { Paginator } from '../../../components/paginator'
 import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { isManager } from '../../../utils/user'
-import type { RoleDTO } from '../../../types/employee.types'
 import {
-  getEmployees,
-  getRoles,
-  patchDeactivateEmployee,
-} from '../../../services/employees.service'
+  useEmployeeActions,
+  useEmployeeRoles,
+  useEmployeesPage,
+} from '../../../hooks/useEmployeeData'
 import {
   INITIAL_EMPLOYEE_FILTERS,
   type EmployeeFiltersVM,
@@ -26,8 +25,6 @@ import { ErrorState } from '../../../components/error-state'
 
 export function EmployeesFeature() {
   const { user, loading: loadingUser } = useCurrentUserContext()
-  const [employees, setEmployees] = useState<EmployeeDto[]>([])
-  const [roles, setRoles] = useState<RoleDTO[]>([])
   const [draft, setDraft] = useState<EmployeeFiltersVM>(
     INITIAL_EMPLOYEE_FILTERS,
   )
@@ -43,51 +40,28 @@ export function EmployeesFeature() {
   const [selected, setSelected] = useState<EmployeeDto | null>(null)
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
-  const [totalPages, setTotalPages] = useState(0)
-  const [loading, setLoading] = useState(true)
   const [deactivating, setDeactivating] = useState(false)
-  const [error, setError] = useState('')
   const [actionError, setActionError] = useState('')
 
   const companyUnitId = user?.companyUnitId ?? null
   const currentUserId = user?.userId ?? null
 
-  const loadEmployees = useCallback(async () => {
-    if (loadingUser) return
-
-    setLoading(true)
-    setError('')
-
-    try {
-      const result = await getEmployees(filters, page, size, companyUnitId)
-
-      setEmployees(result.content)
-      setTotalPages(result.totalPages)
-    } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : 'Não foi possível carregar os funcionários.',
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [filters, page, size, loadingUser, companyUnitId])
-
-  useEffect(() => {
-    void (async () => {
-      await Promise.resolve()
-      await loadEmployees()
-    })()
-  }, [loadEmployees])
-
-  useEffect(() => {
-    void getRoles()
-      .then(({ content }) => {
-        setRoles(content.filter((role) => !isManager(role.name)))
-      })
-      .catch(() => setRoles([]))
-  }, [])
+  const { data, loading, error, reload } = useEmployeesPage(
+    filters,
+    page,
+    size,
+    companyUnitId,
+    loadingUser,
+  )
+  const rolesResource = useEmployeeRoles()
+  const { deactivateEmployee } = useEmployeeActions()
+  const employees = useMemo(() => data?.content ?? [], [data])
+  const totalPages = data?.totalPages ?? 0
+  const roles = useMemo(
+    () =>
+      rolesResource.data?.content.filter((role) => !isManager(role.name)) ?? [],
+    [rolesResource.data],
+  )
 
   const emailOptions = useMemo(
     () => [...new Set(employees.map(({ email }) => email))],
@@ -183,9 +157,9 @@ export function EmployeesFeature() {
     setActionError('')
 
     try {
-      await patchDeactivateEmployee(selected.id)
+      await deactivateEmployee(selected.id)
       setSelected(null)
-      await loadEmployees()
+      reload()
     } catch (cause) {
       setActionError(
         cause instanceof Error
@@ -276,9 +250,7 @@ export function EmployeesFeature() {
 
         {loading && <TableSkeleton />}
 
-        {!loading && error && (
-          <ErrorState message={error} onRetry={() => void loadEmployees()} />
-        )}
+        {!loading && error && <ErrorState message={error} onRetry={reload} />}
 
         {!loading && !error && employees.length === 0 && (
           <p className="employees-table__state">

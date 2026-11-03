@@ -1,13 +1,13 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   AppliedFilters,
   type AppliedFilter,
 } from '../../../components/applied-filters'
+import { useAllBranches } from '../../../hooks/useBranchData'
 import { useLayoutContext } from '../../../hooks/useLayoutContext'
 import { useTabIndicator } from '../../../hooks/useTabIndicator'
 import { paths } from '../../../routes/paths'
-import { getBranches } from '../../../services/branches.service'
 import {
   INITIAL_BRANCH_FILTERS,
   type BranchesTabVM,
@@ -35,22 +35,21 @@ export function BranchesFeature() {
     () => (urlName ? { ...applied, name: urlName } : applied),
     [applied, urlName],
   )
-  const [nameOptions, setNameOptions] = useState<string[]>([])
-  const [cityOptions, setCityOptions] = useState<string[]>([])
-
-  useEffect(() => {
-    void getBranches(INITIAL_BRANCH_FILTERS, 0, 100)
-      .then(({ content }) => {
-        setNameOptions(uniqueSorted(content.map((branch) => branch.name)))
-        setCityOptions(
-          uniqueSorted(content.map((branch) => branch.address.city)),
-        )
-      })
-      .catch(() => {
-        setNameOptions([])
-        setCityOptions([])
-      })
-  }, [])
+  const allBranches = useAllBranches()
+  const nameOptions = useMemo(
+    () =>
+      uniqueSorted(
+        allBranches.data?.content.map((branch) => branch.name) ?? [],
+      ),
+    [allBranches.data],
+  )
+  const cityOptions = useMemo(
+    () =>
+      uniqueSorted(
+        allBranches.data?.content.map((branch) => branch.address.city) ?? [],
+      ),
+    [allBranches.data],
+  )
 
   const appliedFilters = useMemo<AppliedFilter[]>(() => {
     const result: AppliedFilter[] = []

@@ -6,10 +6,7 @@ import { Button } from '../../../components/button'
 import { SimpleInput } from '../../../components/inputs/simple-input'
 import { StatusMessage } from '../../../components/status-message'
 import { paths } from '../../../routes/paths'
-import {
-  sendRecoveryCode,
-  verifyRecoveryCode,
-} from '../../../services/auth.service'
+import { useAuthActions } from '../../../hooks/useAuthActions'
 import type {
   RecoveryChallengeViewModel,
   ResetPasswordLocationStateViewModel,
@@ -30,6 +27,7 @@ interface VerifyCodeProps {
 }
 
 export function VerifyCode({ challenge, onRestart }: VerifyCodeProps) {
+  const { verifyRecoveryCode, sendRecoveryCode } = useAuthActions()
   const [form, setForm] = useState<VerifyCodeFormViewModel>(initialForm)
   const [destination, setDestination] = useState(challenge.destination)
   const [secondsLeft, setSecondsLeft] = useState(challenge.resendInSeconds)

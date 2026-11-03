@@ -1,5 +1,8 @@
 import { useMemo } from 'react'
-import type { BranchFiltersVM } from '../pages/branches/data-access/vm/Branches.vm'
+import {
+  INITIAL_BRANCH_FILTERS,
+  type BranchFiltersVM,
+} from '../pages/branches/data-access/vm/Branches.vm'
 import {
   getActiveStringsCount,
   getBranch,
@@ -9,6 +12,8 @@ import {
   getInverters,
   getLastReading,
   getLastReadings,
+  postInverter,
+  getPanelModels,
   getPanels,
   getString,
   getStrings,
@@ -139,4 +144,26 @@ export function useStringPanels(
   )
 
   return useApiResource(fetcher, 'Não foi possível carregar as placas.')
+}
+
+const branchActions = { createInverter: postInverter }
+
+export function useBranchActions() {
+  return branchActions
+}
+
+export function usePanelModels() {
+  return useApiResource(
+    getPanelModels,
+    'Não foi possível carregar os modelos de placa.',
+  )
+}
+
+const fetchAllBranches = () => getBranches(INITIAL_BRANCH_FILTERS, 0, 100)
+
+export function useAllBranches() {
+  return useApiResource(
+    fetchAllBranches,
+    'Não foi possível carregar as filiais.',
+  )
 }

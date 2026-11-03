@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   AppliedFilters,
@@ -6,11 +6,11 @@ import {
 } from '../../../components/applied-filters'
 import { Paginator } from '../../../components/paginator'
 import { Tag, type TagTone } from '../../../components/tag'
+import type { WarningDto } from '../../../types/alert.types'
+import { useWarningsPage } from '../../../hooks/useAlertData'
 import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { formatDate } from '../../../utils/formatters'
 import { isOperator } from '../../../utils/user'
-import type { WarningDto } from '../../../types/alert.types'
-import { getWarnings } from '../../../services/alerts.service'
 import {
   INITIAL_ALERT_FILTERS,
   severityLabels,
@@ -39,7 +39,6 @@ const severityTones: Record<WarningDto['severity'], TagTone> = {
 export function AlertsFeature({ audience, initialFilters }: Props) {
   const { user } = useCurrentUserContext()
   const canOpenServiceOrder = isOperator(user?.role)
-  const [warnings, setWarnings] = useState<WarningDto[]>([])
   const [draft, setDraft] = useState<AlertsFiltersViewModel>(
     initialFilters ?? INITIAL_ALERT_FILTERS,
   )
@@ -48,40 +47,9 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
   )
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
-  const [totalPages, setTotalPages] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-
-  const loadWarnings = useCallback(async () => {
-    setLoading(true)
-    setError('')
-
-    try {
-      const result = await getWarnings({
-        filters,
-        page,
-        size,
-      })
-
-      setWarnings(result.content)
-      setTotalPages(result.totalPages)
-    } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : 'Não foi possível carregar os alertas.',
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [filters, page, size])
-
-  useEffect(() => {
-    void (async () => {
-      await Promise.resolve()
-      await loadWarnings()
-    })()
-  }, [loadWarnings])
+  const { data, loading, error, reload } = useWarningsPage(filters, page, size)
+  const warnings = useMemo<WarningDto[]>(() => data?.content ?? [], [data])
+  const totalPages = data?.totalPages ?? 0
 
   const appliedFilters = useMemo<AppliedFilter[]>(() => {
     const result: AppliedFilter[] = []
@@ -245,9 +213,7 @@ export function AlertsFeature({ audience, initialFilters }: Props) {
             )
           })}
 
-        {!loading && error && (
-          <ErrorState message={error} onRetry={() => void loadWarnings()} />
-        )}
+        {!loading && error && <ErrorState message={error} onRetry={reload} />}
 
         {!loading && !error && warnings.length === 0 && (
           <p className="alerts-table__state">Nenhum alerta encontrado.</p>
