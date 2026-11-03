@@ -7,10 +7,7 @@ import { SimpleInput } from '../../components/inputs/simple-input'
 import { SlideSwitch } from '../../components/slide-switch'
 import { StatusMessage } from '../../components/status-message'
 import { paths } from '../../routes/paths'
-import {
-  sendRecoveryCode,
-  startPasswordRecovery,
-} from '../../services/auth.service'
+import { useAuthActions } from '../../hooks/useAuthActions'
 import type {
   ForgotPasswordFormValues,
   RecoveryChallengeViewModel,
@@ -26,6 +23,7 @@ const initialForm: ForgotPasswordFormValues = {
 }
 
 export default function ForgotPassword() {
+  const { startPasswordRecovery, sendRecoveryCode } = useAuthActions()
   const [form, setForm] = useState<ForgotPasswordFormValues>(initialForm)
   const [challenge, setChallenge] = useState<RecoveryChallengeViewModel | null>(
     null,

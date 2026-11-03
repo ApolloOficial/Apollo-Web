@@ -5,20 +5,11 @@ import type { WarningDto } from '../../../../types/alert.types'
 import { formatDate, formatDateTime } from '../../../../utils/formatters'
 import type { ServiceOrderDto } from '../../../../types/service-order.types'
 import {
-  getServiceOrder,
-  getServiceOrderWarning,
-} from '../../../../services/service-orders.service'
-import {
   priorityLabels,
   serviceOrderStatusLabels,
 } from '../../data-access/vm/ServiceOrder.vm'
 import { Spinner } from '../../../../components/spinner'
-import { useApiResource } from '../../../../hooks/useApiResource'
-
-interface ServiceOrderDetails {
-  order: ServiceOrderDto
-  warning: WarningDto
-}
+import { useServiceOrderDetails } from '../../../../hooks/useServiceOrderData'
 
 interface HistoryItem {
   title: string
@@ -49,22 +40,7 @@ export function ServiceOrderDetailsFeature() {
   const { id } = useParams()
 
   const orderId = id && !Number.isNaN(Number(id)) ? Number(id) : null
-  const fetchDetails = useMemo(
-    () =>
-      orderId === null
-        ? null
-        : async (): Promise<ServiceOrderDetails> => {
-            const order = await getServiceOrder(orderId)
-            const warning = await getServiceOrderWarning(order.warningId)
-
-            return { order, warning }
-          },
-    [orderId],
-  )
-  const { data, loading, error } = useApiResource(
-    fetchDetails,
-    'Não foi possível carregar a ordem de serviço.',
-  )
+  const { data, loading, error } = useServiceOrderDetails(orderId)
   const order = data?.order ?? null
   const warning = data?.warning ?? null
 

@@ -12,8 +12,7 @@ import { SimpleInput } from '../../components/inputs/simple-input'
 import { TextLink } from '../../components/text-link'
 import { paths } from '../../routes/paths'
 import { useAuth } from '../../hooks/useAuth'
-import { checkWebAccess, login } from '../../services/auth.service'
-import { ApiError } from '../../services/http'
+import { useAuthActions, isForbiddenError } from '../../hooks/useAuthActions'
 import { isTechnician } from '../../utils/user'
 import type { LoginFormViewModel } from '../../types/auth.types'
 import {
@@ -32,6 +31,7 @@ const initialForm: LoginFormViewModel = {
 let splashPlayed = false
 
 export default function Login() {
+  const { checkWebAccess, login } = useAuthActions()
   const { signIn, signOut } = useAuth()
   const [form, setForm] = useState<LoginFormViewModel>(initialForm)
   const [status, setStatus] = useState<{
@@ -90,7 +90,7 @@ export default function Login() {
       navigate(firstAccess ? paths.updatePassword : paths.home)
     } catch (err) {
       signOut()
-      if (err instanceof ApiError && err.status === 403) {
+      if (isForbiddenError(err)) {
         navigate(paths.permissionDenied, { replace: true })
         return
       }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Button } from '../../../../components/button'
 import { FormActions } from '../../../../components/form-actions'
@@ -7,26 +7,14 @@ import { SelectInput } from '../../../../components/inputs/select-input'
 import { SimpleInput } from '../../../../components/inputs/simple-input'
 import { TextareaInput } from '../../../../components/inputs/textarea-input'
 import { useCurrentUserContext } from '../../../../hooks/useCurrentUserContext'
-import type {
-  CompanyDTO,
-  CompanyUnitDTO,
-  SegmentDTO,
-} from '../../../../types/relocation.types'
 import {
-  getCompanies,
-  getCompanyUnits,
-  getPanels,
-  getSegments,
-  getStrings,
-  postExternalRelocation,
-  postInternalRelocation,
-} from '../../../../services/relocations.service'
+  useRelocationActions,
+  useRelocationFormOptions,
+} from '../../../../hooks/useRelocationData'
 import {
   INITIAL_EXTERNAL_FORM,
   INITIAL_INTERNAL_FORM,
 } from '../../data-access/vm/Relocations.vm'
-import type { StringDto } from '../../../../types/string.types'
-import type { PanelDto } from '../../../../types/panel.types'
 import {
   validateExternalRelocation,
   validateInternalRelocation,
@@ -46,55 +34,24 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
     loading: loadingUser,
     error: userError,
   } = useCurrentUserContext()
-  const [units, setUnits] = useState<CompanyUnitDTO[]>([])
-  const [companies, setCompanies] = useState<CompanyDTO[]>([])
-  const [segments, setSegments] = useState<SegmentDTO[]>([])
-  const [strings, setStrings] = useState<StringDto[]>([])
-  const [panels, setPanels] = useState<PanelDto[]>([])
   const [internal, setInternal] = useState(INITIAL_INTERNAL_FORM)
   const [external, setExternal] = useState(INITIAL_EXTERNAL_FORM)
-  const [loadingOptions, setLoadingOptions] = useState(true)
   const [submitting, setSubmitting] = useState(false)
-  const [loadError, setLoadError] = useState('')
   const [formError, setFormError] = useState('')
 
-  useEffect(() => {
-    if (loadingUser) return
-    if (!me?.companyUnitId) return
-    const user = me
-    const unitId = me.companyUnitId
-
-    async function prepare() {
-      setLoadingOptions(true)
-      setLoadError('')
-      try {
-        const [unitPage, companyPage, segmentPage, stringPage, panelPage] =
-          await Promise.all([
-            getCompanyUnits(),
-            getCompanies(),
-            getSegments(),
-            getStrings(unitId),
-            getPanels(unitId),
-          ])
-        setUnits(unitPage.content.filter((item) => item.id !== unitId))
-        setCompanies(
-          companyPage.content.filter((item) => item.id !== user.companyId),
-        )
-        setSegments(segmentPage.content)
-        setStrings(stringPage.content)
-        setPanels(panelPage.content)
-      } catch (cause) {
-        setLoadError(
-          cause instanceof Error
-            ? cause.message
-            : 'Não foi possível carregar os dados.',
-        )
-      } finally {
-        setLoadingOptions(false)
-      }
-    }
-    void prepare()
-  }, [me, loadingUser])
+  const options = useRelocationFormOptions(
+    loadingUser ? null : (me?.companyUnitId ?? null),
+    me?.companyId ?? null,
+  )
+  const { createInternalRelocation, createExternalRelocation } =
+    useRelocationActions()
+  const units = useMemo(() => options.data?.units ?? [], [options.data])
+  const companies = useMemo(() => options.data?.companies ?? [], [options.data])
+  const segments = useMemo(() => options.data?.segments ?? [], [options.data])
+  const strings = useMemo(() => options.data?.strings ?? [], [options.data])
+  const panels = useMemo(() => options.data?.panels ?? [], [options.data])
+  const loadError = options.error
+  const loadingOptions = options.loading
 
   const userMissingError =
     !loadingUser && !me
@@ -155,14 +112,14 @@ export function RelocationsForm({ onSuccess, onError }: Props) {
     setSubmitting(true)
     try {
       if (type === 'INTERNAL' && unit && string) {
-        await postInternalRelocation({
+        await createInternalRelocation({
           stringId: string.id,
           quantity: Number(internal.quantity),
           suggestedUnitId: unit.id,
           justification: internal.justification.trim(),
         })
       } else if (type === 'EXTERNAL' && company && segment && panel) {
-        await postExternalRelocation({
+        await createExternalRelocation({
           panelId: panel.id,
           destinationCompanyId: company.id,
           segmentId: segment.id,

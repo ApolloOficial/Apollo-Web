@@ -1,11 +1,14 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Button } from '../../../../components/button'
 import { FormActions } from '../../../../components/form-actions'
 import { Combobox } from '../../../../components/inputs/combobox'
 import { SimpleInput } from '../../../../components/inputs/simple-input'
 import { useCurrentUserContext } from '../../../../hooks/useCurrentUserContext'
-import { getRoles, postEmployee } from '../../../../services/employees.service'
+import {
+  useEmployeeActions,
+  useEmployeeRoles,
+} from '../../../../hooks/useEmployeeData'
 import {
   EMPLOYEE_EMAIL_MAX_LENGTH,
   EMPLOYEE_NAME_MAX_LENGTH,
@@ -14,7 +17,6 @@ import {
 } from '../../../../utils/validators/employee'
 import { PASSWORD_MAX_LENGTH } from '../../../../utils/validators/auth'
 import { isManager } from '../../../../utils/user'
-import type { RoleDTO } from '../../../../types/employee.types'
 import {
   INITIAL_EMPLOYEE_FORM,
   type EmployeeFormVM,
@@ -26,7 +28,6 @@ interface Props {
 
 export function EmployeesForm({ onSuccess }: Props) {
   const [form, setForm] = useState<EmployeeFormVM>(INITIAL_EMPLOYEE_FORM)
-  const [roles, setRoles] = useState<RoleDTO[]>([])
   const { user, error: userError } = useCurrentUserContext()
   const companyUnitId = user?.companyUnitId ?? ''
   const [submitting, setSubmitting] = useState(false)
@@ -35,17 +36,13 @@ export function EmployeesForm({ onSuccess }: Props) {
     Partial<Record<keyof EmployeeFormInput, string>>
   >({})
 
-  useEffect(() => {
-    void getRoles()
-      .then((rolesPage) => {
-        setRoles(rolesPage.content.filter((role) => !isManager(role.name)))
-      })
-      .catch((cause: unknown) =>
-        setError(
-          cause instanceof Error ? cause.message : 'Erro ao preparar cadastro.',
-        ),
-      )
-  }, [])
+  const rolesResource = useEmployeeRoles()
+  const { createEmployee } = useEmployeeActions()
+  const roles = useMemo(
+    () =>
+      rolesResource.data?.content.filter((role) => !isManager(role.name)) ?? [],
+    [rolesResource.data],
+  )
 
   const selectedRole = useMemo(
     () =>
@@ -67,7 +64,7 @@ export function EmployeesForm({ onSuccess }: Props) {
       return setError(userError ?? 'A filial do gerente não foi encontrada.')
     setSubmitting(true)
     try {
-      await postEmployee({
+      await createEmployee({
         fullName: form.fullName.trim(),
         email: form.email.trim(),
         temporaryPassword: form.temporaryPassword,
@@ -140,9 +137,9 @@ export function EmployeesForm({ onSuccess }: Props) {
         onChange={(roleName) => setForm({ ...form, roleName })}
       />
 
-      {(error || fieldErrors.roleName) && (
+      {(error || rolesResource.error || fieldErrors.roleName) && (
         <p className="form-layout__error" role="alert">
-          {error || fieldErrors.roleName}
+          {error || rolesResource.error || fieldErrors.roleName}
         </p>
       )}
 

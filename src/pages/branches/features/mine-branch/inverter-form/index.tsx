@@ -10,15 +10,14 @@ import { InfoNote } from '../../../../../components/info-note'
 import { Combobox } from '../../../../../components/inputs/combobox'
 import { SimpleInput } from '../../../../../components/inputs/simple-input'
 import { Step, Stepper } from '../../../../../components/stepper'
-import { useApiResource } from '../../../../../hooks/useApiResource'
+import {
+  useBranchActions,
+  useInverterModels,
+  usePanelModels,
+} from '../../../../../hooks/useBranchData'
 import { paths } from '../../../../../routes/paths'
 import type { StepStatus } from '../../../../../types/ui.types'
 import { formatKw, todayIso } from '../../../../../utils/formatters'
-import {
-  getInverterModels,
-  getPanelModels,
-  postInverter,
-} from '../../../../../services/branches.service'
 import {
   INVERTER_DATA_SOURCE,
   SUPPORTED_INVERTER_BRANDS,
@@ -41,14 +40,9 @@ function sameText(a: string, b: string) {
 
 export function BranchesInverterForm() {
   const navigate = useNavigate()
-  const modelsResource = useApiResource(
-    getInverterModels,
-    'Não foi possível carregar os modelos de inversor.',
-  )
-  const panelModelsResource = useApiResource(
-    getPanelModels,
-    'Não foi possível carregar os modelos de placa.',
-  )
+  const modelsResource = useInverterModels()
+  const panelModelsResource = usePanelModels()
+  const { createInverter } = useBranchActions()
   const [state, dispatch] = useReducer(
     inverterFormReducer,
     undefined,
@@ -170,7 +164,7 @@ export function BranchesInverterForm() {
     dispatch({ type: 'SUBMIT_START' })
 
     try {
-      await postInverter({
+      await createInverter({
         inverterModelId: selectedModel.id,
         code: form.code.trim(),
         serialNumber: form.serialNumber.trim(),

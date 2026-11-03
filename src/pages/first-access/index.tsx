@@ -6,7 +6,7 @@ import { Button } from '../../components/button'
 import { StatusMessage } from '../../components/status-message'
 import { PasswordInput } from '../../components/inputs/password-input'
 import { paths } from '../../routes/paths'
-import { changePassword } from '../../services/auth.service'
+import { useAuthActions } from '../../hooks/useAuthActions'
 import type { FirstAccessFormViewModel } from '../../types/auth.types'
 import { translateAuthMessage } from '../../utils/auth-messages'
 import { PASSWORD_RULES_MESSAGE, isValidPassword } from '../../utils/validators'
@@ -19,6 +19,7 @@ const initialForm: FirstAccessFormViewModel = {
 }
 
 export default function FirstAccess() {
+  const { changePassword } = useAuthActions()
   const [form, setForm] = useState<FirstAccessFormViewModel>(initialForm)
   const [status, setStatus] = useState<{
     loading: boolean

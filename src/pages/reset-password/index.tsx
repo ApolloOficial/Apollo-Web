@@ -6,7 +6,7 @@ import { Button } from '../../components/button'
 import { PasswordInput } from '../../components/inputs/password-input'
 import { StatusMessage } from '../../components/status-message'
 import { paths } from '../../routes/paths'
-import { resetPassword } from '../../services/auth.service'
+import { useAuthActions } from '../../hooks/useAuthActions'
 import type {
   ResetPasswordFormValues,
   ResetPasswordLocationStateViewModel,
@@ -29,6 +29,7 @@ function getResetToken(state: unknown): string | null {
 }
 
 export default function ResetPassword() {
+  const { resetPassword } = useAuthActions()
   const { state } = useLocation()
   const navigate = useNavigate()
   const [form, setForm] = useState<ResetPasswordFormValues>(initialForm)

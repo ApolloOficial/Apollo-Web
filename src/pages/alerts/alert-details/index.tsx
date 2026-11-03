@@ -1,12 +1,10 @@
-import { useMemo } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getWarning } from '../../../services/alerts.service'
 import {
   severityLabels,
   statusLabels,
   typeLabels,
 } from '../data-access/vm/Alerts.vm'
-import { useApiResource } from '../../../hooks/useApiResource'
+import { useWarning } from '../../../hooks/useAlertData'
 import { useCurrentUserContext } from '../../../hooks/useCurrentUserContext'
 import { formatDate } from '../../../utils/formatters'
 import { isOperator } from '../../../utils/user'
@@ -21,15 +19,7 @@ export default function AlertDetails({ audience = 'operator' }: Props) {
   const { id } = useParams()
   const { user } = useCurrentUserContext()
   const warningId = id && !Number.isNaN(Number(id)) ? Number(id) : null
-  const fetchWarning = useMemo(
-    () => (warningId === null ? null : () => getWarning(warningId)),
-    [warningId],
-  )
-  const {
-    data: warning,
-    loading,
-    error,
-  } = useApiResource(fetchWarning, 'Não foi possível carregar o alerta.')
+  const { data: warning, loading, error } = useWarning(warningId)
 
   if (warningId !== null && loading) {
     return (

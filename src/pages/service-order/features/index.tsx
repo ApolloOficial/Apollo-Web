@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   AppliedFilters,
@@ -13,11 +13,9 @@ import type {
   ServiceOrderStatus,
 } from '../../../types/service-order.types'
 import {
-  getActiveTechnicians,
-  getMaintenanceTypes,
-  getServiceOrderIds,
-  getServiceOrders,
-} from '../../../services/service-orders.service'
+  useServiceOrderLookups,
+  useServiceOrdersPage,
+} from '../../../hooks/useServiceOrderData'
 import {
   INITIAL_SERVICE_ORDER_FILTERS,
   priorityLabels,
@@ -25,8 +23,6 @@ import {
   type ServiceOrderFiltersViewModel,
 } from '../data-access/vm/ServiceOrder.vm'
 import { ServiceOrderFilter } from './filters'
-import type { EmployeeDto } from '../../../types/employee.types'
-import type { MaintenanceTypeDto } from '../../../types/service-order.types'
 import { TableSkeleton } from '../../../components/table-skeleton'
 import { ErrorState } from '../../../components/error-state'
 
@@ -69,12 +65,6 @@ function getVisualStatus(item: ServiceOrderListItemDto) {
 export function ServiceOrderFeature() {
   const { user, loading: loadingUser } = useCurrentUserContext()
   const companyUnitId = user?.companyUnitId ?? null
-  const [items, setItems] = useState<ServiceOrderListItemDto[]>([])
-  const [orderIds, setOrderIds] = useState<number[]>([])
-  const [technicians, setTechnicians] = useState<EmployeeDto[]>([])
-  const [maintenanceTypes, setMaintenanceTypes] = useState<
-    MaintenanceTypeDto[]
-  >([])
 
   const [draft, setDraft] = useState<ServiceOrderFiltersViewModel>(
     INITIAL_SERVICE_ORDER_FILTERS,
@@ -85,60 +75,23 @@ export function ServiceOrderFeature() {
 
   const [page, setPage] = useState(0)
   const [size, setSize] = useState(10)
-  const [totalPages, setTotalPages] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
-
-  useEffect(() => {
-    if (loadingUser) return
-
-    Promise.all([
-      getActiveTechnicians(companyUnitId),
-      getMaintenanceTypes(),
-      getServiceOrderIds(),
-    ])
-      .then(([techniciansResult, typesResult, ordersResult]) => {
-        setTechnicians(techniciansResult.content)
-        setMaintenanceTypes(typesResult)
-        setOrderIds(ordersResult.content.map((order) => order.id))
-      })
-      .catch(() => {
-        setTechnicians([])
-        setMaintenanceTypes([])
-        setOrderIds([])
-      })
-  }, [loadingUser, companyUnitId])
-
-  const loadOrders = useCallback(async () => {
-    setLoading(true)
-    setError('')
-
-    try {
-      const result = await getServiceOrders({
-        filters,
-        page,
-        size,
-      })
-
-      setItems(result.content)
-      setTotalPages(result.totalPages)
-    } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : 'Não foi possível carregar as ordens de serviço.',
-      )
-    } finally {
-      setLoading(false)
-    }
-  }, [filters, page, size])
-
-  useEffect(() => {
-    void (async () => {
-      await Promise.resolve()
-      await loadOrders()
-    })()
-  }, [loadOrders])
+  const { data, loading, error, reload } = useServiceOrdersPage(
+    filters,
+    page,
+    size,
+  )
+  const lookups = useServiceOrderLookups(companyUnitId, loadingUser)
+  const items = useMemo(() => data?.content ?? [], [data])
+  const totalPages = data?.totalPages ?? 0
+  const technicians = useMemo(
+    () => lookups.data?.technicians ?? [],
+    [lookups.data],
+  )
+  const maintenanceTypes = useMemo(
+    () => lookups.data?.maintenanceTypes ?? [],
+    [lookups.data],
+  )
+  const orderIds = useMemo(() => lookups.data?.orderIds ?? [], [lookups.data])
 
   const appliedFilters = useMemo<AppliedFilter[]>(() => {
     const result: AppliedFilter[] = []
@@ -352,9 +305,7 @@ export function ServiceOrderFeature() {
             )
           })}
 
-        {!loading && error && (
-          <ErrorState message={error} onRetry={() => void loadOrders()} />
-        )}
+        {!loading && error && <ErrorState message={error} onRetry={reload} />}
 
         {!loading && !error && items.length === 0 && (
           <p className="service-orders-table__state">
