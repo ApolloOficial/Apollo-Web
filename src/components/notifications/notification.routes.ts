@@ -24,6 +24,7 @@ export function notificationRoute(
       return `${paths.relocationOperator}?type=EXTERNAL`
     case 'SERVICE_ORDER_OPENED':
     case 'SERVICE_ORDER_COMPLETED':
+    case 'CANCELLATION_REQUESTED':
       return paths.serviceOrders
     default:
       return undefined

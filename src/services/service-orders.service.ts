@@ -126,6 +126,20 @@ export async function getServiceOrder(id: number): Promise<ServiceOrderDto> {
   }
 }
 
+export async function cancelServiceOrder(
+  id: number,
+  reason: string,
+): Promise<ServiceOrderDto> {
+  try {
+    return await request<ServiceOrderDto>(
+      `/maintenance-registers/${id}/cancel`,
+      { method: 'PATCH', body: { reason } },
+    )
+  } catch (cause) {
+    throw toApiError(cause)
+  }
+}
+
 export async function getServiceOrderWarning(
   warningId: number,
 ): Promise<WarningDto> {

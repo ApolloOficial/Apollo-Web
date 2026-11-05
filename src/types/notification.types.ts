@@ -7,6 +7,7 @@ export type NotificationType =
   | 'EXTERNAL_RELOCATION_CANDIDATE'
   | 'SERVICE_ORDER_OPENED'
   | 'SERVICE_ORDER_COMPLETED'
+  | 'CANCELLATION_REQUESTED'
 
 export type NotificationTone =
   'info' | 'success' | 'alert' | 'error' | 'neutral'

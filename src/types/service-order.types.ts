@@ -28,6 +28,7 @@ export interface ServiceOrderDto {
   laborCost: number | null
   partsCost: number | null
   totalCost: number | null
+  cancellationRequestReason: string | null
 }
 
 export interface ServiceOrderListItemDto {
