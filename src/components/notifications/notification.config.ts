@@ -33,4 +33,5 @@ export const notificationVisuals: Record<NotificationType, NotificationVisual> =
       icon: 'lucide:clipboard-check',
       tone: 'success',
     },
+    CANCELLATION_REQUESTED: { icon: 'lucide:ban', tone: 'alert' },
   }

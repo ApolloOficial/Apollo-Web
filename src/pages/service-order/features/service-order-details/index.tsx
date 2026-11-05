@@ -1,8 +1,12 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import reportPendingImage from '../../../../assets/images/service-order-report-pending.png'
 import type { WarningDto } from '../../../../types/alert.types'
-import { formatDate, formatDateTime } from '../../../../utils/formatters'
+import {
+  formatDate,
+  formatDateTime,
+  withoutCostLines,
+} from '../../../../utils/formatters'
 import type { ServiceOrderDto } from '../../../../types/service-order.types'
 import {
   priorityLabels,
@@ -10,6 +14,9 @@ import {
 } from '../../data-access/vm/ServiceOrder.vm'
 import { PageLoading } from '../../../../components/page-loading'
 import { useServiceOrderDetails } from '../../../../hooks/useServiceOrderData'
+import { useCurrentUserContext } from '../../../../hooks/useCurrentUserContext'
+import { isOperator } from '../../../../utils/user'
+import { CancelServiceOrderModal } from './CancelServiceOrderModal'
 
 interface HistoryItem {
   title: string
@@ -40,7 +47,9 @@ export function ServiceOrderDetailsFeature() {
   const { id } = useParams()
 
   const orderId = id && !Number.isNaN(Number(id)) ? Number(id) : null
-  const { data, loading, error } = useServiceOrderDetails(orderId)
+  const { data, loading, error, reload } = useServiceOrderDetails(orderId)
+  const { user } = useCurrentUserContext()
+  const [cancelOpen, setCancelOpen] = useState(false)
   const order = data?.order ?? null
   const warning = data?.warning ?? null
 
@@ -71,14 +80,23 @@ export function ServiceOrderDetailsFeature() {
       items.push({
         title: 'Execução iniciada',
         description: `Técnico(a) ${order.technicianName} iniciou o atendimento.`,
+        date: order.startedAt ? formatDateTime(order.startedAt) : undefined,
         tone: 'success',
+      })
+    }
+
+    if (order.cancellationRequestReason) {
+      items.push({
+        title: 'Cancelamento solicitado',
+        description: `Técnico(a) ${order.technicianName}: ${order.cancellationRequestReason}`,
+        tone: 'waiting',
       })
     }
 
     if (order.maintenanceStatus === 'CONCLUIDA') {
       items.push({
         title: 'OS concluída',
-        description: 'Laudo técnico e custos registrados pelo técnico.',
+        description: 'Laudo técnico registrado pelo técnico.',
         date: formatDateTime(order.concludedAt),
         tone: 'success',
       })
@@ -108,6 +126,11 @@ export function ServiceOrderDetailsFeature() {
     )
   }
 
+  const canCancel =
+    isOperator(user?.role) &&
+    (order.maintenanceStatus === 'ABERTA' ||
+      order.maintenanceStatus === 'EM_ANDAMENTO')
+
   return (
     <div className="service-order-details">
       <nav
@@ -121,7 +144,51 @@ export function ServiceOrderDetailsFeature() {
         <strong>Detalhes</strong>
       </nav>
 
-      <h1>OS{String(order.id).padStart(5, '0')}</h1>
+      <div className="service-order-details__title">
+        <h1>OS{String(order.id).padStart(5, '0')}</h1>
+
+        {canCancel && (
+          <button
+            type="button"
+            className="service-order-details__cancel"
+            onClick={() => setCancelOpen(true)}
+          >
+            Cancelar OS
+          </button>
+        )}
+      </div>
+
+      {canCancel && order.cancellationRequestReason && (
+        <div className="service-order-cancel-request" role="status">
+          <div>
+            <strong>O técnico solicitou o cancelamento desta OS</strong>
+            <p>Motivo: {order.cancellationRequestReason}</p>
+          </div>
+          <button
+            type="button"
+            className="service-order-details__cancel"
+            onClick={() => setCancelOpen(true)}
+          >
+            Analisar e cancelar
+          </button>
+        </div>
+      )}
+
+      {cancelOpen && (
+        <CancelServiceOrderModal
+          orderId={order.id}
+          initialReason={
+            order.cancellationRequestReason
+              ? `Solicitado pelo técnico: ${order.cancellationRequestReason}`
+              : ''
+          }
+          onClose={() => setCancelOpen(false)}
+          onCancelled={() => {
+            setCancelOpen(false)
+            reload()
+          }}
+        />
+      )}
 
       <dl className="service-order-details__summary">
         <div>
@@ -196,17 +263,7 @@ export function ServiceOrderDetailsFeature() {
 
           {order.technicalReport ? (
             <div className="service-order-report__available">
-              <p>{order.technicalReport}</p>
-
-              {order.totalCost !== null && (
-                <p>
-                  <strong>Custo total:</strong>{' '}
-                  {new Intl.NumberFormat('pt-BR', {
-                    style: 'currency',
-                    currency: 'BRL',
-                  }).format(order.totalCost)}
-                </p>
-              )}
+              <p>{withoutCostLines(order.technicalReport)}</p>
             </div>
           ) : (
             <div className="service-order-report__pending">

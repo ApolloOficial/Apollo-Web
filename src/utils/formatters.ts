@@ -112,6 +112,14 @@ export function formatDate(value: string | null | undefined) {
   return `${day}/${month}/${year}`
 }
 
+export function withoutCostLines(report: string) {
+  return report
+    .split(/\r?\n/)
+    .filter((line) => !/^\s*custo(:|\s+total)/i.test(line))
+    .join('\n')
+    .trim()
+}
+
 export function formatDateTime(value: string | null | undefined) {
   if (!value) return '-'
 
